@@ -35,7 +35,7 @@ class ContractSchemaTests(unittest.TestCase):
 
     def test_all_schemas_are_valid_draft_2020_12(self):
         schema_paths = sorted(SCHEMA_DIR.glob("*.schema.json"))
-        self.assertGreaterEqual(len(schema_paths), 9)
+        self.assertGreaterEqual(len(schema_paths), 10)
         for path in schema_paths:
             with self.subTest(schema=path.name):
                 Draft202012Validator.check_schema(load_json(path))
@@ -64,6 +64,17 @@ class ContractSchemaTests(unittest.TestCase):
         schema = load_json(SCHEMA_DIR / "evidence-record.schema.json")
         allowed = schema["properties"]["state"]["enum"]
         self.assertNotIn("done", allowed)
+
+    def test_lane_and_epoch_require_explicit_schema_version(self):
+        for schema_name in ("lane.schema.json", "epoch.schema.json"):
+            with self.subTest(schema=schema_name):
+                schema = load_json(SCHEMA_DIR / schema_name)
+                self.assertIn("schema_version", schema["required"])
+
+    def test_lane03_pr3_counterexamples_are_regression_oracles(self):
+        required = {"ADV-003-A", "ADV-013-A", "ADV-016-A", "ADV-001-A"}
+        observed = {case.get("oracle_id") for case in self.invalid}
+        self.assertTrue(required.issubset(observed))
 
 
 if __name__ == "__main__":
