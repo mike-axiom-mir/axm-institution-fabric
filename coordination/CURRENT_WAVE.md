@@ -1,6 +1,6 @@
 # CURRENT WAVE — Institution Fabric
 
-Status: active initial build wave — Stage 1 contract layer integrated; Stage 2 identity implementation in final bounded canonical-string portability repair
+Status: active initial build wave — Stage 1 contracts integrated; Stage 2 deterministic identity integrated; Stage 3 opened at exact-revision-membership precondition
 
 ## Shared objective
 
@@ -8,108 +8,74 @@ Turn the research scaffold into the smallest executable deterministic institutio
 
 ## Current integration state
 
-- Lane 03 adversarial PR #2 is integrated at `51f93a940e54c19de7d732b5ccb574e95f3a28f3`.
-- Lane 01 Decision 001 / first integration wave is integrated at `6c5314d6e2828a32ad9eacd2815a16ed5515a1de`.
-- Lane 02 canonical contract PR #3 is integrated at `cff616caf84ded88f79580a51df3e14fdf585b3e`.
-- Lane 03 cross-object continuity PR #5 is integrated at `c4904ee7ce508cfa6e1dccacb5f9a6ab2edd379b`.
-- Decision 002 defines immutable subject/reference identity requirements.
-- Lane 03 Stage 2 canonicalization-oracle PR #6 is integrated at `aaf32fa6d2e3e4f81e80464e051386247b55c83d`.
-- Lane 03 exact-code portability PR #8 is integrated at `ffacf03d33dd010cd88e11dfb11dc09597fb8900`.
-- Decision 003 defines Unicode scalar-value object-key ordering and UTF-8-byte `axmref:v1` component spelling.
-- Lane 02 production identity PR #7 is open at repaired head `b5d965eda605fe215ebb1411864b7f2a539d9bca`.
-- Lane 02 reports fresh local reconstructed-harness evidence for that head: `23 passed` plus successful `py_compile`; native checkout and remote CI remain not tested.
-- Lane 03 exact-head verification confirms the Decision 003 repairs survive source/doc/test inspection and targeted witnesses.
-- Lane 03 PR #9 is integrated at `49095fe3d616758997c991d81f695ceb7a4afffe`, freezing `ADV-023-A`: canonical JSON string escape spelling remained under-specified because production string rendering still inherited `json.dumps` behavior not fully externalized in repository semantics.
-- Decision 004 (`004_CANONICAL_STRING_ESCAPE_SEMANTICS.md`) is integrated at `53c78aa64f80555539768c762bb94cc8236379cb` and freezes the exact Stage 2 JSON string spelling while preserving current intended Python output.
-- PR #7 is now behind current `main` and reports `mergeable: false`; publication freshness and semantic acceptance remain separate concerns.
-- Stage 2 is **not integrated yet**. The current gate is one narrow Lane 02 Decision 004 repair + fresh evidence + one bounded Lane 03 exact-head verification.
-- State-store, work-ledger, stale-base enforcement, supersession graph validation, epoch runtime, integration runtime, and replay remain deferred.
+- Stage 1 canonical contract pack is integrated.
+- Decisions 001–004 define root-grounded integration semantics, immutable identity/reference semantics, cross-runtime canonical portability, and exact canonical JSON string spelling.
+- Lane 03 Decision 004 exact-head verification PR #10 is integrated at `59c69d1629cfb0508a0ab982c74e7cf2c63b28ae`.
+- Lane 02 Stage 2 production identity PR #7 is integrated at `11f8e9035d965aaaf4fe21bc857f1cf01a35ca10` after the bounded adversarial chain through `ADV-023-A`.
+- Stage 2 now provides strict deterministic parsing, validated canonical bytes, reproducible SHA-256 identity, typed `axmref:v1` immutable references, exact reference resolution, and strong-evidence subject binding.
+- Remote GitHub Actions evidence for the repaired Stage 2 production/test blobs reports 27 tests passing and successful `py_compile`. This is automated/compiled evidence, not cross-language proof and not canonical authority.
+- Lane 03 found no new concrete Decision 004 portability failure on the repaired Stage 2 head. Cross-language reproduction remains not tested.
+- Decision 005 (`005_EXACT_REVISION_MEMBERSHIP.md`) is integrated at `c08e24fb1190fb1dfe4cdb083ff64ab4e0b85a69`.
+- Decision 005 freezes a Stage 3 prerequisite: an immutable state revision must bind exact immutable member instances. The current v0.1 revision schema still uses logical ids for objective, lane, occupancy, claim, packet, receipt, and parent relationships, which is insufficient for exact replay when multiple valid instances may share a logical id.
+- State-store runtime, work-ledger lifecycle, stale-base transition enforcement, supersession graph validation, epoch runtime, integration runtime, and replay are still not implemented.
 
 ## Lane 01 — Institution Architect / Integration Lead
 
 Active claim:
 
-- preserve architecture, root boundary, and universal-vs-domain separation;
-- hold Stage 2 integration until Decision 004 is encoded and verified;
-- keep host-runtime behavior from becoming hidden institutional semantics;
-- keep evidence states precise and avoid promoting test evidence from an older blob onto changed code;
-- maintain repository coordination so later occupants can continue without private chat memory;
-- integrate only grounded, non-overlapping specialist work.
+- preserve architecture, root boundary, evidence precision, and universal-vs-domain separation;
+- keep Stage 2 claims bounded to what is actually tested;
+- hold persistent Stage 3 canonical-state claims until exact revision membership is repaired;
+- coordinate Lane 02 schema/store work and Lane 03 stale-target audit without semantic overlap;
+- maintain repository state so a later occupant can reconstruct the build without private chat memory.
 
-Current hold: do not integrate PR #7 until Decision 004 is explicit in docs/code/tests, fresh deterministic evidence is recorded for the changed head, Lane 03 verifies the exact repaired head, and the branch is reconciled/mergeable.
-
-Avoid duplicating Lane 02's production repair or Lane 03's verification lane.
+Current hold: do not call a filesystem layout a canonical institution state store while `state-revision.schema.json` can name ambiguous logical members.
 
 ## Lane 02 — Deterministic Kernel Engineer
 
-Current claim: **repair PR #7 against Decision 004, then reconcile it onto current `main`**.
+Current claim: **repair exact state-revision membership as the smallest Stage 3 prerequisite; do not begin the wider work-ledger runtime yet.**
 
 Immediate next action:
 
-1. keep the existing Stage 2 implementation scope;
-2. externalize Decision 004 canonical JSON string spelling in `IDENTITY_V0.md` and production behavior rather than treating Python `json.dumps` behavior as the contract;
-3. preserve current intended spelling: literal `/`, `\"` for quotation mark, `\\` for reverse solidus, short escapes for `U+0008/U+0009/U+000A/U+000C/U+000D`, lowercase-hex `\u00xx` for other `U+0000..U+001F`, and literal UTF-8 for all other permitted scalar values;
-4. add exact regressions at minimum for `ADV-023-A` literal solidus, one short control escape, one non-short control escape containing `a-f`, and one non-ASCII literal witness;
-5. preserve the already-verified Decision 003 regressions for `ADV-021-A` and `ADV-022-A`;
-6. rerun the full deterministic identity suite and compilation checks after the changed blobs and record exact evidence;
-7. reconcile the repaired branch onto current `main` without beginning Stage 3.
+1. read Decision 005 and current integrated Stage 2 identity code;
+2. revise `state-revision.schema.json` so canonical membership binds exact immutable typed references for parent revision, objective, lanes, occupancies, claims, artifacts, evidence, return packets, and integration receipts;
+3. bump the state-revision contract version explicitly if needed rather than silently changing v0.1 meaning;
+4. update only the fixtures/tests required by that contract repair;
+5. add regressions proving two objects with the same logical id but different canonical content cannot collapse into one state-revision membership identity;
+6. prove changing an exact member ref changes the revision's immutable identity;
+7. preserve Stage 2 canonicalization/reference behavior unchanged unless a concrete dependency requires repair;
+8. run the full affected deterministic test/compile suite and record the exact environment/evidence boundary;
+9. stop before implementing the general state store/work ledger unless the repaired contract is already verified and the next slice remains cleanly separable.
 
-Preserve already-grounded Stage 2 properties:
-
-- strict duplicate-key rejection;
-- explicit NFC/no-surrogate policy;
-- no silent schema-default insertion;
-- typed immutable references rather than bare digests;
-- logical id distinct from immutable instance identity;
-- exact strong-evidence subject binding;
-- Unicode scalar-value object-key ordering;
-- UTF-8 byte / uppercase `%HH` reference component spelling.
-
-Do **not** start the state store, work ledger, integration engine, model adapter, networking, UI, or Game Studio expansion in this repair.
+Do not silently rewrite every `*_id` field across the repository. Decision 005 requires exact semantics where the relationship needs an exact instance; Lane 03 is auditing the remaining transition/base relationships separately.
 
 ## Lane 03 — Institutional Continuity / Adversarial Systems Specialist
 
-Current claim: **verify the exact Decision 004 repaired PR #7 head after Lane 02 publishes it**.
+Current claim: **perform a bounded exact-target/stale-base contract audit using `ADV-002-B`, without editing Lane 02's production state-revision repair.**
 
-Verified repairs to preserve:
+Immediate next action:
 
-- `ADV-021-A` — Unicode scalar-value object-key ordering is explicit and survives exact-head verification;
-- `ADV-022-A` — UTF-8 byte / uppercase `%HH` reference spelling is explicit and survives exact-head verification.
+- inventory every Stage 1 field that names a revision or target state by logical id;
+- construct concrete same-logical-id/different-immutable-instance counterexamples where possible;
+- distinguish relationships that truly require an exact immutable reference from fields that are only labels/search keys;
+- focus especially on work claims, occupancy entry state, return-packet base state, integration receipts, and epochs;
+- preserve `ADV-006-B` supersession acyclicity and `ADV-011-B` epoch progression as later-stage obligations unless they reveal a prerequisite for exact storage identity;
+- produce machine-readable or clear deterministic regression vectors and a return packet;
+- do not modify Lane 02's production branch unless a concrete failure requires a later repair lane.
 
-Integrated new finding:
+## Stage 3 first runtime slice after the precondition clears
 
-- `ADV-023-A` — canonical JSON string escape spelling must be reconstructable independently of host serializer ancestry.
+The intended first storage slice remains deliberately small and local/offline:
 
-When Lane 02 repairs PR #7:
+- immutable persistence of validated canonical objects;
+- exact lookup by immutable `axmref:v1`;
+- immutable persistence of repaired state revisions;
+- idempotent storage of byte-identical content;
+- loud failure on exact-reference/content mismatch;
+- any mutable `current`/`HEAD` pointer is navigation only, never identity or merge authority;
+- interrupted writes must not become visible as valid canonical objects.
 
-- confirm Decision 004 is encoded coherently in docs/code/tests;
-- challenge literal solidus, quote/reverse-solidus spelling, short controls, non-short controls with lowercase hex, and literal non-ASCII output on the exact new head;
-- confirm fresh test evidence corresponds to the changed blobs;
-- preserve the Decision 003 negative findings accurately;
-- do not pull Stage 3 stale-state, lineage, epoch, integration, or replay obligations into this bounded verification;
-- if no new Stage 2 portability failure is found, leave an explicit verification return packet rather than inventing work.
-
-Later integrated oracles that remain out of Stage 2 scope:
-
-- `ADV-002-B` — stale packet/target detection;
-- `ADV-011-B` — epoch packet/base coherence and replayable progression;
-- `ADV-006-B` — immutable supersession lineage is resolvable and acyclic.
-
-## Coordination cadence
-
-Recommended stagger for recurring activations:
-
-- Lane 01 lead: minute `:57`
-- Lane 02 kernel: minute `:12`
-- Lane 03 adversarial: minute `:27`
-
-Typical flow:
-
-```text
-lead/integration -> kernel implementation -> adversarial challenge -> integration window -> next lead cycle
-```
-
-Timing is coordination convenience only and grants no authority.
+Claim/occupy/return transitions, semantic duplicate-claim handling, integration, epoch progression, and replay remain later slices.
 
 ## Shared return-packet minimum
 
@@ -122,7 +88,7 @@ Each lane should leave:
 - uncertainty/blockers;
 - dependency/downstream effects;
 - next recommended action;
-- explicit status such as proposed / implemented / automated_tested / runtime_tested / measured / inferred / blocked / not_tested.
+- explicit status such as proposed / implemented / compiled / automated_tested / runtime_tested / measured / inferred / blocked / not_tested.
 
 ## Merge boundary
 
@@ -133,4 +99,4 @@ Inside AXM, the four roots remain the constitutional merge gate:
 3. Continuity
 4. Wisdom before speed
 
-No lane, founder, model, specialist, schedule position, or Git permission becomes authority by identity. When evidence is insufficient, preserve uncertainty or dissent instead of converting confidence into canon.
+No lane, founder, model, specialist, schedule position, CI result, or Git permission becomes authority by identity. When evidence is insufficient, preserve uncertainty or dissent instead of converting confidence into canon.
