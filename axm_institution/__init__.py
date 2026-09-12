@@ -19,6 +19,14 @@ from .identity import (
     validate_evidence_subject_binding,
     validate_instance,
 )
+from .store import (
+    FilesystemObjectStore,
+    ObjectCorruptionError,
+    ObjectNotFoundError,
+    ObjectReferenceMismatchError,
+    ObjectStoreError,
+    StoreWriteResult,
+)
 
 __all__ = [
     "STRONG_EVIDENCE_STATES",
@@ -40,4 +48,10 @@ __all__ = [
     "resolve_reference",
     "validate_evidence_subject_binding",
     "validate_instance",
+    "FilesystemObjectStore",
+    "ObjectCorruptionError",
+    "ObjectNotFoundError",
+    "ObjectReferenceMismatchError",
+    "ObjectStoreError",
+    "StoreWriteResult",
 ]
