@@ -44,6 +44,18 @@ Do not add permanent restrictions merely because a capability is powerful, unfam
 
 Working boundaries may be derived from current state, consent, evidence, dependencies, consequences, or domain needs. Keep them explainable and revisable.
 
+## Merge-gate boundary
+
+Inside AXM, **the four roots are the constitutional merge gate**. No founder, owner, steward, human, machine, role, worker, or technical permission becomes canonical authority merely by identity, rank, capability, or Git access.
+
+This matters especially for technical work: a non-developer human should not become the final technical judge merely because they are human or founded the project. A technically capable human or machine may be better positioned to ground a change in code, tests, architecture, state, and evidence. What gives the change standing is that grounding against the roots — not the category of the actor.
+
+For **user-facing AXM products**, the current user is the default product-level merge gate for changes affecting that user's own product state, data, preferences, workflow, outputs, or consequential actions. The user may explicitly delegate bounded merge authority, but the system must not silently infer that delegation.
+
+Technical commit, CI, deployment, or write permission is an execution mechanism, not constitutional authority.
+
+Read [`MERGE_GATE.md`](MERGE_GATE.md) before changing governance, integration authority, or user-facing merge behavior.
+
 ## Preserve these design commitments
 
 1. **Lane continuity is independent of occupant identity.**
@@ -93,9 +105,10 @@ The first target does **not** need autonomous AI execution. Prove the institutio
 
 1. [`README.md`](README.md) — project orientation.
 2. [`FOUNDATION.md`](FOUNDATION.md) — architecture and invariants.
-3. [`schemas/lane.schema.json`](schemas/lane.schema.json) — first machine-readable contract.
-4. [`NEXT_BUILD.md`](NEXT_BUILD.md) — concrete v0 sequence and stop condition.
-5. [`domain-packs/game-studio/README.md`](domain-packs/game-studio/README.md) — first domain-package boundary.
+3. [`MERGE_GATE.md`](MERGE_GATE.md) — internal roots gate vs user-facing user gate.
+4. [`schemas/lane.schema.json`](schemas/lane.schema.json) — first machine-readable contract.
+5. [`NEXT_BUILD.md`](NEXT_BUILD.md) — concrete v0 sequence and stop condition.
+6. [`domain-packs/game-studio/README.md`](domain-packs/game-studio/README.md) — first domain-package boundary.
 
 ## Builder rule
 
