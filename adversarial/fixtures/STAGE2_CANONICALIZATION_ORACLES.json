@@ -1,0 +1,58 @@
+{
+  "base_commit": "f21447030343ad079a025b4d60ffdd01272162c8",
+  "stage": "stage_2_canonicalization_identity",
+  "status": "adversarial_requirements",
+  "assessment": "No production Stage 2 identity module is present at the inspected base. These cases therefore distinguish an observed weakness in the current Stage 1 test helper from pre-implementation requirements for Lane 02. They do not claim a nonexistent runtime has failed.",
+  "cases": [
+    {
+      "id": "ADV-017-A",
+      "surface": "duplicate_json_member_collapse",
+      "evidence_state": "observed_in_current_test_helper",
+      "observed_repository_fact": "tests/test_contract_schemas.py load_json() uses json.loads() without an object_pairs_hook, while canonical_bytes() hashes the already-parsed Python value.",
+      "raw_input_a": "{\"schema_version\":\"0.1\",\"id\":\"artifact.alpha\",\"id\":\"artifact.beta\"}",
+      "raw_input_b": "{\"schema_version\":\"0.1\",\"id\":\"artifact.beta\"}",
+      "observed_effect": "Standard Python json.loads collapses input_a to the same parsed object as input_b, so hashing after parse cannot distinguish the ambiguous duplicate-member source from the unambiguous source.",
+      "required_oracle": "The production Stage 2 loader must reject duplicate JSON object member names before canonical identity is derived. It must not silently last-wins or first-wins an ambiguous source document.",
+      "root_relevance": ["truth", "continuity", "wisdom_before_speed"]
+    },
+    {
+      "id": "ADV-018-A",
+      "surface": "unicode_normalization_hidden_semantics",
+      "evidence_state": "inferred_requirement_with_reproducible_vector",
+      "input_nfc": {"name": "é"},
+      "input_nfd": {"name": "é"},
+      "current_helper_observation": "The current helper preserves Unicode code points and therefore produces different UTF-8 canonical bytes/hashes for NFC and NFD spellings. That behavior is deterministic, but the repository does not yet declare whether canonical identity intentionally preserves code-point form or normalizes it.",
+      "required_oracle": "Stage 2 must make Unicode normalization policy explicit and regression-tested. Either exact code-point preservation or an explicit normalization form may be chosen, but host/parser/editor normalization must never silently decide immutable identity.",
+      "continuity_question": "Can a fresh occupant determine from repository state alone whether canonically equivalent-looking text should share or differ in immutable identity?",
+      "root_relevance": ["truth", "continuity"]
+    },
+    {
+      "id": "ADV-019-A",
+      "surface": "implicit_schema_default_mutation",
+      "evidence_state": "inferred_requirement",
+      "scenario": "A valid object omits an optional property whose JSON Schema contains a default annotation. One implementation hashes the exact validated input; another validator mutates the instance by inserting defaults before hashing.",
+      "required_oracle": "Canonicalization must not depend on validator-specific default insertion. For v0, any default materialization policy must be explicit, deterministic, and stored/tested; absent that policy, identity should be derived from the explicit validated instance rather than silently synthesized fields.",
+      "failure_if_unresolved": "Two occupants using different validator behavior can derive different immutable identities from the same repository document without either seeing an error.",
+      "root_relevance": ["truth", "continuity", "wisdom_before_speed"]
+    },
+    {
+      "id": "ADV-020-A",
+      "surface": "untyped_content_hash_reference_ambiguity",
+      "evidence_state": "inferred_requirement",
+      "scenario": "Two different kernel object kinds can theoretically have identical canonical content bytes or a caller can present only a bare digest without object kind, schema version, or hash-algorithm context. A later occupant must guess what the digest is supposed to identify.",
+      "required_oracle": "An immutable reference used for provenance, evidence, replay, or supersession must be self-describing enough for deterministic parsing or be accompanied by explicit stored type/schema/algorithm context. A bare digest must not become an undocumented universal reference convention.",
+      "implementation_boundary": "Lane 02 still owns the exact encoding. This oracle constrains meaning, not string syntax.",
+      "root_relevance": ["truth", "continuity"]
+    }
+  ],
+  "positive_controls": [
+    {
+      "surface": "json_object_key_order",
+      "observed": "The current test helper uses sort_keys=true, so parsed objects with different member order canonicalize identically. Preserve equivalent deterministic behavior in the production Stage 2 implementation."
+    },
+    {
+      "surface": "non_finite_numbers",
+      "observed": "The current test helper uses allow_nan=false, so Python NaN/Infinity values are rejected during JSON serialization. Production canonicalization should remain strict JSON rather than introducing non-standard numeric tokens."
+    }
+  ]
+}
