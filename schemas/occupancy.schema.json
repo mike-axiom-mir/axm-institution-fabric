@@ -33,7 +33,7 @@
     },
     "base_state_revision_ref": {
       "type": "string",
-      "pattern": "^axmref:v1:state-revision:(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+:(?:-|v=(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+):sha256:[0-9a-f]{64}$"
+      "pattern": "^axmref:v1:state-revision:[a-z0-9][a-z0-9._-]*:-:sha256:[0-9a-f]{64}$"
     },
     "capability_ref": {
       "type": [
