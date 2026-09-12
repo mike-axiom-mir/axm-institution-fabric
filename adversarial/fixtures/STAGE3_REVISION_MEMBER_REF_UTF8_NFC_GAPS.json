@@ -1,0 +1,80 @@
+{
+  "fixture_version": "0.1",
+  "lane": "03",
+  "activation": "013",
+  "base_main": "f736d28c1b2b67d0834a77f19d65527cbde2f1e0",
+  "challenged_pr": 19,
+  "challenged_pr_head": "880a6dc8b1ce47f5c6c3866f2ba6c64c03028ae3",
+  "challenged_tested_head": "74fbe01970fa90fe9421006351bd1d95d14e6697",
+  "failure_surface": "PR #19 state-revision exact-member schema acceptance versus Stage 2 parse_immutable_ref semantic component decoding",
+  "oracles": [
+    {
+      "oracle_id": "ADV-030-A",
+      "title": "state-revision membership still accepts percent triplets that are not valid UTF-8",
+      "affected_fields": [
+        "parent_revision_ref",
+        "objective_ref",
+        "lane_refs[]",
+        "occupancy_refs[]",
+        "claim_refs[]",
+        "artifact_refs[]",
+        "evidence_refs[]",
+        "return_packet_refs[]",
+        "integration_receipt_refs[]"
+      ],
+      "counterexample_field": "objective_ref",
+      "counterexample_ref": "axmref:v1:objective:%FF:-:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "version_counterexample_ref": "axmref:v1:objective:member:v=%FF:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contract_observation": "PR #19 rejects percent-encoding of RFC3986-unreserved ASCII bytes and enforces true end-of-string, but still permits other uppercase percent triplets without proving that the resulting byte sequence decodes as UTF-8. %FF therefore satisfies the repaired component regex.",
+      "identity_observation": "Stage 2 _decode_component converts percent triplets to bytes and decodes with strict UTF-8. A component containing byte FF raises UnicodeDecodeError and parse_immutable_ref rejects the reference.",
+      "pass_oracle": "Every exact member reference accepted by state-revision.schema.json must decode successfully under the same strict UTF-8 semantics used by parse_immutable_ref, for both logical-id and version components."
+    },
+    {
+      "oracle_id": "ADV-030-B",
+      "title": "state-revision membership still accepts valid UTF-8 components that are not NFC-canonical",
+      "affected_fields": [
+        "parent_revision_ref",
+        "objective_ref",
+        "lane_refs[]",
+        "occupancy_refs[]",
+        "claim_refs[]",
+        "artifact_refs[]",
+        "evidence_refs[]",
+        "return_packet_refs[]",
+        "integration_receipt_refs[]"
+      ],
+      "counterexample_field": "objective_ref",
+      "counterexample_ref": "axmref:v1:objective:e%CC%81:-:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "canonical_equivalent_ref": "axmref:v1:objective:%C3%A9:-:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "version_counterexample_ref": "axmref:v1:objective:member:v=e%CC%81:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contract_observation": "The repaired regex accepts both %CC and %81 because neither triplet encodes an ASCII unreserved byte. Together they decode to the decomposed string e + U+0301.",
+      "identity_observation": "Stage 2 _decode_component calls _assert_canonical_subset after UTF-8 decoding; non-NFC text is rejected. The decomposed e + U+0301 therefore fails even though the schema accepts its percent spelling. The NFC equivalent U+00E9 is canonically encoded as %C3%A9.",
+      "pass_oracle": "Every exact member reference accepted by the state-revision contract must satisfy the Stage 2 NFC invariant unchanged for both logical-id and version components."
+    }
+  ],
+  "bounded_reproduction": {
+    "environment": "CPython 3.13.5 / jsonschema 4.26.0",
+    "method": "Applied the exact PR #19 objective_ref regex to the counterexample strings and reproduced the relevant Stage 2 percent-byte decode plus NFC checks from axm_institution/identity.py.",
+    "results": [
+      "%FF logical id: PR #19 regex accepted; strict UTF-8 decode rejected",
+      "%FF version: PR #19 regex accepted; strict UTF-8 decode rejected",
+      "e%CC%81 logical id: PR #19 regex accepted; UTF-8 decoded but NFC check rejected",
+      "e%CC%81 version: PR #19 regex accepted; UTF-8 decoded but NFC check rejected"
+    ],
+    "full_pr19_suite_independently_rerun": false,
+    "full_store_runtime_counterexample": false
+  },
+  "observed_scope": {
+    "adv029_repair": "PR #19 source and tests directly repair the previously frozen unreserved-percent and trailing-data witnesses across all nine field families.",
+    "tested_head_to_final_head": "Repository compare shows final PR #19 head differs from tested head only by the Lane 02 return packet file.",
+    "native_ci": "GitHub Actions run 34724879851 concluded success on tested head 74fbe01970fa90fe9421006351bd1d95d14e6697; Lane 03 inspected this evidence but did not independently rerun the 62-test suite.",
+    "store_source": "FilesystemObjectStore validates state-revision objects through the schema and explicitly does not parse/verify nested member references for closure. Because ADV-030 witnesses are schema-accepted ASCII strings, persistence through the normal store path is a source-grounded risk but was not independently runtime-executed in this activation."
+  },
+  "root_implications": {
+    "Truth": "A contract must not label a string an exact canonical immutable reference when the canonical reference parser rejects that same string.",
+    "Agency_non_domination": "No occupant should need hidden cleanup or normalization rules to decide which spelling a supposedly exact reference meant.",
+    "Continuity": "Replacement occupants need one reconstructable reference language; schema-valid but parser-invalid member strings break that continuity boundary.",
+    "Wisdom_before_speed": "Hold only this exact canonical-language gate; do not pull relationship resolution or lifecycle runtime into the repair."
+  },
+  "recommended_boundary": "Keep PR #19 bounded, but do not integrate it yet as full schema/parser-language equivalence. Lane 02 should add semantic member-reference validation that reuses parse_immutable_ref (or an exactly equivalent shared validator) and field-kind checks, with invalid-UTF-8 and non-NFC regressions for logical-id and version components. Avoid encoding full Unicode validity/NFC semantics as an ever-growing duplicated regex if a shared parser-backed contract check can preserve one source of truth."
+}
