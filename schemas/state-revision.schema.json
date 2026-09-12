@@ -2,64 +2,61 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://axm.local/schemas/institution/state-revision.schema.json",
   "title": "AXM Institution Fabric State Revision",
-  "description": "Immutable canonical snapshot reference for accepted institution state at one point in history.",
+  "description": "Immutable canonical snapshot whose membership binds exact immutable object instances per Decision 005.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "schema_version",
     "id",
-    "parent_revision_id",
-    "objective_id",
-    "lane_ids",
-    "occupancy_ids",
-    "claim_ids",
+    "parent_revision_ref",
+    "objective_ref",
+    "lane_refs",
+    "occupancy_refs",
+    "claim_refs",
     "artifact_refs",
     "evidence_refs",
-    "return_packet_ids",
-    "integration_receipt_ids",
+    "return_packet_refs",
+    "integration_receipt_refs",
     "uncertainties",
     "created_at"
   ],
   "properties": {
     "schema_version": {
-      "const": "0.1"
+      "const": "0.2"
     },
     "id": {
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9._-]*$"
     },
-    "parent_revision_id": {
-      "type": [
-        "string",
-        "null"
-      ],
-      "minLength": 1
+    "parent_revision_ref": {
+      "type": ["string", "null"],
+      "pattern": "^axmref:v1:state-revision:(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+:(?:-|v=(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+):sha256:[0-9a-f]{64}$"
     },
-    "objective_id": {
+    "objective_ref": {
       "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+      "pattern": "^axmref:v1:objective:(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+:(?:-|v=(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+):sha256:[0-9a-f]{64}$"
     },
-    "lane_ids": {
+    "lane_refs": {
       "type": "array",
       "items": {
         "type": "string",
-        "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        "pattern": "^axmref:v1:lane:(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+:(?:-|v=(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+):sha256:[0-9a-f]{64}$"
       },
       "uniqueItems": true
     },
-    "occupancy_ids": {
+    "occupancy_refs": {
       "type": "array",
       "items": {
         "type": "string",
-        "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        "pattern": "^axmref:v1:occupancy:(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+:(?:-|v=(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+):sha256:[0-9a-f]{64}$"
       },
       "uniqueItems": true
     },
-    "claim_ids": {
+    "claim_refs": {
       "type": "array",
       "items": {
         "type": "string",
-        "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        "pattern": "^axmref:v1:work-claim:(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+:(?:-|v=(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+):sha256:[0-9a-f]{64}$"
       },
       "uniqueItems": true
     },
@@ -67,7 +64,7 @@
       "type": "array",
       "items": {
         "type": "string",
-        "minLength": 1
+        "pattern": "^axmref:v1:artifact:(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+:(?:-|v=(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+):sha256:[0-9a-f]{64}$"
       },
       "uniqueItems": true
     },
@@ -75,32 +72,29 @@
       "type": "array",
       "items": {
         "type": "string",
-        "minLength": 1
+        "pattern": "^axmref:v1:evidence-record:(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+:(?:-|v=(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+):sha256:[0-9a-f]{64}$"
       },
       "uniqueItems": true
     },
-    "return_packet_ids": {
+    "return_packet_refs": {
       "type": "array",
       "items": {
         "type": "string",
-        "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        "pattern": "^axmref:v1:return-packet:(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+:(?:-|v=(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+):sha256:[0-9a-f]{64}$"
       },
       "uniqueItems": true
     },
-    "integration_receipt_ids": {
+    "integration_receipt_refs": {
       "type": "array",
       "items": {
         "type": "string",
-        "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        "pattern": "^axmref:v1:integration-receipt:(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+:(?:-|v=(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+):sha256:[0-9a-f]{64}$"
       },
       "uniqueItems": true
     },
     "uncertainties": {
       "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      }
+      "items": {"type": "string", "minLength": 1}
     },
     "created_at": {
       "type": "string",
