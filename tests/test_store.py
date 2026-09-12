@@ -121,6 +121,22 @@ class FilesystemObjectStoreTests(unittest.TestCase):
         self.assertFalse(result.referenced_members_verified)
         self.assertEqual(self.store.load(result.reference), revision)
 
+    def test_adv029_malformed_state_revision_members_fail_before_storage(self) -> None:
+        base = copy.deepcopy(VALID_FIXTURES["state-revision.schema.json"])
+        malformed_refs = (
+            base["objective_ref"].replace("objective.v0-proof", "objective%2Ev0-proof"),
+            base["objective_ref"] + "\n",
+        )
+
+        for malformed_ref in malformed_refs:
+            with self.subTest(reference=repr(malformed_ref)):
+                revision = copy.deepcopy(base)
+                revision["objective_ref"] = malformed_ref
+                with self.assertRaises(ContractValidationError):
+                    self.store.store(revision, "state-revision.schema.json")
+                stored_json = list((Path(self.tempdir.name) / "objects").rglob("*.json"))
+                self.assertEqual(stored_json, [])
+
     def test_explicit_wrong_schema_cannot_reinterpret_reference(self) -> None:
         result = self.store.store(self.objective, "objective.schema.json")
         with self.assertRaises(ObjectReferenceMismatchError):
