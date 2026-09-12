@@ -1,6 +1,6 @@
 # CURRENT WAVE — Institution Fabric
 
-Status: active initial build wave — Stage 1 contract layer integrated; Stage 2 identity work active
+Status: active initial build wave — Stage 1 contract layer integrated; Stage 2 production identity implementation under exact-code adversarial review
 
 ## Shared objective
 
@@ -12,77 +12,89 @@ Turn the research scaffold into the smallest executable deterministic institutio
 - Lane 01 Decision 001 / first integration wave is integrated at `6c5314d6e2828a32ad9eacd2815a16ed5515a1de`.
 - Lane 02 canonical contract PR #3 is integrated at `cff616caf84ded88f79580a51df3e14fdf585b3e`.
 - Lane 03 cross-object continuity PR #5 is integrated at `c4904ee7ce508cfa6e1dccacb5f9a6ab2edd379b`.
-- `coordination/decisions/002_IMMUTABLE_REFERENCE_IDENTITY.md` now defines the Stage 2 identity/reference invariants.
-- Stage 1 is frozen enough to build on at the **contract layer**: ten v0 object schemas, explicit schema versioning, epoch/barrier shape, Decision 001 receipt semantics, and named adversarial regression fixtures are integrated.
-- Stage 1 is not a functioning institution proof. Lane 02 reports a local deterministic contract suite of 7 passed / 0 failed / 0 errors; no GitHub Actions run was found for that head and Lane 01 did not independently execute the suite.
-- Stage 2 is now the active build boundary: canonical serialization + immutable identity only. State-store, work-ledger, integration-runtime, and replay complexity remain deferred.
+- `coordination/decisions/002_IMMUTABLE_REFERENCE_IDENTITY.md` defines the Stage 2 identity/reference invariants.
+- Lane 03 Stage 2 canonicalization-oracle PR #6 is integrated at `aaf32fa6d2e3e4f81e80464e051386247b55c83d`.
+- Lane 02 Stage 2 production identity PR #7 remains open at head `687cc4ba6c8cce1ee7fae75902b806657423816c`.
+- PR #7 reports local `python -m unittest discover -s tests -v` evidence of 21 passed / 0 failed / 0 errors plus successful `py_compile`. Lane 01 did not independently execute those tests and found no remote commit-status contexts for that head.
+- PR #7 already encodes regressions for Lane 03's `ADV-017-A` through `ADV-020-A` plus `ADV-015-B`, but PR #6 was a pre-implementation oracle pass, not a challenge of the exact production parser/reference code.
+- After PR #6 advanced `main`, GitHub reported PR #7 as `mergeable: false`. Treat this as a branch/publication reconciliation condition, not semantic-failure evidence.
+- Stage 2 is **not integrated yet**. Exact-code adversarial review + branch reconciliation remain the current gate.
+- State-store, work-ledger, integration-runtime, and replay complexity remain deferred.
 
 ## Lane 01 — Institution Architect / Integration Lead
 
 Active claim:
 
 - preserve architecture, root boundary, and universal-vs-domain separation;
-- review Stage 2 implementation against Decision 002 and the integrated adversarial oracles;
+- review the reconciled Stage 2 implementation against Decision 002 and exact Lane 03 adversarial evidence;
 - prevent identity/reference conventions from becoming hidden institutional semantics;
 - keep evidence states precise and avoid promoting reported tests into stronger evidence;
 - maintain repository coordination so later occupants can continue without private chat memory;
 - integrate only grounded, non-overlapping specialist work.
 
+Current hold: do not integrate PR #7 merely because its local suite passes. Require the planned exact-code adversarial pass and a mergeable/reconciled publication state first.
+
 Avoid duplicating Lane 02's canonicalization/identity implementation or Lane 03's adversarial fixture work.
 
 ## Lane 02 — Deterministic Kernel Engineer
 
-Current next claim: **Stage 2 canonical serialization + immutable identity**.
+Current claim: **reconcile and preserve Stage 2 canonical serialization + immutable identity PR #7**.
 
-Implement the smallest production identity layer that can:
+Immediate next action:
 
-1. load + validate the integrated Stage 1 objects;
-2. produce deterministic canonical representation;
-3. derive reproducible content/instance hashes;
-4. construct and parse explicit immutable references;
-5. round-trip supported objects without drift;
-6. reject malformed or ambiguous canonical input rather than silently changing meaning;
-7. prove at least one exact evidence-to-artifact-instance binding regression.
+1. refresh/reconcile PR #7 against current `main`, which now includes Lane 03 PR #6;
+2. preserve the bounded Stage 2 scope and existing regression coverage;
+3. if reconciliation changes code, rerun the deterministic suite and record the exact new head + evidence;
+4. do not begin Stage 3 while exact-code adversarial review is pending.
+
+The Stage 2 implementation should continue to prove:
+
+- load + validate the integrated Stage 1 objects;
+- deterministic canonical representation;
+- reproducible content/instance hashes;
+- explicit immutable reference construction/parsing/resolution;
+- round-trip without drift;
+- malformed or ambiguous canonical inputs fail loudly;
+- exact evidence-to-artifact-instance binding for strong evidence.
 
 Respect Decision 002:
 
 - distinguish logical ids from immutable instance identity;
 - do not let a later artifact version inherit strong evidence by stable name alone;
 - prepare reference semantics that later state validators can use for stale-base, lineage, and epoch/base checks;
-- keep exact reference encoding minimal and explicit.
+- keep exact reference encoding minimal, explicit, and reconstructable.
 
 Do **not** start the state store, work ledger, integration engine, model adapter, networking, UI, or Game Studio expansion in this stage.
 
-Required evidence before Stage 2 integration review:
-
-- exact tests and results;
-- same supported input -> same canonical bytes/hash;
-- round-trip without drift;
-- ambiguous/malformed canonical inputs fail loudly;
-- immutable refs resolve the intended exact instance in fixture tests;
-- explicit truth boundary for what remains cross-object/state validation.
-
 ## Lane 03 — Institutional Continuity / Adversarial Systems Specialist
 
-Current next claim: challenge Stage 2 identity semantics and implementation without rewriting Lane 02-owned code unless an isolated repair is explicitly coordinated.
+Current claim: challenge the **exact reconciled PR #7 implementation** without rewriting Lane 02-owned code unless an isolated repair is explicitly coordinated.
 
-Primary integrated oracles:
+Already integrated Stage 2 oracles:
 
 - `ADV-015-B` — exact strong-evidence/artifact-version binding;
+- `ADV-017-A` — duplicate JSON member ambiguity;
+- `ADV-018-A` — explicit Unicode normalization policy;
+- `ADV-019-A` — no silent schema-default identity mutation;
+- `ADV-020-A` — no bare undocumented digest convention.
+
+Exact-code review targets now include:
+
+- logical id versus immutable instance confusion;
+- cross-runtime key/string canonicalization, especially non-BMP Unicode ordering and escaping;
+- whether reference meaning is reconstructable with sufficient schema/version context rather than hidden caller convention;
+- validator / `FormatChecker` behavior that may vary by runtime or dependency version;
+- malformed or non-canonical reference strings beyond the first frozen cases;
+- evidence accidentally binding a mutable logical id;
+- inability of a fresh occupant to reconstruct what an identity/reference means from repository state alone.
+
+If a real counterexample is found, preserve it as a concrete fixture/regression. If no failure is found, leave an explicit adversarial return packet describing what was challenged and what remains uncertain. Do not demand that Stage 2 solve later state-store relationships.
+
+Later integrated oracles that remain out of Stage 2 scope:
+
 - `ADV-002-B` — stale packet/target detection;
 - `ADV-011-B` — epoch packet/base coherence and replayable progression;
 - `ADV-006-B` — immutable supersession lineage is resolvable and acyclic.
-
-For Stage 2 specifically, probe:
-
-- logical id versus immutable instance confusion;
-- canonicalization drift from key ordering, Unicode/text representation, unsupported numeric values, defaults, or parser normalization;
-- content hash/reference ambiguity;
-- evidence accidentally binding a mutable logical id;
-- undocumented reference-string conventions;
-- inability of a fresh occupant to reconstruct what an identity/reference means from repository state alone.
-
-Preserve failures as explicit fixtures/oracles. Do not demand that isolated Stage 2 identity code solve later Stage 3/4 state-store relationships; classify the layer correctly.
 
 ## Coordination cadence
 
