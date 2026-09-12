@@ -1,0 +1,58 @@
+{
+  "base_main_commit": "20fee232bd47e8a83928a8e22c89e88f7b6623db",
+  "challenged_pr": 7,
+  "challenged_head": "f2f10ac03ac832c8962bd3e0a37d76ab15bde923",
+  "challenged_identity_blob": "31fedaa2da2c563e1c5e3b35abb990bd347f4c33",
+  "stage": "stage_2_exact_code_adversarial_review",
+  "status": "observed_counterexamples",
+  "assessment": "The Python implementation is internally deterministic, but two parts of the proposed canonical contract currently depend on Python-specific ordering/encoding behavior that IDENTITY_V0.md does not define precisely enough for an independent implementation to reconstruct without reading identity.py. These are continuity/portability gaps in the proposed Stage 2 convention, not claims about Stage 3 state-store behavior.",
+  "cases": [
+    {
+      "id": "ADV-021-A",
+      "surface": "cross_runtime_object_key_ordering",
+      "evidence_state": "observed_exact_code_plus_runtime_witness",
+      "repository_fact": "axm_institution/identity.py canonical_bytes() delegates key ordering to json.dumps(sort_keys=True). IDENTITY_V0.md says object keys are sorted but does not define the comparison order.",
+      "vector": {
+        "key_a": "",
+        "key_a_code_point": "U+E000",
+        "key_b": "𐀀",
+        "key_b_code_point": "U+10000"
+      },
+      "python_reference_behavior": "Python string ordering compares Unicode scalar/code-point values, so canonical_bytes() orders U+E000 before U+10000.",
+      "independent_runtime_witness": "JavaScript's ordinary string sort compares UTF-16 code units, so the same two keys sort U+10000 before U+E000 because the first surrogate D800 sorts before E000.",
+      "python_canonical_text": "{\"\":1,\"𐀀\":2}",
+      "javascript_native_sorted_text": "{\"𐀀\":2,\"\":1}",
+      "failure": "Two reasonable implementations following only the current prose rule 'object keys sorted' can derive different canonical bytes and SHA-256 identities from the same valid Stage 2 object.",
+      "required_oracle": "Stage 2 must specify the exact key comparison algorithm in repository-visible contract text and regression vectors. The production implementation should implement or explicitly normatively bind that order rather than leave it as a host-language sort convention.",
+      "implementation_boundary": "Lane 02 owns the repair. This oracle does not prescribe RFC 8785 or another external format; it only requires one explicit deterministic order.",
+      "root_relevance": ["truth", "continuity", "wisdom_before_speed"]
+    },
+    {
+      "id": "ADV-022-A",
+      "surface": "cross_runtime_reference_percent_encoding",
+      "evidence_state": "observed_exact_code_plus_runtime_witness",
+      "repository_fact": "axm_institution/identity.py _encode_component() delegates canonical component spelling to urllib.parse.quote(value, safe='._-'). IDENTITY_V0.md says logical id/version use canonical percent encoding but does not enumerate the exact raw/escaped character set or byte-level algorithm.",
+      "vector": {
+        "logical_component": "a!b*a'b(c)"
+      },
+      "python_reference_component": "a%21b%2Aa%27b%28c%29",
+      "independent_runtime_witness": "JavaScript encodeURIComponent leaves !, *, ', (, and ) unescaped, while Python urllib.parse.quote with safe='._-' percent-encodes those characters. Both are common UTF-8 percent-encoding APIs.",
+      "failure": "A replacement implementation can construct a different reference spelling for the same logical component unless it knows the Python helper's exact safe-set convention. parse_immutable_ref() then rejects the alternate spelling as non-canonical, so the hidden convention becomes interoperability-breaking state.",
+      "required_oracle": "The axmref:v1 contract must explicitly define UTF-8 conversion, uppercase/lowercase hex policy, and the exact characters emitted raw versus percent-encoded, with fixed regression vectors independent of a host URL encoder.",
+      "implementation_boundary": "Lane 02 owns the encoding/test repair; Lane 03 is freezing the counterexample only.",
+      "root_relevance": ["truth", "continuity", "wisdom_before_speed"]
+    }
+  ],
+  "negative_findings": [
+    {
+      "surface": "format_checker_portability",
+      "result": "no_current_counterexample",
+      "reason": "The production validator instantiates jsonschema.FormatChecker(), but repository code search found no current Stage 1 schema format keywords. FormatChecker therefore does not currently change accepted identity for the integrated contract pack. Preserve this as a future dependency/version risk if formats are introduced, not as a current failure."
+    },
+    {
+      "surface": "strong_evidence_mutable_logical_id_binding",
+      "result": "no_current_counterexample",
+      "reason": "validate_evidence_subject_binding() reconstructs the exact immutable reference and rejects strong evidence whose subject_ref does not match it; the existing ADV-015-B regression covers the stable-name/version-transfer failure."
+    }
+  ]
+}
