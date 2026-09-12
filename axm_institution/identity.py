@@ -29,6 +29,13 @@ _DIGEST_RE = re.compile(r"^[0-9a-f]{64}$")
 _HEX = "0123456789ABCDEF"
 _UNRESERVED = frozenset(b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~")
 _MAX_SAFE_INTEGER = 9_007_199_254_740_991
+_SHORT_JSON_ESCAPES = {
+    "\b": "\\b",
+    "\t": "\\t",
+    "\n": "\\n",
+    "\f": "\\f",
+    "\r": "\\r",
+}
 
 
 class IdentityError(ValueError):
@@ -145,6 +152,26 @@ def _scalar_key(value: str) -> tuple[int, ...]:
     return tuple(ord(ch) for ch in value)
 
 
+def _render_json_string(value: str) -> str:
+    """Render a string with the explicit Decision 004 canonical JSON spelling."""
+
+    rendered = ['"']
+    for char in value:
+        codepoint = ord(char)
+        if char == '"':
+            rendered.append('\\"')
+        elif char == "\\":
+            rendered.append("\\\\")
+        elif char in _SHORT_JSON_ESCAPES:
+            rendered.append(_SHORT_JSON_ESCAPES[char])
+        elif codepoint <= 0x1F:
+            rendered.append(f"\\u{codepoint:04x}")
+        else:
+            rendered.append(char)
+    rendered.append('"')
+    return "".join(rendered)
+
+
 def _render_canonical(value: Any) -> str:
     if value is None:
         return "null"
@@ -155,14 +182,14 @@ def _render_canonical(value: Any) -> str:
     if isinstance(value, int) and not isinstance(value, bool):
         return str(value)
     if isinstance(value, str):
-        return json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+        return _render_json_string(value)
     if isinstance(value, list):
         return "[" + ",".join(_render_canonical(item) for item in value) + "]"
     if isinstance(value, dict):
         members = []
         for key in sorted(value.keys(), key=_scalar_key):
             members.append(
-                json.dumps(key, ensure_ascii=False, separators=(",", ":"))
+                _render_json_string(key)
                 + ":"
                 + _render_canonical(value[key])
             )
