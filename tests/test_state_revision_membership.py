@@ -8,6 +8,7 @@ from pathlib import Path
 from axm_institution.identity import (
     ContractValidationError,
     ImmutableRef,
+    ImmutableReferenceError,
     make_immutable_ref,
     parse_immutable_ref,
     validate_instance,
@@ -187,7 +188,7 @@ class ExactRevisionMembershipTests(unittest.TestCase):
                 bad_component = UNRESERVED_TEXT[:index] + encoded + UNRESERVED_TEXT[index + 1 :]
                 noncanonical = f"axmref:v1:{kind}:{bad_component}:-:sha256:{DIGEST}"
                 with self.subTest(field=field, character=character, reference=noncanonical):
-                    with self.assertRaises(Exception):
+                    with self.assertRaises(ImmutableReferenceError):
                         parse_immutable_ref(noncanonical)
                     candidate = self.revision()
                     self.set_member_ref(candidate, field, noncanonical)
