@@ -16,6 +16,7 @@ from axm_institution.identity import (
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_PATH = ROOT / "fixtures" / "contracts" / "valid.json"
 ADVERSARIAL_PATH = ROOT / "adversarial" / "fixtures" / "STAGE3_EXACT_LIFECYCLE_BASE_GAPS.json"
+ANCHOR_ADVERSARIAL_PATH = ROOT / "adversarial" / "fixtures" / "STAGE3_REGEX_ANCHOR_CONTINUITY_GAPS.json"
 SCHEMA_DIR = ROOT / "schemas"
 
 LIFECYCLE_SCHEMAS = (
@@ -24,10 +25,14 @@ LIFECYCLE_SCHEMAS = (
     "return-packet.schema.json",
 )
 
+TRUE_END = r"(?![\s\S])"
+STATE_REVISION_ID_PATTERN = r"^[a-z0-9][a-z0-9._-]*(?![\s\S])"
 STATE_REVISION_REF_PATTERN = (
-    r"^axmref:v1:state-revision:[a-z0-9][a-z0-9._-]*:-:sha256:[0-9a-f]{64}$"
+    r"^axmref:v1:state-revision:[a-z0-9][a-z0-9._-]*:-:sha256:[0-9a-f]{64}(?![\s\S])"
 )
 UNRESERVED_ASCII = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
+LOGICAL_ID_FIRST = "abcdefghijklmnopqrstuvwxyz0123456789"
+LOGICAL_ID_REST = LOGICAL_ID_FIRST + "._-"
 
 
 class ExactLifecycleBaseTests(unittest.TestCase):
@@ -35,6 +40,7 @@ class ExactLifecycleBaseTests(unittest.TestCase):
     def setUpClass(cls):
         cls.valid = json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
         cls.adversarial = json.loads(ADVERSARIAL_PATH.read_text(encoding="utf-8"))
+        cls.anchor_adversarial = json.loads(ANCHOR_ADVERSARIAL_PATH.read_text(encoding="utf-8"))
 
     def immutable_ref(self, schema_name: str, value=None) -> str:
         instance = self.valid[schema_name] if value is None else value
@@ -63,6 +69,16 @@ class ExactLifecycleBaseTests(unittest.TestCase):
                 candidate["base_state_revision_ref"] = reference
                 with self.assertRaises(ContractValidationError):
                     validate_instance(candidate, schema_name)
+
+    def assert_lifecycle_contracts_accept(self, reference: str) -> None:
+        parsed = parse_immutable_ref(reference)
+        self.assertEqual(parsed.kind, "state-revision")
+        self.assertIsNone(parsed.version)
+        for schema_name in LIFECYCLE_SCHEMAS:
+            with self.subTest(schema=schema_name, reference=reference):
+                candidate = copy.deepcopy(self.valid[schema_name])
+                candidate["base_state_revision_ref"] = reference
+                validate_instance(candidate, schema_name)
 
     def test_same_logical_revision_id_can_name_distinct_exact_instances(self):
         first_ref, second_ref = self.same_logical_revision_refs()
@@ -159,6 +175,54 @@ class ExactLifecycleBaseTests(unittest.TestCase):
                     parse_immutable_ref(reference)
                 self.assert_lifecycle_contracts_reject(reference)
 
+    def test_adv_028_a_trailing_lf_state_revision_id_is_rejected(self):
+        oracle = self.anchor_adversarial["oracles"][0]
+        self.assertEqual(oracle["oracle_id"], "ADV-028-A")
+        candidate = copy.deepcopy(self.valid["state-revision.schema.json"])
+        candidate["id"] = oracle["counterexample_state_revision_id_json"]
+        with self.assertRaises(ContractValidationError):
+            validate_instance(candidate, "state-revision.schema.json")
+
+        schema = json.loads((SCHEMA_DIR / "state-revision.schema.json").read_text(encoding="utf-8"))
+        self.assertEqual(schema["properties"]["id"]["pattern"], STATE_REVISION_ID_PATTERN)
+        self.assertNotIn("$", STATE_REVISION_ID_PATTERN)
+        self.assertTrue(STATE_REVISION_ID_PATTERN.endswith(TRUE_END))
+
+    def test_adv_028_b_trailing_lf_lifecycle_ref_is_rejected(self):
+        oracle = self.anchor_adversarial["oracles"][1]
+        self.assertEqual(oracle["oracle_id"], "ADV-028-B")
+        reference = oracle["counterexample_ref_json"]
+        with self.assertRaises(ImmutableReferenceError):
+            parse_immutable_ref(reference)
+        self.assert_lifecycle_contracts_reject(reference)
+
+    def test_true_end_assertion_rejects_extra_line_terminators_and_suffix_data(self):
+        reference = self.immutable_ref("state-revision.schema.json")
+        for suffix in ("\n", "\r", "\u2028", "\u2029", "x", "0"):
+            with self.subTest(suffix=repr(suffix)):
+                self.assert_lifecycle_contracts_reject(reference + suffix)
+
+    def test_current_state_revision_id_alphabet_crosses_lifecycle_boundary(self):
+        base = copy.deepcopy(self.valid["state-revision.schema.json"])
+
+        for char in LOGICAL_ID_FIRST:
+            with self.subTest(position="first", char=char):
+                revision = copy.deepcopy(base)
+                revision["id"] = char + "revision"
+                validate_instance(revision, "state-revision.schema.json")
+                self.assert_lifecycle_contracts_accept(
+                    self.immutable_ref("state-revision.schema.json", revision)
+                )
+
+        for char in LOGICAL_ID_REST:
+            with self.subTest(position="rest", char=char):
+                revision = copy.deepcopy(base)
+                revision["id"] = "revision.a" + char + "z"
+                validate_instance(revision, "state-revision.schema.json")
+                self.assert_lifecycle_contracts_accept(
+                    self.immutable_ref("state-revision.schema.json", revision)
+                )
+
     def test_lifecycle_pattern_matches_refs_produced_by_valid_state_revisions(self):
         revision = copy.deepcopy(self.valid["state-revision.schema.json"])
         revision["id"] = "revision.a_b-c0"
@@ -175,6 +239,8 @@ class ExactLifecycleBaseTests(unittest.TestCase):
                     schema["properties"]["base_state_revision_ref"]["pattern"],
                     STATE_REVISION_REF_PATTERN,
                 )
+                self.assertNotIn("$", STATE_REVISION_REF_PATTERN)
+                self.assertTrue(STATE_REVISION_REF_PATTERN.endswith(TRUE_END))
                 candidate = copy.deepcopy(self.valid[schema_name])
                 candidate["base_state_revision_ref"] = reference
                 validate_instance(candidate, schema_name)
