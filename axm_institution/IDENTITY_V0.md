@@ -28,7 +28,31 @@ Strict parsing rejects:
 - surrogate code points;
 - malformed JSON.
 
-The canonical byte representation is UTF-8 JSON with no insignificant whitespace, no ASCII-only escaping, and no NaN-style values. Schema defaults are **not** inserted. An omitted optional field and an explicitly supplied default-valued field therefore remain different content unless a future explicit semantic rule says otherwise.
+The canonical byte representation is UTF-8 JSON with no insignificant whitespace and no NaN-style values. Schema defaults are **not** inserted. An omitted optional field and an explicitly supplied default-valued field therefore remain different content unless a future explicit semantic rule says otherwise.
+
+### Canonical JSON string spelling
+
+Decision 004 makes JSON string spelling explicit rather than inheriting behavior from Python `json.dumps` or another host serializer. The rule applies identically to string values and object member names after the NFC/no-surrogate checks:
+
+1. begin and end with ASCII `"`;
+2. quotation mark `U+0022` is `\"`;
+3. reverse solidus `U+005C` is `\\`;
+4. solidus `/` is emitted literally; optional `\/` is never canonical;
+5. `U+0008/U+0009/U+000A/U+000C/U+000D` use `\b/\t/\n/\f/\r`;
+6. every other `U+0000..U+001F` uses exactly `\u00xx` with lowercase hexadecimal letters;
+7. every other permitted Unicode scalar value is emitted literally and the completed canonical JSON text is encoded as UTF-8;
+8. optional `\uXXXX` or surrogate-pair spellings for printable/non-control characters are not canonical output.
+
+Required witnesses include:
+
+```text
+a/b    -> "a/b"
+U+0008 -> "\b"
+U+000B -> "\u000b"
+é      -> "é"  (UTF-8 C3 A9 inside the quotes)
+```
+
+The production renderer implements these rules directly. Python serializer ancestry is not part of the contract.
 
 ### Object-key ordering
 
@@ -114,14 +138,15 @@ The `ADV-015-B` regression fixture proves that evidence generated for `artifact.
 
 ## Lane 03 Stage 2 ambiguity and portability oracles
 
-The production test spine explicitly covers the Stage 2 requirements frozen by Lane 03 evidence and Decisions 002/003:
+The production test spine explicitly covers the Stage 2 requirements frozen by Lane 03 evidence and Decisions 002–004:
 
 - `ADV-017-A`: duplicate JSON member names fail during strict parsing, before validation or hashing;
 - `ADV-018-A`: Unicode policy is explicit — v0 accepts NFC and rejects NFD/non-NFC input instead of silently normalizing it;
 - `ADV-019-A`: JSON Schema defaults are not materialized by validation; omitted optional content and explicitly present default-valued content remain distinct immutable input;
 - `ADV-020-A`: a bare SHA-256 digest is not a valid immutable reference; typed `axmref:v1` context is required;
 - `ADV-021-A`: object-key ordering is Unicode-scalar-value lexicographic, including the `U+E000 < U+10000` witness;
-- `ADV-022-A`: immutable-reference components use the explicit UTF-8 byte / uppercase `%HH` encoding above, including the punctuation witness.
+- `ADV-022-A`: immutable-reference components use the explicit UTF-8 byte / uppercase `%HH` encoding above, including the punctuation witness;
+- `ADV-023-A`: canonical JSON string escaping is fully explicit, including literal solidus, short controls, lowercase-hex non-short controls, and literal non-ASCII output.
 
 These oracles constrain the identity layer without pulling stale-state, lineage, or epoch validation forward from later stages.
 
