@@ -1,0 +1,62 @@
+{
+  "fixture_version": "0.1",
+  "lane": "03",
+  "activation": "2026-09-12_ACTIVATION_011",
+  "main_base_commit": "4f66e4459b2a1b02640acd72627a9579508ad61c",
+  "challenged_pr": 15,
+  "challenged_pr_head": "4c254e8ae4167f9f0e7c10d5bb32f6da2dc4100a",
+  "challenged_tested_code_head": "7a9c8288a795f8eed43f137c7a0f7ea31eccd7ea",
+  "failure_surface": "Python JSON-Schema regex end-anchor behavior allows values outside the intended exact immutable-reference producer/parser language.",
+  "evidence_environment": {
+    "local_python": "3.13.5",
+    "jsonschema": "4.26.0",
+    "repository_ci_jsonschema": "4.26.0",
+    "independent_full_repo_suite_run": false
+  },
+  "oracles": [
+    {
+      "oracle_id": "ADV-028-A",
+      "title": "A schema-valid state-revision id can produce a canonical ref rejected by every Decision 006 lifecycle base field",
+      "status": "observed_counterexample",
+      "source_facts": [
+        "state-revision.schema.json constrains id with ^[a-z0-9][a-z0-9._-]*$.",
+        "validate_instance uses jsonschema.Draft202012Validator under Python.",
+        "Python regex $ accepts a position immediately before one final LF.",
+        "_assert_canonical_subset permits NFC control characters such as LF inside strings.",
+        "make_immutable_ref percent-encodes non-unreserved UTF-8 bytes, so an LF in the logical id is represented canonically as %0A.",
+        "PR #15 lifecycle base patterns allow only raw [a-z0-9._-]* in the state-revision logical-id component and therefore reject %0A."
+      ],
+      "counterexample_state_revision_id_json": "revision.fixture.0001\n",
+      "counterexample_generated_ref": "axmref:v1:state-revision:revision.fixture.0001%0A:-:sha256:03e0a8c117c040a3abed7b0015c798ff20ea62e8387f78cf1f0c4e70cf4931b3",
+      "observed_results": {
+        "state_revision_schema_validation_with_jsonschema_4_26_0": "accepted",
+        "canonical_component_encoding": "revision.fixture.0001%0A",
+        "parse_immutable_ref_of_generated_ref": "accepted",
+        "occupancy_base_state_revision_ref_contract": "rejected",
+        "work_claim_base_state_revision_ref_contract": "rejected",
+        "return_packet_base_state_revision_ref_contract": "rejected"
+      },
+      "continuity_failure": "The repaired lifecycle contracts do not accept every exact immutable reference currently producible from an object accepted by the current state-revision contract. A replacement occupant can therefore hold a canonical state revision that cannot be named as the exact base of the three lifecycle objects.",
+      "repair_requirement": "Do not encode producer-language assumptions with Python-sensitive ^...$ regexes. Make id/reference validation use semantics that cannot admit a final LF by anchor convention, and add a regression proving every valid state-revision identity produced by the current validator can cross the Decision 006 lifecycle boundary."
+    },
+    {
+      "oracle_id": "ADV-028-B",
+      "title": "A lifecycle exact-base string with a trailing LF is contract-valid but parser-invalid",
+      "status": "observed_counterexample",
+      "counterexample_ref_json": "axmref:v1:state-revision:revision.fixture.0001:-:sha256:2222222222222222222222222222222222222222222222222222222222222222\n",
+      "observed_results": {
+        "python_jsonschema_pattern_validation": "accepted",
+        "parse_immutable_ref": "rejected because the digest component contains the trailing LF"
+      },
+      "continuity_failure": "Schema acceptance is still wider than the canonical Stage 2 parser language despite ADV-026-A's percent-encoding repair.",
+      "repair_requirement": "Use an exact end-of-string mechanism or parser-backed semantic validation so trailing line terminators cannot satisfy an exact immutable-reference field."
+    }
+  ],
+  "non_findings": [
+    "The ADV-026-A percent-encoded-unreserved-byte family itself is repaired on the challenged head.",
+    "No mutable latest/current lookup was introduced by the challenged repair.",
+    "ADV-027-A/B/C remain downstream Stage 4 relationship-resolution obligations and are not pulled into this contract repair.",
+    "No lifecycle transition, stale-base, integration, epoch, or replay runtime exists in this challenged slice."
+  ],
+  "integration_recommendation": "Continue holding PR #15. The active gate is now ADV-028-A/B: contract validation and exact immutable-reference identity must agree on true end-of-string and on the complete set of state-revision identities the current producer can emit."
+}
