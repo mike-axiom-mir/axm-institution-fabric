@@ -1,0 +1,95 @@
+{
+  "source_pr": 3,
+  "source_head": "a95d58a978260790e332db90032b1e2c32a0391a",
+  "status": "counterexample_requirements",
+  "cases": [
+    {
+      "id": "ADV-003-A",
+      "surface": "evidence_precision",
+      "schema": "schemas/evidence-record.schema.json",
+      "scenario": "An evidence record claims automated_tested without recording a method or any source reference.",
+      "instance": {
+        "schema_version": "0.1",
+        "id": "evidence.unsupported-automated-test",
+        "subject_ref": "artifact.example@1",
+        "state": "automated_tested",
+        "claim": "All automated tests passed."
+      },
+      "current_schema_observation": "Shape-valid by schema inspection because method and source_refs are optional for every evidence state.",
+      "required_oracle": "A strong evidence state must not be accepted without enough explicit support to reconstruct how that state was established.",
+      "recommended_test": "Assert this fixture is rejected, or explicitly document and test a different reconstructable support mechanism."
+    },
+    {
+      "id": "ADV-013-A",
+      "surface": "root_grounding",
+      "schema": "schemas/integration-receipt.schema.json",
+      "scenario": "An integration receipt marks a packet accepted even though one constitutional root is explicitly assessed as conflict.",
+      "instance": {
+        "schema_version": "0.1",
+        "id": "receipt.accepted-with-root-conflict",
+        "base_state_revision": "revision.fixture.0001",
+        "packet_ids": ["packet.example"],
+        "decision": "accepted",
+        "reasons": ["Accepted despite an unresolved constitutional conflict."],
+        "root_grounding": [
+          {"root": "truth", "assessment": "grounded", "reason": "Evidence exists."},
+          {"root": "agency_non_domination", "assessment": "conflict", "reason": "Authority conflict remains unresolved."},
+          {"root": "continuity", "assessment": "grounded", "reason": "State is recorded."},
+          {"root": "wisdom_before_speed", "assessment": "grounded", "reason": "Review occurred."}
+        ],
+        "unresolved_conflicts": ["Agency/non-domination conflict remains."],
+        "resulting_state_revision": "revision.fixture.0002",
+        "created_at": "2026-09-12T12:20:00Z"
+      },
+      "current_schema_observation": "Shape-valid by schema inspection because decision is not conditionally constrained by root assessments.",
+      "required_oracle": "Canonical acceptance must not silently coexist with an explicit constitutional root conflict. If a conflict can ever be integrated, the semantics and reason must be explicit and root-grounded rather than accidental schema permissiveness.",
+      "recommended_test": "At minimum reject accepted + root assessment conflict unless Lane 01 establishes a different explicit constitutional semantic."
+    },
+    {
+      "id": "ADV-016-A",
+      "surface": "integration_replay_coherence",
+      "schema": "schemas/integration-receipt.schema.json",
+      "scenario": "A deferred integration emits a new resulting state revision.",
+      "instance": {
+        "schema_version": "0.1",
+        "id": "receipt.deferred-with-result",
+        "base_state_revision": "revision.fixture.0001",
+        "packet_ids": ["packet.example"],
+        "decision": "deferred",
+        "reasons": ["Decision is deferred."],
+        "root_grounding": [
+          {"root": "truth", "assessment": "grounded", "reason": "State recorded."},
+          {"root": "agency_non_domination", "assessment": "grounded", "reason": "No identity authority."},
+          {"root": "continuity", "assessment": "grounded", "reason": "Receipt retained."},
+          {"root": "wisdom_before_speed", "assessment": "grounded", "reason": "Decision deferred."}
+        ],
+        "unresolved_conflicts": [],
+        "resulting_state_revision": "revision.fixture.0002",
+        "created_at": "2026-09-12T12:20:00Z"
+      },
+      "current_schema_observation": "Shape-valid by schema inspection because resulting_state_revision is independent of decision.",
+      "required_oracle": "Decision and revision effect must be coherent enough that replay cannot infer two incompatible meanings from one receipt.",
+      "recommended_test": "Reject non-null resulting_state_revision for rejected/deferred/repair_requested decisions; define explicit semantics for partially_integrated."
+    },
+    {
+      "id": "ADV-001-A",
+      "surface": "occupancy_replacement",
+      "schema": "schemas/occupancy.schema.json",
+      "scenario": "An occupancy is marked active while also carrying an ended_at timestamp.",
+      "instance": {
+        "schema_version": "0.1",
+        "id": "occupancy.ambiguous",
+        "lane_id": "lane-03",
+        "actor_ref": "fixture:occupant-a",
+        "base_state_revision": "revision.fixture.0001",
+        "started_at": "2026-09-12T12:00:00Z",
+        "ended_at": "2026-09-12T12:10:00Z",
+        "status": "active",
+        "claim_ids": ["claim.example"]
+      },
+      "current_schema_observation": "Shape-valid by schema inspection because status and ended_at are not conditionally coupled.",
+      "required_oracle": "A replacement occupant must be able to determine whether a prior occupancy is active or ended without guessing from contradictory fields.",
+      "recommended_test": "Require active => ended_at null/absent and ended => ended_at present; define recovery semantics separately for abandoned/expired occupancy if needed."
+    }
+  ]
+}
