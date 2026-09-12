@@ -1,0 +1,31 @@
+{
+  "v1": {
+    "schema_version": "0.1",
+    "id": "artifact.rules",
+    "type": "ruleset",
+    "version": "1",
+    "content_ref": "fixtures/rules-v1.json",
+    "provenance": {
+      "producer_lane_id": "lane-02",
+      "base_state_revision": "revision.fixture.0001",
+      "source_refs": ["objective.v0-proof"]
+    },
+    "evidence_refs": [],
+    "dependency_refs": []
+  },
+  "v2": {
+    "schema_version": "0.1",
+    "id": "artifact.rules",
+    "type": "ruleset",
+    "version": "2",
+    "content_ref": "fixtures/rules-v2.json",
+    "provenance": {
+      "producer_lane_id": "lane-02",
+      "base_state_revision": "revision.fixture.0002",
+      "source_refs": ["objective.v0-proof"]
+    },
+    "evidence_refs": [],
+    "dependency_refs": [],
+    "supersedes_ref": "pending-stage3-lineage-check"
+  }
+}
