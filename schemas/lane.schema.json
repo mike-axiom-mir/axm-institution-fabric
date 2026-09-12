@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axm.local/schemas/institution/lane.schema.json",
+  "title": "AXM Institution Fabric Lane",
+  "description": "Seed contract for a persistent professional lane. Experimental: fields may evolve, but occupant independence and evidence obligations are foundational.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "purpose",
+    "responsibilities",
+    "exclusions",
+    "inputs",
+    "outputs",
+    "evidence_requirements",
+    "handoff"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "responsibilities": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "exclusions": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "inputs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/interfaceRef" }
+    },
+    "outputs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/interfaceRef" }
+    },
+    "knowledge_refs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "default": []
+    },
+    "capability_refs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "default": []
+    },
+    "dependency_lane_ids": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "default": []
+    },
+    "evidence_requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["for_output", "required_states"],
+        "properties": {
+          "for_output": { "type": "string", "minLength": 1 },
+          "required_states": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/evidenceState" },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "quality_gates": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "default": []
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["must_report_changes", "must_report_uncertainty", "must_report_downstream_effects"],
+      "properties": {
+        "must_report_changes": { "type": "boolean" },
+        "must_report_uncertainty": { "type": "boolean" },
+        "must_report_downstream_effects": { "type": "boolean" },
+        "required_fields": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "default": []
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    }
+  },
+  "$defs": {
+    "interfaceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "type": "string", "minLength": 1 },
+        "required": { "type": "boolean", "default": true },
+        "description": { "type": "string" }
+      }
+    },
+    "evidenceState": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "implemented",
+        "compiled",
+        "automated_tested",
+        "runtime_tested",
+        "visually_inspected",
+        "playtested",
+        "measured",
+        "inferred",
+        "blocked",
+        "not_tested",
+        "superseded",
+        "invalidated"
+      ]
+    }
+  }
+}
