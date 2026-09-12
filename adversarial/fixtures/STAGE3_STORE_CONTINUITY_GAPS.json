@@ -1,0 +1,82 @@
+{
+  "fixture_version": "0.1",
+  "title": "Stage 3 immutable-store continuity gaps",
+  "scope": "Lane 03 adversarial evidence against Lane 02 PR #13 only; no Stage 4+ transition semantics are introduced.",
+  "inspected_main": "175e6c724ae6d8d5e8b81fffb4c41e5e6593c2ef",
+  "inspected_pr": 13,
+  "inspected_pr_head": "4cf94ce5b57ea9887320fa0a0c7a734ce946b4ee",
+  "tested_merge_candidate_run": {
+    "workflow_run": 34713825913,
+    "job": 103607261021,
+    "result": "45 tests passed; explicit py_compile succeeded",
+    "evidence_owner": "Lane 02 / GitHub Actions",
+    "lane03_reexecution": false
+  },
+  "oracles": [
+    {
+      "id": "ADV-024-A",
+      "title": "State-revision closure status must survive caller disappearance",
+      "failure_surface": "occupant replacement / explicit institutional state",
+      "observed_source": [
+        "FilesystemObjectStore.store() returns StoreWriteResult.referenced_members_verified=False for state-revision writes.",
+        "The persisted object path contains only canonical state-revision JSON bytes.",
+        "No durable store receipt, sidecar, ledger record, or other persisted artifact records referenced_members_verified in PR #13.",
+        "Lane 02's return packet describes the false value as explicitly recording that closure was not verified."
+      ],
+      "counterexample": [
+        "Occupant A stores state revision R and receives referenced_members_verified=False in process memory.",
+        "Occupant A and its process disappear before communicating that return value.",
+        "Occupant B later has the repository plus object store and loads R by exact axmref.",
+        "The store contains R's bytes but no per-write durable record saying whether member closure was checked, skipped, failed, or later verified."
+      ],
+      "expected_invariant": "Any claim that closure-verification state was recorded must be reconstructable after occupant/process replacement from explicit durable institutional state, or the claim must be narrowed to a transient call result with all stored revisions treated as unverified until a later durable closure mechanism exists.",
+      "current_assessment": "Observed continuity gap in the wording/record boundary. The store safely does not claim closure, but StoreWriteResult alone is not a durable institutional record.",
+      "evidence_state": {
+        "source_inspection": "observed",
+        "runtime_reproduction": "not_tested",
+        "fixture": "implemented"
+      },
+      "bounded_repairs": [
+        "Persist an immutable closure/evidence receipt when closure checking becomes operational, bound to the exact state-revision ref; or",
+        "for this first slice, explicitly narrow the claim to: the call result reports closure unverified, no durable per-revision closure receipt exists yet, and storage alone never implies closure."
+      ],
+      "stage_effect": "Does not require Stage 4 lifecycle code. It is a truth/continuity boundary on what Stage 3 may claim to have recorded."
+    },
+    {
+      "id": "ADV-025-A",
+      "title": "Historical immutable objects must not depend on the current mutable schema file",
+      "failure_surface": "immutable history / hidden mutable validator context",
+      "observed_source": [
+        "load(reference) derives schema_name only from reference kind, e.g. objective -> objective.schema.json.",
+        "_verify_existing() validates stored bytes using validate_instance(value, schema_name, self.schema_dir).",
+        "validate_instance() loads the schema from the current schema path at lookup time.",
+        "axmref:v1 contains kind, logical id, instance version token, and content SHA-256; it does not identify the exact schema contract blob used when the object was originally validated.",
+        "Current objective.schema.json has schema_version const 0.1 and state-revision.schema.json has schema_version const 0.2, showing schema contracts are versioned in object content while filenames remain stable."
+      ],
+      "counterexample": [
+        "Store objective O while objective.schema.json accepts schema_version 0.1.",
+        "Later evolve objective.schema.json at the same filename to require schema_version 0.2.",
+        "Do not modify O's stored canonical bytes or its original axmref.",
+        "A later load(O_ref) validates O against the new current schema and can raise ObjectCorruptionError even though the stored bytes are unchanged and the object was valid under the contract that created its identity."
+      ],
+      "expected_invariant": "A replacement implementation must be able to recover and verify historical immutable objects without private knowledge of which past schema commit validated them. Schema evolution must not silently convert valid stored history into corruption.",
+      "current_assessment": "Source-level continuity risk; no schema migration has occurred yet, so the failure is inferred rather than runtime-observed on PR #13.",
+      "evidence_state": {
+        "source_inspection": "observed",
+        "runtime_reproduction": "not_tested",
+        "fixture": "implemented"
+      },
+      "bounded_repairs": [
+        "Bind immutable objects to a reconstructable schema-contract identity/version and retain historical schemas for lookup; or",
+        "define a versioned schema registry keyed from object schema_version and make store lookup resolve that historical contract explicitly; or",
+        "narrow Stage 3 claims so long-term historical readability across schema evolution is explicitly not yet implemented, then repair before the first schema migration that would invalidate prior objects."
+      ],
+      "stage_effect": "No work-ledger/integration/epoch semantics are required. This is an immutable-store/history requirement that must be resolved before schema evolution can safely coexist with replayable history."
+    }
+  ],
+  "non_findings": [
+    "PR #13 has no mutable current/HEAD pointer.",
+    "Exact content/reference mismatch, post-write corruption, missing refs, same-instance idempotence, same-logical-id/different-instance coexistence, wrong-schema reinterpretation, and pre-publication temp invisibility all have explicit tests in the current PR.",
+    "This fixture does not dispute Lane 02's recorded 45-test CI success and does not silently reclassify it as Lane 03-executed evidence."
+  ]
+}
