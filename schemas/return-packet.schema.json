@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://axm.local/schemas/institution/return-packet.schema.json",
   "title": "AXM Institution Fabric Return Packet",
-  "description": "Structured lane handoff preserving changes, evidence, uncertainty, blockers, downstream effects, and follow-up.",
+  "description": "Structured lane handoff bound to one exact immutable base revision while preserving changes, evidence, uncertainty, blockers, downstream effects, and follow-up.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -10,7 +10,7 @@
     "id",
     "claim_id",
     "lane_id",
-    "base_state_revision",
+    "base_state_revision_ref",
     "changes",
     "artifacts_created",
     "artifacts_modified",
@@ -22,7 +22,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "0.1"
+      "const": "0.2"
     },
     "id": {
       "type": "string",
@@ -36,9 +36,9 @@
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9._-]*$"
     },
-    "base_state_revision": {
+    "base_state_revision_ref": {
       "type": "string",
-      "minLength": 1
+      "pattern": "^axmref:v1:state-revision:(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+:(?:-|v=(?:[A-Za-z0-9._~-]|%[0-9A-F]{2})+):sha256:[0-9a-f]{64}$"
     },
     "changes": {
       "type": "array",
