@@ -1,0 +1,123 @@
+{
+  "audit_id": "lane03-activation-008-exact-target-stale-base",
+  "base_main": "ad3c37529dba1a2cba11bc5d348c723f0566ebcc",
+  "compared_pr11_head": "bd0a44e80da28a1b7596d3cae6d589022d0b023d",
+  "status": "contract_audit_oracles",
+  "scope": "Classify remaining Stage 1 revision/base and consequential transition references after Decision 005. This fixture does not implement lifecycle or integration runtime and does not modify Lane 02's state-revision repair.",
+  "observed_evidence": [
+    "Decision 002 says base revisions are compatibility claims and later state/runtime validation must compare them against actual history.",
+    "Decision 005 repairs state-revision membership itself but explicitly delegates remaining base/target revision relationships to Lane 03.",
+    "On current main, artifact.provenance.base_state_revision, occupancy.base_state_revision, work-claim.base_state_revision, return-packet.base_state_revision, integration-receipt.base_state_revision, integration-receipt.resulting_state_revision, and epoch.base_state_revision are unconstrained strings/null rather than typed immutable state-revision references.",
+    "PR #11 keeps those downstream fields unchanged while repairing only state-revision membership. Its valid fixture still uses logical git:/revision.* base strings, and its recorded remote suite passes."
+  ],
+  "counterexample_identity": {
+    "logical_revision_id": "revision.same-logical-id",
+    "exact_revision_a": "axmref:v1:state-revision:revision.same-logical-id:-:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "exact_revision_b": "axmref:v1:state-revision:revision.same-logical-id:-:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "meaning": "A and B share one logical name but are different immutable revision instances. A consequential relationship that stores only the logical name cannot prove which state it means."
+  },
+  "required_exact_revision_edges": [
+    {
+      "oracle_id": "ADV-002-C",
+      "schema": "artifact.schema.json",
+      "field": "provenance.base_state_revision",
+      "current_shape": "non-empty string",
+      "scenario": "An artifact says it was produced from revision.same-logical-id while two different immutable revisions A and B carry that logical id. The artifact instance is immutable but its provenance base is not reconstructable.",
+      "required_oracle": "Artifact provenance that claims a base state must bind one exact immutable state-revision reference before provenance/replay is treated as exact.",
+      "latest_required_stage": "before canonical provenance or replay claims; storage may persist the legacy object only if this ambiguity remains explicit"
+    },
+    {
+      "oracle_id": "ADV-002-D",
+      "schema": "occupancy.schema.json",
+      "field": "base_state_revision",
+      "current_shape": "non-empty string",
+      "scenario": "Occupant B replaces occupant A and sees occupancy.base_state_revision = revision.same-logical-id. Without an exact ref it cannot determine which state the occupancy entered from.",
+      "required_oracle": "Occupancy entry state must bind one exact immutable state-revision reference.",
+      "latest_required_stage": "before Stage 4 occupancy lifecycle is claimed"
+    },
+    {
+      "oracle_id": "ADV-002-E",
+      "schema": "work-claim.schema.json",
+      "field": "base_state_revision",
+      "current_shape": "non-empty string",
+      "scenario": "A work claim is opened against logical revision.same-logical-id. A and B differ in target/dependency state, so stale-base comparison cannot know which base the claim actually asserted.",
+      "required_oracle": "A work claim's compatibility base must bind one exact immutable state-revision reference.",
+      "latest_required_stage": "before Stage 4 claim lifecycle/stale-base enforcement is claimed"
+    },
+    {
+      "oracle_id": "ADV-002-F",
+      "schema": "return-packet.schema.json",
+      "field": "base_state_revision",
+      "current_shape": "non-empty string",
+      "scenario": "A packet says it was produced from revision.same-logical-id and modifies artifact.rules. A and B contain different artifact.rules instances, so a replacement integrator cannot know which target state the packet observed.",
+      "required_oracle": "A return packet's base must bind one exact immutable state-revision reference; stale or incompatible target state must never be inferred from recency or private chat.",
+      "latest_required_stage": "before Stage 4 packet submission/integration compatibility is claimed"
+    },
+    {
+      "oracle_id": "ADV-002-G",
+      "schema": "integration-receipt.schema.json",
+      "field": "base_state_revision and resulting_state_revision",
+      "current_shape": "base is non-empty string; result is string/null",
+      "scenario": "A receipt records an accepted transition from logical revision.same-logical-id to logical revision.result. Reuse or reconstruction of either logical id makes the transition edge ambiguous even if the receipt object itself has immutable identity.",
+      "required_oracle": "Integration receipts must bind exact immutable base and resulting state-revision references; a non-state-creating decision keeps the result null.",
+      "latest_required_stage": "before Stage 5 integration/replay is claimed"
+    },
+    {
+      "oracle_id": "ADV-011-C",
+      "schema": "epoch.schema.json",
+      "field": "base_state_revision",
+      "current_shape": "non-empty string",
+      "scenario": "A parallel epoch declares logical revision.same-logical-id as its base while packets may have been produced from different immutable instances A and B sharing that name.",
+      "required_oracle": "Epoch base must bind one exact immutable state-revision reference before packet/base coherence or parallel-vs-sequential comparison is treated as replayable.",
+      "latest_required_stage": "before Stage 6 epoch execution/comparison is claimed"
+    }
+  ],
+  "consequential_object_edges": [
+    {
+      "oracle_id": "ADV-002-H",
+      "schema": "integration-receipt.schema.json",
+      "field": "packet_ids",
+      "classification": "exact instance required for replay",
+      "reason": "A receipt is evidence of which packet instances were evaluated. Two canonical return packets may share a logical id but differ in content; receipt replay cannot choose by name or recency.",
+      "preferred_representation": "typed immutable return-packet refs, or an equivalently explicit exact-instance relation"
+    },
+    {
+      "oracle_id": "ADV-011-D",
+      "schema": "epoch.schema.json",
+      "field": "packet_ids",
+      "classification": "exact instance required for epoch replay",
+      "reason": "Barrier membership must identify the exact packet instances included in the epoch, not only mutable/logical packet names.",
+      "preferred_representation": "typed immutable return-packet refs"
+    },
+    {
+      "oracle_id": "ADV-011-E",
+      "schema": "epoch.schema.json",
+      "field": "lane_ids",
+      "classification": "exact semantics required; representation may remain logical only with an explicit unique-resolution invariant",
+      "reason": "An epoch must be able to reconstruct the exact lane contracts that governed work. A logical lane id is sufficient only if the exact base revision plus a machine-checkable uniqueness/resolution rule deterministically identifies one lane instance.",
+      "preferred_representation": "exact lane refs, or an explicit validator that resolves each lane id uniquely within the epoch's exact base revision"
+    },
+    {
+      "oracle_id": "ADV-002-I",
+      "schema": "return-packet.schema.json",
+      "field": "artifacts_modified",
+      "classification": "logical target label is insufficient for selective stale compatibility unless exact expected target state is derivable",
+      "reason": "For strict whole-base rejection, an exact packet base may be enough. If later integration permits packets from an older common epoch base after unrelated state advances, conflict detection must compare the exact target/dependency instance observed at the packet base with the current instance.",
+      "preferred_representation": "derive exact target refs from the exact base revision under an explicit uniqueness rule, or record expected prior immutable refs"
+    }
+  ],
+  "logical_fields_not_auto_promoted": [
+    {
+      "field_examples": ["id", "lane_id", "producer_lane_id", "actor_ref"],
+      "classification": "may remain logical/navigation identity unless a specific replay or authority relationship requires exact-instance semantics",
+      "reason": "Decision 005 forbids mass rewriting every *_id merely for naming consistency."
+    }
+  ],
+  "stage_boundary": {
+    "pr11": "No adversarial conflict found with PR #11's narrow Decision 005 repair. This audit is downstream and non-overlapping.",
+    "stage3_store": "May proceed after Decision 005 integration if it claims only immutable persistence/exact lookup and does not claim stale-base, provenance, occupancy/claim lifecycle, integration, epoch, or replay semantics are enforced by these v0.1 links.",
+    "stage4": "Must repair or equivalently validate occupancy/work-claim/return-packet exact base semantics before lifecycle/stale-base claims.",
+    "stage5": "Must bind exact receipt base/result and exact packet instances before integration/replay claims.",
+    "stage6": "Must bind exact epoch base and exact packet membership, with explicit lane-resolution semantics, before parallel/sequential comparison is treated as replayable evidence."
+  }
+}
