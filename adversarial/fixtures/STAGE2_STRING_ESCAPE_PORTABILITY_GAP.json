@@ -1,0 +1,63 @@
+{
+  "schema_version": "0.1",
+  "fixture_set": "stage2-string-escape-portability-gap",
+  "base_main": "892394aefaf4afc7c624159fec45cf85671bf06c",
+  "challenged_pr": 7,
+  "challenged_head": "b5d965eda605fe215ebb1411864b7f2a539d9bca",
+  "oracles": [
+    {
+      "id": "ADV-021-A-RECHECK",
+      "surface": "canonical object-key ordering",
+      "status": "repair_survives_source_inspection",
+      "input_description": "object containing keys U+E000 and U+10000",
+      "required_result": "U+E000 sorts before U+10000 by explicit Unicode scalar-value sequence",
+      "repository_evidence": [
+        "coordination/decisions/003_CANONICAL_PORTABILITY_SEMANTICS.md",
+        "axm_institution/IDENTITY_V0.md",
+        "axm_institution/identity.py::_scalar_key/_render_canonical",
+        "tests/test_identity.py::test_adv_021_a_unicode_scalar_key_order_is_explicit"
+      ]
+    },
+    {
+      "id": "ADV-022-A-RECHECK",
+      "surface": "axmref:v1 component encoding",
+      "status": "repair_survives_source_inspection",
+      "input": "a!b*a'b(c)",
+      "required_result": "a%21b%2Aa%27b%28c%29",
+      "repository_evidence": [
+        "coordination/decisions/003_CANONICAL_PORTABILITY_SEMANTICS.md",
+        "axm_institution/IDENTITY_V0.md",
+        "axm_institution/identity.py::_encode_component/_decode_component",
+        "tests/test_identity.py::test_adv_022_a_reference_component_encoding_is_utf8_byte_canonical"
+      ]
+    },
+    {
+      "id": "ADV-023-A",
+      "surface": "canonical JSON string escape spelling",
+      "status": "observed_contract_ambiguity",
+      "input_value": "a/b",
+      "current_python_rendering": "\"a/b\"",
+      "alternate_json_spelling_same_value": "\"a\\/b\"",
+      "counterexample": "The production renderer delegates string spelling to Python json.dumps, while IDENTITY_V0.md specifies compact UTF-8 JSON but does not normatively state whether optional solidus escaping is forbidden. A replacement implementation can therefore serialize the same supported string value with a different valid JSON byte spelling unless the escape policy is made explicit.",
+      "continuity_requirement": "Define exact canonical string escaping independent of host serializer defaults, including at minimum quotation mark, reverse solidus, solidus, control characters, and whether optional escapes are forbidden; freeze byte vectors in tests.",
+      "scope": "Stage 2 canonical serialization only; no Stage 3 state semantics are implied.",
+      "repository_evidence": [
+        "axm_institution/IDENTITY_V0.md::Canonical JSON subset",
+        "axm_institution/identity.py::_render_canonical",
+        "schemas/artifact.schema.json::notes/type/content_ref permit general strings"
+      ]
+    }
+  ],
+  "truth_boundary": {
+    "observed": [
+      "ADV-021-A and ADV-022-A are explicitly repaired in the exact PR #7 head source/docs/tests.",
+      "String rendering still calls Python json.dumps directly.",
+      "Repository contract text does not explicitly define optional solidus escape spelling."
+    ],
+    "not_claimed": [
+      "No full PR #7 test suite was rerun by Lane 03 in this activation.",
+      "No non-Python Institution Fabric implementation is claimed to exist.",
+      "No Stage 3 stale-state, lineage, epoch, integration, or replay behavior was tested."
+    ]
+  }
+}
