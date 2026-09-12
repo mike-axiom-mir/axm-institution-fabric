@@ -65,7 +65,9 @@ class FilesystemObjectStore:
         parsed = parse_immutable_ref(reference)
         return self.objects_dir / parsed.kind / parsed.sha256[:2] / f"{parsed.sha256}.json"
 
-    def _verify_existing(self, reference: str, schema_name: str) -> Mapping[str, Any]:
+    def _verify_existing(
+        self, reference: str, schema_name: str
+    ) -> tuple[Mapping[str, Any], bytes]:
         path = self._object_path(reference)
         try:
             raw = path.read_bytes()
@@ -99,7 +101,7 @@ class FilesystemObjectStore:
             raise ObjectCorruptionError(
                 f"stored object reproduces {actual_reference}, not requested {reference}"
             )
-        return validated
+        return validated, raw
 
     def store(
         self,
@@ -193,7 +195,7 @@ class FilesystemObjectStore:
                     pass
 
     def load_bytes(self, reference: str, schema_name: str | None = None) -> bytes:
-        """Return canonical bytes only after exact identity verification."""
+        """Return the exact byte sequence that passed identity verification."""
 
         parsed = parse_immutable_ref(reference)
         chosen_schema = schema_name or self._schema_for_kind(parsed.kind)
@@ -201,11 +203,8 @@ class FilesystemObjectStore:
             raise ObjectReferenceMismatchError(
                 f"reference kind {parsed.kind!r} does not match schema {chosen_schema!r}"
             )
-        self._verify_existing(reference, chosen_schema)
-        try:
-            return self._object_path(reference).read_bytes()
-        except OSError as exc:
-            raise ObjectStoreError(f"cannot reread immutable object {reference}: {exc}") from exc
+        _, raw = self._verify_existing(reference, chosen_schema)
+        return raw
 
     def load(self, reference: str, schema_name: str | None = None) -> Mapping[str, Any]:
         """Return the validated object only when it reproduces the exact requested ref."""
@@ -216,4 +215,5 @@ class FilesystemObjectStore:
             raise ObjectReferenceMismatchError(
                 f"reference kind {parsed.kind!r} does not match schema {chosen_schema!r}"
             )
-        return self._verify_existing(reference, chosen_schema)
+        value, _ = self._verify_existing(reference, chosen_schema)
+        return value
