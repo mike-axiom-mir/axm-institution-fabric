@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axm.local/schemas/institution/integration-receipt.schema.json",
+  "title": "AXM Institution Fabric Integration Receipt",
+  "description": "Explicit record of an integration decision. The receipt records root grounding; it does not grant authority by actor identity or Git permission.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "base_state_revision",
+    "packet_ids",
+    "decision",
+    "reasons",
+    "root_grounding",
+    "unresolved_conflicts",
+    "resulting_state_revision",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+    },
+    "base_state_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "packet_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9._-]*$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "accepted",
+        "rejected",
+        "deferred",
+        "partially_integrated",
+        "repair_requested"
+      ]
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "root_grounding": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "root",
+          "assessment",
+          "reason"
+        ],
+        "properties": {
+          "root": {
+            "type": "string",
+            "enum": [
+              "truth",
+              "agency_non_domination",
+              "continuity",
+              "wisdom_before_speed"
+            ]
+          },
+          "assessment": {
+            "type": "string",
+            "enum": [
+              "grounded",
+              "uncertain",
+              "conflict"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "root": {
+                "const": "truth"
+              }
+            },
+            "required": [
+              "root"
+            ]
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "root": {
+                "const": "agency_non_domination"
+              }
+            },
+            "required": [
+              "root"
+            ]
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "root": {
+                "const": "continuity"
+              }
+            },
+            "required": [
+              "root"
+            ]
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "root": {
+                "const": "wisdom_before_speed"
+              }
+            },
+            "required": [
+              "root"
+            ]
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      ]
+    },
+    "unresolved_conflicts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "resulting_state_revision": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
