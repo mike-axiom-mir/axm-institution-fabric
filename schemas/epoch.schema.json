@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axm.local/schemas/institution/epoch.schema.json",
+  "title": "AXM Institution Fabric Epoch / Barrier Descriptor",
+  "description": "Minimal coordination boundary for comparing parallel, sequential, and hybrid work against one explicit base revision. It records barrier state; it does not decide truth or grant authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "base_state_revision", "mode", "lane_ids", "status", "opened_at", "sealed_at", "packet_ids"],
+  "properties": {
+    "schema_version": {"const": "0.1"},
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+    "base_state_revision": {"type": "string", "minLength": 1},
+    "mode": {"type": "string", "enum": ["parallel", "sequential", "hybrid"]},
+    "lane_ids": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"}, "minItems": 1, "uniqueItems": true},
+    "status": {"type": "string", "enum": ["open", "sealed"]},
+    "opened_at": {"type": "string", "format": "date-time"},
+    "sealed_at": {"type": ["string", "null"], "format": "date-time"},
+    "packet_ids": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"}, "uniqueItems": true},
+    "notes": {"type": "array", "items": {"type": "string"}, "default": []}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "open"}}, "required": ["status"]},
+      "then": {"properties": {"sealed_at": {"type": "null"}}}
+    },
+    {
+      "if": {"properties": {"status": {"const": "sealed"}}, "required": ["status"]},
+      "then": {"required": ["sealed_at"], "properties": {"sealed_at": {"type": "string", "format": "date-time"}}}
+    }
+  ]
+}
