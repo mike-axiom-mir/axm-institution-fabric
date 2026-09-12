@@ -1,14 +1,302 @@
 [
-  {"schema":"evidence-record.schema.json","case":"invalid evidence state","instance":{"schema_version":"0.1","id":"evidence.bad","subject_ref":"x","state":"done","claim":"Unsupported evidence state must fail."}},
-  {"schema":"return-packet.schema.json","case":"done flag cannot substitute for explicit packet fields","instance":{"schema_version":"0.1","id":"packet.bad","claim_id":"claim.x","lane_id":"lane-02","base_state_revision":"revision.x","done":true}},
-  {"schema":"artifact.schema.json","case":"artifact provenance is required","instance":{"schema_version":"0.1","id":"artifact.bad","type":"code","version":"0.1","content_ref":"src/x.py","evidence_refs":[],"dependency_refs":[]}},
-  {"schema":"integration-receipt.schema.json","case":"receipt cannot omit root grounding","instance":{"schema_version":"0.1","id":"receipt.bad","base_state_revision":"revision.x","packet_ids":["packet.x"],"decision":"accepted","reasons":["looks good"],"unresolved_conflicts":[],"resulting_state_revision":"revision.y","created_at":"2026-09-12T13:09:00Z"}},
-  {"oracle_id":"ADV-003-A","schema":"evidence-record.schema.json","case":"strong evidence requires reconstructable support","instance":{"schema_version":"0.1","id":"evidence.unsupported-automated-test","subject_ref":"artifact.example","state":"automated_tested","claim":"All automated tests passed."}},
-  {"oracle_id":"ADV-013-A","schema":"integration-receipt.schema.json","case":"accepted receipt cannot contain a root conflict","instance":{"schema_version":"0.1","id":"receipt.accepted-with-root-conflict","base_state_revision":"revision.fixture.0001","packet_ids":["packet.example"],"decision":"accepted","reasons":["Accepted despite conflict."],"root_grounding":[{"root":"truth","assessment":"grounded","reason":"Evidence exists."},{"root":"agency_non_domination","assessment":"conflict","reason":"Authority conflict remains."},{"root":"continuity","assessment":"grounded","reason":"State is recorded."},{"root":"wisdom_before_speed","assessment":"grounded","reason":"Review occurred."}],"unresolved_conflicts":["Agency conflict remains."],"resulting_state_revision":"revision.fixture.0002","created_at":"2026-09-12T13:09:00Z"}},
-  {"oracle_id":"ADV-016-A","schema":"integration-receipt.schema.json","case":"deferred receipt cannot create a resulting revision","instance":{"schema_version":"0.1","id":"receipt.deferred-with-result","base_state_revision":"revision.fixture.0001","packet_ids":["packet.example"],"decision":"deferred","reasons":["Decision deferred."],"root_grounding":[{"root":"truth","assessment":"grounded","reason":"State recorded."},{"root":"agency_non_domination","assessment":"grounded","reason":"No identity authority."},{"root":"continuity","assessment":"grounded","reason":"Receipt retained."},{"root":"wisdom_before_speed","assessment":"grounded","reason":"Decision deferred."}],"unresolved_conflicts":[],"resulting_state_revision":"revision.fixture.0002","created_at":"2026-09-12T13:09:00Z"}},
-  {"oracle_id":"ADV-016-B","schema":"integration-receipt.schema.json","case":"accepted receipt must create an explicit resulting revision","instance":{"schema_version":"0.1","id":"receipt.accepted-without-result","base_state_revision":"revision.fixture.0001","packet_ids":["packet.example"],"decision":"accepted","reasons":["Claims acceptance."],"root_grounding":[{"root":"truth","assessment":"grounded","reason":"Evidence exists."},{"root":"agency_non_domination","assessment":"grounded","reason":"No identity authority."},{"root":"continuity","assessment":"grounded","reason":"Inputs retained."},{"root":"wisdom_before_speed","assessment":"grounded","reason":"Review occurred."}],"unresolved_conflicts":[],"resulting_state_revision":null,"created_at":"2026-09-12T13:09:00Z"}},
-  {"oracle_id":"ADV-001-A","schema":"occupancy.schema.json","case":"active occupancy cannot also be ended","instance":{"schema_version":"0.1","id":"occupancy.ambiguous","lane_id":"lane-03","actor_ref":"fixture:occupant-a","base_state_revision":"revision.fixture.0001","started_at":"2026-09-12T13:00:00Z","ended_at":"2026-09-12T13:10:00Z","status":"active","claim_ids":["claim.example"]}},
-  {"oracle_id":"ADV-001-B","schema":"occupancy.schema.json","case":"ended occupancy must have a concrete end time","instance":{"schema_version":"0.1","id":"occupancy.ended-without-time","lane_id":"lane-03","actor_ref":"fixture:occupant-a","base_state_revision":"revision.fixture.0001","started_at":"2026-09-12T13:00:00Z","status":"ended","claim_ids":[]}},
-  {"schema":"lane.schema.json","case":"lane contract requires explicit schema version","instance":{"id":"lane.unversioned","name":"Legacy lane","purpose":"Missing explicit version must fail.","responsibilities":["work"],"exclusions":[],"inputs":[],"outputs":[],"evidence_requirements":[],"handoff":{"must_report_changes":true,"must_report_uncertainty":true,"must_report_downstream_effects":true}}},
-  {"schema":"epoch.schema.json","case":"sealed epoch requires a concrete sealed time","instance":{"schema_version":"0.1","id":"epoch.bad","base_state_revision":"revision.fixture.0001","mode":"parallel","lane_ids":["lane-02"],"status":"sealed","opened_at":"2026-09-12T13:00:00Z","sealed_at":null,"packet_ids":[]}}
+  {
+    "schema": "evidence-record.schema.json",
+    "case": "invalid evidence state",
+    "instance": {
+      "schema_version": "0.1",
+      "id": "evidence.bad",
+      "subject_ref": "x",
+      "state": "done",
+      "claim": "Unsupported evidence state must fail."
+    }
+  },
+  {
+    "schema": "return-packet.schema.json",
+    "case": "done flag cannot substitute for explicit packet fields",
+    "instance": {
+      "schema_version": "0.2",
+      "id": "packet.bad",
+      "claim_id": "claim.x",
+      "lane_id": "lane-02",
+      "base_state_revision_ref": "axmref:v1:state-revision:revision.fixture.0001:-:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "done": true
+    }
+  },
+  {
+    "schema": "artifact.schema.json",
+    "case": "artifact provenance is required",
+    "instance": {
+      "schema_version": "0.1",
+      "id": "artifact.bad",
+      "type": "code",
+      "version": "0.1",
+      "content_ref": "src/x.py",
+      "evidence_refs": [],
+      "dependency_refs": []
+    }
+  },
+  {
+    "schema": "integration-receipt.schema.json",
+    "case": "receipt cannot omit root grounding",
+    "instance": {
+      "schema_version": "0.1",
+      "id": "receipt.bad",
+      "base_state_revision": "revision.x",
+      "packet_ids": ["packet.x"],
+      "decision": "accepted",
+      "reasons": ["looks good"],
+      "unresolved_conflicts": [],
+      "resulting_state_revision": "revision.y",
+      "created_at": "2026-09-12T13:09:00Z"
+    }
+  },
+  {
+    "oracle_id": "ADV-003-A",
+    "schema": "evidence-record.schema.json",
+    "case": "strong evidence requires reconstructable support",
+    "instance": {
+      "schema_version": "0.1",
+      "id": "evidence.unsupported-automated-test",
+      "subject_ref": "artifact.example",
+      "state": "automated_tested",
+      "claim": "All automated tests passed."
+    }
+  },
+  {
+    "oracle_id": "ADV-013-A",
+    "schema": "integration-receipt.schema.json",
+    "case": "accepted receipt cannot contain a root conflict",
+    "instance": {
+      "schema_version": "0.1",
+      "id": "receipt.accepted-with-root-conflict",
+      "base_state_revision": "revision.fixture.0001",
+      "packet_ids": ["packet.example"],
+      "decision": "accepted",
+      "reasons": ["Accepted despite conflict."],
+      "root_grounding": [
+        {"root":"truth","assessment":"grounded","reason":"Evidence exists."},
+        {"root":"agency_non_domination","assessment":"conflict","reason":"Authority conflict remains."},
+        {"root":"continuity","assessment":"grounded","reason":"State is recorded."},
+        {"root":"wisdom_before_speed","assessment":"grounded","reason":"Review occurred."}
+      ],
+      "unresolved_conflicts": ["Agency conflict remains."],
+      "resulting_state_revision": "revision.fixture.0002",
+      "created_at": "2026-09-12T13:09:00Z"
+    }
+  },
+  {
+    "oracle_id": "ADV-016-A",
+    "schema": "integration-receipt.schema.json",
+    "case": "deferred receipt cannot create a resulting revision",
+    "instance": {
+      "schema_version": "0.1",
+      "id": "receipt.deferred-with-result",
+      "base_state_revision": "revision.fixture.0001",
+      "packet_ids": ["packet.example"],
+      "decision": "deferred",
+      "reasons": ["Decision deferred."],
+      "root_grounding": [
+        {"root":"truth","assessment":"grounded","reason":"State recorded."},
+        {"root":"agency_non_domination","assessment":"grounded","reason":"No identity authority."},
+        {"root":"continuity","assessment":"grounded","reason":"Receipt retained."},
+        {"root":"wisdom_before_speed","assessment":"grounded","reason":"Decision deferred."}
+      ],
+      "unresolved_conflicts": [],
+      "resulting_state_revision": "revision.fixture.0002",
+      "created_at": "2026-09-12T13:09:00Z"
+    }
+  },
+  {
+    "oracle_id": "ADV-016-B",
+    "schema": "integration-receipt.schema.json",
+    "case": "accepted receipt must create an explicit resulting revision",
+    "instance": {
+      "schema_version": "0.1",
+      "id": "receipt.accepted-without-result",
+      "base_state_revision": "revision.fixture.0001",
+      "packet_ids": ["packet.example"],
+      "decision": "accepted",
+      "reasons": ["Claims acceptance."],
+      "root_grounding": [
+        {"root":"truth","assessment":"grounded","reason":"Evidence exists."},
+        {"root":"agency_non_domination","assessment":"grounded","reason":"No identity authority."},
+        {"root":"continuity","assessment":"grounded","reason":"Inputs retained."},
+        {"root":"wisdom_before_speed","assessment":"grounded","reason":"Review occurred."}
+      ],
+      "unresolved_conflicts": [],
+      "resulting_state_revision": null,
+      "created_at": "2026-09-12T13:09:00Z"
+    }
+  },
+  {
+    "oracle_id": "ADV-001-A",
+    "schema": "occupancy.schema.json",
+    "case": "active occupancy cannot also be ended",
+    "instance": {
+      "schema_version": "0.2",
+      "id": "occupancy.ambiguous",
+      "lane_id": "lane-03",
+      "actor_ref": "fixture:occupant-a",
+      "base_state_revision_ref": "axmref:v1:state-revision:revision.fixture.0001:-:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "started_at": "2026-09-12T13:00:00Z",
+      "ended_at": "2026-09-12T13:10:00Z",
+      "status": "active",
+      "claim_ids": ["claim.example"]
+    }
+  },
+  {
+    "oracle_id": "ADV-001-B",
+    "schema": "occupancy.schema.json",
+    "case": "ended occupancy must have a concrete end time",
+    "instance": {
+      "schema_version": "0.2",
+      "id": "occupancy.ended-without-time",
+      "lane_id": "lane-03",
+      "actor_ref": "fixture:occupant-a",
+      "base_state_revision_ref": "axmref:v1:state-revision:revision.fixture.0001:-:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "started_at": "2026-09-12T13:00:00Z",
+      "status": "ended",
+      "claim_ids": []
+    }
+  },
+  {
+    "schema": "lane.schema.json",
+    "case": "lane contract requires explicit schema version",
+    "instance": {
+      "id": "lane.unversioned",
+      "name": "Legacy lane",
+      "purpose": "Missing explicit version must fail.",
+      "responsibilities": ["work"],
+      "exclusions": [],
+      "inputs": [],
+      "outputs": [],
+      "evidence_requirements": [],
+      "handoff": {
+        "must_report_changes": true,
+        "must_report_uncertainty": true,
+        "must_report_downstream_effects": true
+      }
+    }
+  },
+  {
+    "schema": "epoch.schema.json",
+    "case": "sealed epoch requires a concrete sealed time",
+    "instance": {
+      "schema_version": "0.1",
+      "id": "epoch.bad",
+      "base_state_revision": "revision.fixture.0001",
+      "mode": "parallel",
+      "lane_ids": ["lane-02"],
+      "status": "sealed",
+      "opened_at": "2026-09-12T13:00:00Z",
+      "sealed_at": null,
+      "packet_ids": []
+    }
+  },
+  {
+    "oracle_id": "ADV-002-D-bare",
+    "schema": "occupancy.schema.json",
+    "case": "occupancy base rejects bare logical revision id",
+    "instance": {
+      "schema_version": "0.2",
+      "id": "occupancy.bad-base",
+      "lane_id": "lane-02",
+      "actor_ref": "fixture:occupant-a",
+      "base_state_revision_ref": "revision.same-logical-id",
+      "started_at": "2026-09-12T20:12:00Z",
+      "ended_at": null,
+      "status": "active",
+      "claim_ids": []
+    }
+  },
+  {
+    "oracle_id": "ADV-002-D-kind",
+    "schema": "occupancy.schema.json",
+    "case": "occupancy base rejects wrong-kind immutable ref",
+    "instance": {
+      "schema_version": "0.2",
+      "id": "occupancy.bad-base",
+      "lane_id": "lane-02",
+      "actor_ref": "fixture:occupant-a",
+      "base_state_revision_ref": "axmref:v1:objective:objective.v0-proof:-:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "started_at": "2026-09-12T20:12:00Z",
+      "ended_at": null,
+      "status": "active",
+      "claim_ids": []
+    }
+  },
+  {
+    "oracle_id": "ADV-002-E-bare",
+    "schema": "work-claim.schema.json",
+    "case": "work claim base rejects bare logical revision id",
+    "instance": {
+      "schema_version": "0.2",
+      "id": "claim.bad-base",
+      "lane_id": "lane-02",
+      "base_state_revision_ref": "revision.same-logical-id",
+      "occupancy_id": "occupancy.bad-base",
+      "summary": "Fixture isolates exact base validation.",
+      "created_at": "2026-09-12T20:12:00Z",
+      "status": "open",
+      "scope_refs": [],
+      "overlap_with_claim_ids": []
+    }
+  },
+  {
+    "oracle_id": "ADV-002-E-kind",
+    "schema": "work-claim.schema.json",
+    "case": "work claim base rejects wrong-kind immutable ref",
+    "instance": {
+      "schema_version": "0.2",
+      "id": "claim.bad-base",
+      "lane_id": "lane-02",
+      "base_state_revision_ref": "axmref:v1:objective:objective.v0-proof:-:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "occupancy_id": "occupancy.bad-base",
+      "summary": "Fixture isolates exact base validation.",
+      "created_at": "2026-09-12T20:12:00Z",
+      "status": "open",
+      "scope_refs": [],
+      "overlap_with_claim_ids": []
+    }
+  },
+  {
+    "oracle_id": "ADV-002-F-bare",
+    "schema": "return-packet.schema.json",
+    "case": "return packet base rejects bare logical revision id",
+    "instance": {
+      "schema_version": "0.2",
+      "id": "packet.bad-base",
+      "claim_id": "claim.bad-base",
+      "lane_id": "lane-02",
+      "base_state_revision_ref": "revision.same-logical-id",
+      "changes": [],
+      "artifacts_created": [],
+      "artifacts_modified": [],
+      "evidence_refs": [],
+      "uncertainties": [],
+      "failures_or_blockers": [],
+      "downstream_effects": [],
+      "requested_followup": []
+    }
+  },
+  {
+    "oracle_id": "ADV-002-F-kind",
+    "schema": "return-packet.schema.json",
+    "case": "return packet base rejects wrong-kind immutable ref",
+    "instance": {
+      "schema_version": "0.2",
+      "id": "packet.bad-base",
+      "claim_id": "claim.bad-base",
+      "lane_id": "lane-02",
+      "base_state_revision_ref": "axmref:v1:objective:objective.v0-proof:-:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "changes": [],
+      "artifacts_created": [],
+      "artifacts_modified": [],
+      "evidence_refs": [],
+      "uncertainties": [],
+      "failures_or_blockers": [],
+      "downstream_effects": [],
+      "requested_followup": []
+    }
+  }
 ]
