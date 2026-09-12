@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axm.local/schemas/institution/evidence-record.schema.json",
+  "title": "AXM Institution Fabric Evidence Record",
+  "description": "A first-class truth-state record. Evidence state is explicit and must not collapse into a generic done flag.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "subject_ref",
+    "state",
+    "claim"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+    },
+    "subject_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "implemented",
+        "compiled",
+        "automated_tested",
+        "runtime_tested",
+        "visually_inspected",
+        "playtested",
+        "measured",
+        "inferred",
+        "blocked",
+        "not_tested",
+        "superseded",
+        "invalidated"
+      ]
+    },
+    "claim": {
+      "type": "string",
+      "minLength": 1
+    },
+    "method": {
+      "type": "string"
+    },
+    "source_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    }
+  }
+}
