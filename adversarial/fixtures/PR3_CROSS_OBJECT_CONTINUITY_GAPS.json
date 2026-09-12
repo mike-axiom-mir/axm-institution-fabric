@@ -1,0 +1,83 @@
+{
+  "source_pr": 3,
+  "source_head": "5aea3ccfc818112c6ff37e6d2868395b68816db3",
+  "status": "cross_object_counterexample_requirements",
+  "stage1_assessment": "The four previously recorded PR #3 schema counterexamples are repaired in the updated branch by source inspection. The cases below are not claims that isolated JSON Schema should solve repository-level referential integrity; they freeze the next continuity oracles so Stage 2 identity and later state/runtime validation cannot silently invent hidden reference semantics.",
+  "cases": [
+    {
+      "id": "ADV-015-B",
+      "surface": "evidence_artifact_version_binding",
+      "observed_contract_fact": "evidence-record.subject_ref and artifact.evidence_refs are unconstrained non-empty strings, while artifact identity and version are separate fields.",
+      "scenario": "Artifact artifact.rules exists at version 2, but an automated_tested evidence record was produced for version 1. The artifact at version 2 references that evidence id. Each object can remain shape-valid even though the evidence does not establish the current artifact version.",
+      "shape_valid_bundle": {
+        "artifact": {
+          "schema_version": "0.1",
+          "id": "artifact.rules",
+          "type": "code",
+          "version": "2",
+          "content_ref": "src/rules-v2.py",
+          "provenance": {
+            "producer_lane_id": "lane-02",
+            "base_state_revision": "revision.fixture.0002",
+            "source_refs": ["packet.rules-v2"]
+          },
+          "evidence_refs": ["evidence.rules-tests-v1"],
+          "dependency_refs": []
+        },
+        "evidence": {
+          "schema_version": "0.1",
+          "id": "evidence.rules-tests-v1",
+          "subject_ref": "artifact.rules",
+          "state": "automated_tested",
+          "claim": "Tests passed for the rules artifact.",
+          "method": "fixture test run against version 1",
+          "source_refs": ["test-run.rules-v1"]
+        }
+      },
+      "required_oracle": "Evidence used to support an artifact state must resolve to the exact artifact version/content identity it tested, or to an equivalent immutable subject reference. A later artifact version must not inherit earlier strong evidence merely because a stable artifact id matches.",
+      "recommended_layer": "Stage 2 identity/reference semantics plus cross-object validation; do not rely on an undocumented string convention."
+    },
+    {
+      "id": "ADV-002-B",
+      "surface": "stale_packet_target_binding",
+      "observed_contract_fact": "return packets and artifact provenance record a base_state_revision, but isolated schema validation cannot compare those bases with the current canonical revision or with the version of a targeted artifact/dependency.",
+      "scenario": "A return packet produced from revision.fixture.0001 modifies artifact.rules. Revision.fixture.0002 already changed artifact.rules before this packet reaches integration. The packet remains shape-valid and its artifact can also remain shape-valid.",
+      "shape_valid_bundle": {
+        "packet": {
+          "schema_version": "0.1",
+          "id": "packet.stale-rules-change",
+          "claim_id": "claim.rules-change",
+          "lane_id": "lane-02",
+          "base_state_revision": "revision.fixture.0001",
+          "changes": ["modify artifact.rules"],
+          "artifacts_created": [],
+          "artifacts_modified": ["artifact.rules"],
+          "evidence_refs": [],
+          "uncertainties": [],
+          "failures_or_blockers": [],
+          "downstream_effects": [],
+          "requested_followup": []
+        },
+        "current_revision": "revision.fixture.0002"
+      },
+      "required_oracle": "Integration must detect that the packet's target/dependency state has advanced from its declared base and reject, defer, or request an explicit repair/rebase. A stale packet must never silently apply to a newer artifact version.",
+      "recommended_layer": "Stage 3/4 state-store and work-ledger validation, with the invariant named before implementation."
+    },
+    {
+      "id": "ADV-011-B",
+      "surface": "epoch_packet_base_coherence",
+      "observed_contract_fact": "epoch.base_state_revision and return-packet.base_state_revision are explicit, but the epoch schema cannot require every referenced packet to use the epoch base or define sequential/hybrid progression across packet bases.",
+      "scenario": "A sealed parallel epoch declares base revision.fixture.0001 and references packet.a plus packet.b. packet.a was produced from revision.fixture.0001, while packet.b was produced from revision.fixture.0002. All three objects can be individually shape-valid.",
+      "required_oracle": "For a parallel epoch, every included packet must be demonstrably bound to the epoch base. Sequential/hybrid execution must record enough explicit progression/order semantics to replay why a packet used a later base rather than inferring this from array order or private occupant memory.",
+      "recommended_layer": "Cross-object epoch validator before the parallel-vs-sequential experiment is treated as measured evidence."
+    },
+    {
+      "id": "ADV-006-B",
+      "surface": "artifact_lineage_cycle",
+      "observed_contract_fact": "artifact.supersedes_ref is an optional non-empty string with no cross-object acyclicity or self-reference constraint.",
+      "scenario": "artifact.rules version 2 declares supersedes_ref = artifact.rules, or two stored artifact versions form a supersession cycle. Individual artifact objects can be shape-valid while lineage becomes non-reconstructable.",
+      "required_oracle": "Artifact supersession must resolve to a prior immutable artifact version and must be acyclic. Self-supersession, forward references, and cycles must fail loudly rather than producing plausible but false provenance.",
+      "recommended_layer": "Stage 2 immutable identity plus Stage 3 repository-level referential validation."
+    }
+  ]
+}
