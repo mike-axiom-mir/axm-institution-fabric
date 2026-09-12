@@ -1,0 +1,66 @@
+{
+  "fixture_version": "0.1",
+  "lane": "03",
+  "activation": "012",
+  "base_main": "eb4ac34e540993fb2296da557f82ca820bda8fa6",
+  "challenged_pr": 15,
+  "challenged_pr_head": "eb84ed937a31fcb7b5dfa6d7003e0b8b17b99676",
+  "failure_surface": "Decision 005 state-revision exact-member contract acceptance versus Stage 2 canonical immutable-reference parsing",
+  "oracles": [
+    {
+      "oracle_id": "ADV-029-A",
+      "title": "state-revision membership accepts noncanonical percent spelling",
+      "affected_fields": [
+        "parent_revision_ref",
+        "objective_ref",
+        "lane_refs[]",
+        "occupancy_refs[]",
+        "claim_refs[]",
+        "artifact_refs[]",
+        "evidence_refs[]",
+        "return_packet_refs[]",
+        "integration_receipt_refs[]"
+      ],
+      "counterexample_field": "objective_ref",
+      "counterexample_ref": "axmref:v1:objective:objective%2Ev0-proof:-:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contract_observation": "The current state-revision member-ref regex permits any uppercase percent triplet in reference components, so %2E is accepted even though '.' is RFC3986-unreserved.",
+      "identity_observation": "Stage 2 parse_immutable_ref rejects this spelling because canonical component encoding requires unreserved '.' to remain literal.",
+      "pass_oracle": "Every member reference accepted by state-revision.schema.json must also be accepted unchanged by parse_immutable_ref with the field-required kind."
+    },
+    {
+      "oracle_id": "ADV-029-B",
+      "title": "state-revision membership dollar-anchor accepts a final LF that the parser rejects",
+      "affected_fields": [
+        "parent_revision_ref",
+        "objective_ref",
+        "lane_refs[]",
+        "occupancy_refs[]",
+        "claim_refs[]",
+        "artifact_refs[]",
+        "evidence_refs[]",
+        "return_packet_refs[]",
+        "integration_receipt_refs[]"
+      ],
+      "counterexample_field": "objective_ref",
+      "counterexample_ref_json": "axmref:v1:objective:objective.v0-proof:-:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n",
+      "contract_observation": "Under the repository's Python/jsonschema validator semantics, the current ^...$ member-ref pattern accepts a match immediately before one final LF.",
+      "identity_observation": "Stage 2 parse_immutable_ref rejects the same value because the digest component is no longer exactly 64 lowercase hex characters and the complete reference is noncanonical.",
+      "pass_oracle": "State-revision exact-member fields must use true complete-string semantics equivalent to the canonical parser rather than validator-sensitive $ behavior."
+    }
+  ],
+  "observed_scope": {
+    "pr15_adv_028_repair": "No counterexample found against the repaired Decision 006 state-revision id or lifecycle base true-end assertions in this activation.",
+    "pr15_mutable_lookup": "No production runtime or mutable current/latest lookup was introduced by PR #15; its changed implementation surface remains schemas, fixtures, tests, workflow, and return packets.",
+    "state_revision_contract": "The PR #15 exact head still contains generic member-reference patterns with permissive percent triplets and $ end anchors.",
+    "store_source": "The integrated store validates/canonicalizes a state-revision object but explicitly does not verify referenced-member closure; no nested member-ref parser pass is present in the inspected store path."
+  },
+  "evidence_boundary": {
+    "bounded_python_jsonschema_reproduction": "observed",
+    "source_inspection": "observed",
+    "pr15_native_ci_58_tests_and_compile": "reported GitHub Actions evidence inspected by Lane 03, not independently rerun",
+    "full_store_runtime_counterexample": "not_tested",
+    "cross_language_full_identity": "not_tested",
+    "stage4_lifecycle_runtime": "not_implemented"
+  },
+  "recommended_boundary": "Do not reopen PR #15 for this separate failure surface if ADV-028-A/B remain repaired. Freeze ADV-029-A/B as a prerequisite before any Stage 4/5 runtime treats state-revision membership as dereferenceable exact canonical references. Repair should make state-revision member-ref schema acceptance equivalent to Stage 2 parse_immutable_ref canonicality and field-kind requirements without introducing mutable/current lookup semantics."
+}
