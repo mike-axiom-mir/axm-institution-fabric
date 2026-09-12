@@ -1,0 +1,91 @@
+{
+  "audit_id": "lane03-activation-010-exact-lifecycle-base-adversarial",
+  "base_main": "0e109f0e3f6e8be66ff3120f5985b9dd2229b2ba",
+  "compared_pr15_head": "9f11aaebbe74f4b1d095d0854ed892b86b423393",
+  "pr15_tested_code_head": "6802b7eb6ba6e4d603383559911f1a4f25d54983",
+  "status": "adversarial_counterexamples_and_boundary_audit",
+  "scope": "Attack Decision 006's concrete occupancy/work-claim/return-packet exact-base repair without implementing lifecycle runtime. Distinguish exact-ref contract validity, base-local logical member resolution, and the previously frozen ADV-025-A historical-schema interaction.",
+  "observed_evidence": [
+    "PR #15 upgrades occupancy, work-claim, and return-packet to schema_version 0.2 and replaces base_state_revision with base_state_revision_ref.",
+    "Each repaired base field is constrained by a JSON Schema regex that accepts uppercase percent escapes inside the logical-id and optional version components.",
+    "axm_institution.identity.parse_immutable_ref uses _decode_component and rejects an encoded component unless re-encoding it with the canonical UTF-8/RFC3986-unreserved rules reproduces the exact source spelling.",
+    "validate_instance performs JSON Schema validation but does not call parse_immutable_ref for arbitrary nested reference strings.",
+    "The current state-revision v0.2 membership schema uses the same regex family and uniqueItems compares full exact-ref strings, not parsed logical ids.",
+    "The integrated membership regression proves two lane objects may share one logical lane id while producing different exact refs; no current contract forbids both distinct exact refs from appearing together in one revision membership array.",
+    "PR #15's lifecycle regression covers same-logical-revision/different-base identity, bare logical-id rejection, wrong-kind rejection, narrow field migration, and old-field rejection, but not noncanonical axmref spelling or base-local logical-id uniqueness.",
+    "GitHub Actions run 34716791932 checked PR #15 merge candidate e25a720372971fda8ecfd41a0c3575c64afeb181 from code head 6802b7eb6ba6e4d603383559911f1a4f25d54983 and main 0e109f0e3f6e8be66ff3120f5985b9dd2229b2ba; the job log records 51 tests passing and successful explicit py_compile.",
+    "The canonical repository tree at main contains source, fixtures, tests, coordination evidence, and no committed objects/ immutable-store data directory. Integrated store tests create every store root under tempfile.TemporaryDirectory()."
+  ],
+  "exact_ref_contract_oracles": [
+    {
+      "oracle_id": "ADV-026-A",
+      "surface": "occupancy/work-claim/return-packet base_state_revision_ref",
+      "counterexample_ref": "axmref:v1:state-revision:revision%2Efixture.0001:-:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "schema_observation": "The PR #15 regex accepts %2E because it permits any uppercase %HH sequence in the logical-id component.",
+      "identity_observation": "The Stage 2 parser rejects the same spelling as non-canonical because '.' is an RFC3986 unreserved byte and canonical _encode_component emits it literally, so decode/re-encode does not reproduce revision%2Efixture.0001.",
+      "continuity_failure": "A lifecycle object may satisfy its JSON Schema and receive its own canonical object identity while embedding a base string that is not itself a valid canonical axmref:v1 according to the repository's identity parser. A replacement occupant/runtime cannot safely treat schema validity as proof that the named base can be parsed or resolved.",
+      "required_oracle": "Every field documented as an exact immutable axmref must accept the same canonical reference language as parse_immutable_ref. Regression must prove noncanonical percent spellings fail at contract validation or an equivalent validation boundary before the lifecycle object can be treated as valid.",
+      "integration_effect": "Concrete Decision 006 contract gap. Hold the claim that the three repaired fields are fully exact/canonical until repaired or rebutted by stronger machine evidence."
+    }
+  ],
+  "base_local_logical_resolution_oracles": [
+    {
+      "oracle_id": "ADV-027-A",
+      "relationship": "occupancy.lane_id -> lane instance governing the occupancy",
+      "counterexample": {
+        "base_lane_refs": [
+          "axmref:v1:lane:lane-02:-:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "axmref:v1:lane:lane-02:-:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "occupancy_lane_id": "lane-02"
+      },
+      "current_contract_result": "The two exact refs are different strings, so state-revision uniqueItems does not reject them. occupancy.lane_id is only the shared logical id and cannot choose one exact lane contract.",
+      "continuity_failure": "An exact base revision alone does not resolve the professional contract an occupancy entered under if multiple exact members share the same logical lane id.",
+      "required_oracle": "Before Stage 4 uses lane_id operationally, either enforce exactly one lane member per logical lane id inside the exact base or bind the occupancy to an exact lane ref. Never choose by recency, array order, current repository state, or hidden chat.",
+      "integration_effect": "Downstream Stage 4 semantic obligation; not by itself a reason to mass-convert PR #15's logical ids."
+    },
+    {
+      "oracle_id": "ADV-027-B",
+      "relationship": "work-claim.occupancy_id -> occupancy instance authorizing/holding the claim",
+      "counterexample": {
+        "base_occupancy_refs": [
+          "axmref:v1:occupancy:occupancy.same:-:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "axmref:v1:occupancy:occupancy.same:-:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        ],
+        "claim_occupancy_id": "occupancy.same"
+      },
+      "current_contract_result": "Distinct exact occupancy refs may coexist under uniqueItems while work-claim.occupancy_id remains one logical label.",
+      "continuity_failure": "A later occupant cannot prove which occupancy instance held the claim without an explicit unique-resolution invariant or exact relationship.",
+      "required_oracle": "Before claim open/close/submission runtime relies on occupancy_id, prove exactly-one resolution inside the claim's exact base or bind the exact occupancy instance.",
+      "integration_effect": "Downstream Stage 4 semantic obligation."
+    },
+    {
+      "oracle_id": "ADV-027-C",
+      "relationship": "logical claim/lane ids used by later packet and lifecycle lookup",
+      "counterexample": "Two exact work-claim or lane instances can share one logical id while differing in canonical content. The current exact membership contract rejects duplicate exact strings, not duplicate parsed logical ids.",
+      "continuity_failure": "Any later transition that resolves claim_id or lane_id from institutional state without a machine-checkable unique-resolution rule can silently attach a packet/action to the wrong exact historical object.",
+      "required_oracle": "Freeze relationship-specific uniqueness or exact-instance rules before the first runtime that dereferences these logical ids. Do not infer a universal mass-ref rewrite solely from naming symmetry.",
+      "integration_effect": "Downstream Stage 4/5 validation obligation; representation remains open pending the smallest grounded runtime design."
+    }
+  ],
+  "adv_025_a_migration_interaction": {
+    "observed_repository_scope": "No committed immutable-store objects directory or persisted lifecycle-object archive is present in the canonical main tree. tests/test_store.py constructs FilesystemObjectStore roots only inside tempfile.TemporaryDirectory().",
+    "finding": "Within repository-visible canonical evidence, no durable v0.1 occupancy/work-claim/return-packet object history exists that PR #15 can be shown to make unreadable through the current store loader.",
+    "uncertainty": "The repository cannot prove the absence of external, local, uncommitted, or downstream stores containing v0.1 lifecycle objects. ADV-025-A therefore remains active before any such history is relied upon or before future incompatible migrations occur.",
+    "integration_effect": "ADV-025-A is not a repository-evidence blocker to PR #15 solely because these three schema files bump to v0.2; do not generalize that clearance to real persisted histories."
+  },
+  "survived_checks": [
+    "PR #15 visibly replaces the old base_state_revision field with base_state_revision_ref in all three assigned lifecycle schemas.",
+    "Bare logical revision ids are covered by passing regression evidence.",
+    "Wrong-kind immutable refs are covered by passing regression evidence.",
+    "The v0.1 base field is rejected under the v0.2 contracts; no compatibility fallback is visible.",
+    "Two same-logical-id state revisions with different content produce different exact base refs, and substituting the base changes lifecycle object identity in the recorded tests.",
+    "Valid lifecycle fixtures use schema_version 0.2 and the new exact-base field.",
+    "No stale-base enforcement, lifecycle transition, integration, epoch, or replay runtime is falsely claimed by PR #15."
+  ],
+  "stage_boundary": {
+    "pr15": "ADV-026-A is a concrete contract-level gap in the claim that the repaired fields accept exact canonical axmref:v1 state-revision references. Repair or rebut this before the Decision 006 gate is called complete. ADV-025-A does not independently block this PR within repository-visible history.",
+    "stage4": "ADV-027-A/B/C must be resolved by explicit exact-base-local uniqueness/lookup invariants or exact relationships before lifecycle runtime dereferences logical lane/occupancy/claim ids.",
+    "stage5_and_later": "Existing exact receipt/packet/epoch/provenance obligations remain unchanged. This activation does not pull them forward."
+  }
+}
