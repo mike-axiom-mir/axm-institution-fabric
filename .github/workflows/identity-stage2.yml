@@ -1,0 +1,31 @@
+name: identity-stage2
+
+on:
+  pull_request:
+    paths:
+      - "axm_institution/**"
+      - "schemas/**"
+      - "fixtures/**"
+      - "tests/**"
+      - ".github/workflows/identity-stage2.yml"
+  push:
+    branches:
+      - "lane-02/activation-03-stage2-identity"
+
+permissions:
+  contents: read
+
+jobs:
+  deterministic-identity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test dependency
+        run: python -m pip install "jsonschema>=4.0,<5"
+      - name: Run deterministic identity tests
+        run: python -m unittest discover -s tests -v
+      - name: Compile identity sources and tests
+        run: python -m py_compile axm_institution/__init__.py axm_institution/identity.py tests/test_identity.py tests/test_identity_string_escapes.py
