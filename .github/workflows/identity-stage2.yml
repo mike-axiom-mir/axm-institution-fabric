@@ -35,4 +35,4 @@ jobs:
       - name: Run deterministic identity tests
         run: python -m unittest discover -s tests -v
       - name: Compile deterministic kernel sources and tests
-        run: python -m py_compile axm_institution/__init__.py axm_institution/identity.py axm_institution/store.py tests/test_contract_schemas.py tests/test_identity.py tests/test_identity_string_escapes.py tests/test_state_revision_membership.py tests/test_store.py
+        run: python -m py_compile axm_institution/__init__.py axm_institution/identity.py axm_institution/store.py tests/test_contract_schemas.py tests/test_identity.py tests/test_identity_string_escapes.py tests/test_state_revision_membership.py tests/test_lifecycle_base_refs.py tests/test_store.py
