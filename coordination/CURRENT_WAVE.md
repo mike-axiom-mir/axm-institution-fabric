@@ -1,6 +1,6 @@
 # CURRENT WAVE — Institution Fabric
 
-Status: active initial build wave — Stage 1 contracts integrated; Stage 2 deterministic identity integrated; Stage 3 opened at exact-revision-membership precondition
+Status: active initial build wave — Stage 1 contracts integrated; Stage 2 deterministic identity integrated; Decision 005 revision-membership repair integrated; Stage 3 immutable object-store slice open
 
 ## Shared objective
 
@@ -10,13 +10,16 @@ Turn the research scaffold into the smallest executable deterministic institutio
 
 - Stage 1 canonical contract pack is integrated.
 - Decisions 001–004 define root-grounded integration semantics, immutable identity/reference semantics, cross-runtime canonical portability, and exact canonical JSON string spelling.
-- Lane 03 Decision 004 exact-head verification PR #10 is integrated at `59c69d1629cfb0508a0ab982c74e7cf2c63b28ae`.
 - Lane 02 Stage 2 production identity PR #7 is integrated at `11f8e9035d965aaaf4fe21bc857f1cf01a35ca10` after the bounded adversarial chain through `ADV-023-A`.
-- Stage 2 now provides strict deterministic parsing, validated canonical bytes, reproducible SHA-256 identity, typed `axmref:v1` immutable references, exact reference resolution, and strong-evidence subject binding.
-- Remote GitHub Actions evidence for the repaired Stage 2 production/test blobs reports 27 tests passing and successful `py_compile`. This is automated/compiled evidence, not cross-language proof and not canonical authority.
-- Lane 03 found no new concrete Decision 004 portability failure on the repaired Stage 2 head. Cross-language reproduction remains not tested.
+- Stage 2 provides strict deterministic parsing, validated canonical bytes, reproducible SHA-256 identity, typed `axmref:v1` immutable references, exact reference resolution, and strong-evidence subject binding.
+- Cross-language reproduction of Stage 2 remains not tested.
 - Decision 005 (`005_EXACT_REVISION_MEMBERSHIP.md`) is integrated at `c08e24fb1190fb1dfe4cdb083ff64ab4e0b85a69`.
-- Decision 005 freezes a Stage 3 prerequisite: an immutable state revision must bind exact immutable member instances. The current v0.1 revision schema still uses logical ids for objective, lane, occupancy, claim, packet, receipt, and parent relationships, which is insufficient for exact replay when multiple valid instances may share a logical id.
+- Lane 03 exact-target/stale-base audit PR #12 is integrated at `4456971da380566b7c3f4aed48381f360b4fb09d`.
+- The audit found no conflict with the narrow Decision 005 repair and froze later obligations for exact base/result revision refs, exact packet membership, epoch lane resolution, and selective stale-target compatibility.
+- Lane 02 Decision 005 repair PR #11 is integrated at `c09efc390c0b67c7872fc76dd294c8325c8ea7d7`.
+- `state-revision.schema.json` is now version `0.2` and binds exact typed immutable refs for parent revision, objective, lanes, occupancies, claims, artifacts, evidence, return packets, and integration receipts.
+- PR #11 was reconciled onto the integrated Lane 03 audit without changing its tested schema/fixture/test/workflow blobs. Fresh GitHub Actions run `34712799899` on reconciled head `37d4d570f66d85068a7117f35e2454a296147784` completed successfully for deterministic tests and explicit `py_compile`.
+- The earlier exact code/test/workflow commit for the Decision 005 repair reported 34 tests passing. A compare from that tested commit to the reconciled head shows only Lane 02/Lane 03 coordination-return files and the Lane 03 audit fixture were added; the schema/fixture/test/workflow blobs remained unchanged.
 - State-store runtime, work-ledger lifecycle, stale-base transition enforcement, supersession graph validation, epoch runtime, integration runtime, and replay are still not implemented.
 
 ## Lane 01 — Institution Architect / Integration Lead
@@ -24,58 +27,84 @@ Turn the research scaffold into the smallest executable deterministic institutio
 Active claim:
 
 - preserve architecture, root boundary, evidence precision, and universal-vs-domain separation;
-- keep Stage 2 claims bounded to what is actually tested;
-- hold persistent Stage 3 canonical-state claims until exact revision membership is repaired;
-- coordinate Lane 02 schema/store work and Lane 03 stale-target audit without semantic overlap;
+- keep Stage 3 claims bounded to storage/exact-lookup behavior actually tested;
+- prevent a stored object from being silently promoted into a claim that all of its referenced objects exist or that it is an accepted current/canonical snapshot;
+- coordinate Lane 02 store implementation and Lane 03 store-adversarial work without semantic overlap;
 - maintain repository state so a later occupant can reconstruct the build without private chat memory.
 
-Current hold: do not call a filesystem layout a canonical institution state store while `state-revision.schema.json` can name ambiguous logical members.
+Current boundary: the Decision 005 prerequisite is cleared. A deliberately small local/offline immutable object store may now be built. Work-ledger/lifecycle/integration/epoch/replay semantics remain held.
 
 ## Lane 02 — Deterministic Kernel Engineer
 
-Current claim: **repair exact state-revision membership as the smallest Stage 3 prerequisite; do not begin the wider work-ledger runtime yet.**
+Current claim: **implement the smallest real Stage 3 immutable object-store runtime; do not begin the wider work ledger or transition engine.**
 
 Immediate next action:
 
-1. read Decision 005 and current integrated Stage 2 identity code;
-2. revise `state-revision.schema.json` so canonical membership binds exact immutable typed references for parent revision, objective, lanes, occupancies, claims, artifacts, evidence, return packets, and integration receipts;
-3. bump the state-revision contract version explicitly if needed rather than silently changing v0.1 meaning;
-4. update only the fixtures/tests required by that contract repair;
-5. add regressions proving two objects with the same logical id but different canonical content cannot collapse into one state-revision membership identity;
-6. prove changing an exact member ref changes the revision's immutable identity;
-7. preserve Stage 2 canonicalization/reference behavior unchanged unless a concrete dependency requires repair;
-8. run the full affected deterministic test/compile suite and record the exact environment/evidence boundary;
-9. stop before implementing the general state store/work ledger unless the repaired contract is already verified and the next slice remains cleanly separable.
+1. start from current canonical `main` after PR #11/#12 integration;
+2. reuse the integrated Stage 2 validator/canonical-byte/reference implementation instead of inventing a second identity path;
+3. implement local/offline immutable persistence for validated canonical objects;
+4. make exact lookup accept a typed `axmref:v1` and return only bytes/object content whose recomputed immutable identity exactly matches that ref;
+5. make storing the same byte-identical object idempotent;
+6. fail loudly if a claimed ref/path and canonical bytes disagree or if stored bytes no longer reproduce the requested ref;
+7. ensure an interrupted/partial write cannot become visible through normal exact lookup as a valid canonical object;
+8. persist repaired state-revision v0.2 objects through the same identity/store path;
+9. keep any mutable convenience pointer/index outside object identity and do not grant it merge/canonical authority;
+10. add deterministic tests for write/read identity, idempotence, corruption/mismatch rejection, invalid-object rejection, missing-ref lookup, state-revision persistence, and interrupted-write visibility;
+11. record whether state-revision member refs were merely stored as exact names or also proven to exist. Do not call a revision referentially complete unless every member ref has been resolved exactly;
+12. stop before implementing claim/occupancy/packet transitions, semantic duplicate-claim handling, stale-base policy, integration receipts, epochs, or replay.
 
-Do not silently rewrite every `*_id` field across the repository. Decision 005 requires exact semantics where the relationship needs an exact instance; Lane 03 is auditing the remaining transition/base relationships separately.
+The store may choose a simple filesystem layout. The layout is implementation detail; the invariant is exact immutable identity and visibility behavior, not a particular directory naming scheme.
 
 ## Lane 03 — Institutional Continuity / Adversarial Systems Specialist
 
-Current claim: **perform a bounded exact-target/stale-base contract audit using `ADV-002-B`, without editing Lane 02's production state-revision repair.**
+Current claim: **attack the Stage 3 store boundary without editing Lane 02's implementation branch unless a later repair is explicitly opened.**
 
 Immediate next action:
 
-- inventory every Stage 1 field that names a revision or target state by logical id;
-- construct concrete same-logical-id/different-immutable-instance counterexamples where possible;
-- distinguish relationships that truly require an exact immutable reference from fields that are only labels/search keys;
-- focus especially on work claims, occupancy entry state, return-packet base state, integration receipts, and epochs;
-- preserve `ADV-006-B` supersession acyclicity and `ADV-011-B` epoch progression as later-stage obligations unless they reveal a prerequisite for exact storage identity;
-- produce machine-readable or clear deterministic regression vectors and a return packet;
-- do not modify Lane 02's production branch unless a concrete failure requires a later repair lane.
+- preserve the integrated `ADV-002-C` through `ADV-002-I` and `ADV-011-C` through `ADV-011-E` as later-stage obligations rather than pulling them into the store prematurely;
+- construct store-focused adversarial cases for content/ref mismatch, corruption after write, missing exact refs, idempotent repeat storage, partial/interrupted visibility, and same-logical-id/different-instance coexistence;
+- check that a state revision containing exact refs cannot be described as referentially complete merely because the revision object itself was persisted;
+- test or inspect whether any mutable `current`/`HEAD` convenience mechanism can rewrite identity, hide history, or act as silent merge authority;
+- distinguish observed runtime failures from inferred risks when runtime coverage is not available;
+- publish machine-readable or deterministic regression oracles and a bounded return packet;
+- do not redesign the store or begin work-ledger/integration semantics in the adversarial lane.
 
-## Stage 3 first runtime slice after the precondition clears
+## Stage 3 first runtime slice — acceptance boundary
 
-The intended first storage slice remains deliberately small and local/offline:
+The first storage slice is deliberately small and local/offline. It may claim only what evidence proves:
 
 - immutable persistence of validated canonical objects;
 - exact lookup by immutable `axmref:v1`;
-- immutable persistence of repaired state revisions;
+- immutable persistence of repaired state-revision v0.2 objects;
 - idempotent storage of byte-identical content;
-- loud failure on exact-reference/content mismatch;
-- any mutable `current`/`HEAD` pointer is navigation only, never identity or merge authority;
-- interrupted writes must not become visible as valid canonical objects.
+- loud failure on exact-reference/content mismatch or corrupted content;
+- interrupted writes not becoming visible as valid canonical objects;
+- any mutable `current`/`HEAD` pointer is navigation only, never identity or merge authority.
 
-Claim/occupy/return transitions, semantic duplicate-claim handling, integration, epoch progression, and replay remain later slices.
+Important distinction:
+
+```text
+revision object stored
+    != all referenced members proven present
+    != revision accepted by an integration engine
+    != current institutional state
+```
+
+If the first store slice does not yet validate full revision-reference closure, preserve that explicitly. A later closure check may promote evidence from “revision bytes stored” to “all named members resolve exactly”; storage alone must not silently do so.
+
+Claim/occupy/return transitions, semantic duplicate-claim handling, stale-base compatibility, integration, epoch progression, and replay remain later slices.
+
+## Frozen downstream obligations from Lane 03 audit
+
+Before later stages may make stronger claims:
+
+- artifact provenance base revision must have exact-instance semantics before exact provenance/replay claims;
+- occupancy, work-claim, and return-packet base revisions must have exact-instance semantics before lifecycle/stale-base claims;
+- integration receipts must bind exact base/result state revisions and exact packet instances before integration/replay claims;
+- epochs must bind an exact base revision and exact packet membership, with exact or uniquely resolvable lane semantics, before parallel/sequential replay claims;
+- selective stale-target compatibility for modified artifacts must derive or record the exact target instance observed from the packet base.
+
+These are recorded obligations, not evidence that the corresponding runtimes exist.
 
 ## Shared return-packet minimum
 
