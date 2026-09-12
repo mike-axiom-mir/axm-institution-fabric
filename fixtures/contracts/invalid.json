@@ -1,0 +1,57 @@
+[
+  {
+    "schema": "evidence-record.schema.json",
+    "case": "invalid evidence state",
+    "instance": {
+      "schema_version": "0.1",
+      "id": "evidence.bad",
+      "subject_ref": "x",
+      "state": "done",
+      "claim": "Unsupported evidence state must fail."
+    }
+  },
+  {
+    "schema": "return-packet.schema.json",
+    "case": "done flag cannot substitute for explicit packet fields",
+    "instance": {
+      "schema_version": "0.1",
+      "id": "packet.bad",
+      "claim_id": "claim.x",
+      "lane_id": "lane-02",
+      "base_state_revision": "revision.x",
+      "done": true
+    }
+  },
+  {
+    "schema": "artifact.schema.json",
+    "case": "artifact provenance is required",
+    "instance": {
+      "schema_version": "0.1",
+      "id": "artifact.bad",
+      "type": "code",
+      "version": "0.1",
+      "content_ref": "src/x.py",
+      "evidence_refs": [],
+      "dependency_refs": []
+    }
+  },
+  {
+    "schema": "integration-receipt.schema.json",
+    "case": "receipt cannot omit root grounding",
+    "instance": {
+      "schema_version": "0.1",
+      "id": "receipt.bad",
+      "base_state_revision": "revision.x",
+      "packet_ids": [
+        "packet.x"
+      ],
+      "decision": "accepted",
+      "reasons": [
+        "looks good"
+      ],
+      "unresolved_conflicts": [],
+      "resulting_state_revision": "revision.y",
+      "created_at": "2026-09-12T12:07:00Z"
+    }
+  }
+]
