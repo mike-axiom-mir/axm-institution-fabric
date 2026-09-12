@@ -1,0 +1,171 @@
+{
+  "objective.schema.json": {
+    "schema_version": "0.1",
+    "id": "objective.v0-proof",
+    "desired_outcome": "Prove institutional continuity outside the occupant.",
+    "constraints": [
+      "offline-first deterministic kernel"
+    ],
+    "evidence_expectations": [
+      "invalid contracts fail with useful errors"
+    ],
+    "stop_conditions": [
+      "one objective produces a replayable immutable revision"
+    ]
+  },
+  "evidence-record.schema.json": {
+    "schema_version": "0.1",
+    "id": "evidence.schema-suite",
+    "subject_ref": "tests/test_contract_schemas.py",
+    "state": "automated_tested",
+    "claim": "Contract fixtures validate deterministically.",
+    "method": "python unittest",
+    "source_refs": [
+      "fixtures/contracts/valid.json"
+    ]
+  },
+  "artifact.schema.json": {
+    "schema_version": "0.1",
+    "id": "artifact.contract-pack",
+    "type": "contract_pack",
+    "version": "0.1",
+    "content_ref": "schemas/",
+    "provenance": {
+      "producer_lane_id": "lane-02",
+      "base_state_revision": "git:ec7f03f77145a0f151a895c9e804e7715bc95e9c",
+      "source_refs": [
+        "NEXT_BUILD.md",
+        "BUILD_PLAN.md"
+      ]
+    },
+    "evidence_refs": [
+      "evidence.schema-suite"
+    ],
+    "dependency_refs": [
+      "schemas/lane.schema.json"
+    ]
+  },
+  "occupancy.schema.json": {
+    "schema_version": "0.1",
+    "id": "occupancy.lane-02.activation-01",
+    "lane_id": "lane-02",
+    "actor_ref": "chatgpt:gpt-5.6-sol",
+    "base_state_revision": "git:ec7f03f77145a0f151a895c9e804e7715bc95e9c",
+    "capability_ref": "github-connector",
+    "started_at": "2026-09-12T12:07:00Z",
+    "ended_at": null,
+    "status": "active",
+    "claim_ids": [
+      "claim.lane-02.contract-pack"
+    ]
+  },
+  "work-claim.schema.json": {
+    "schema_version": "0.1",
+    "id": "claim.lane-02.contract-pack",
+    "lane_id": "lane-02",
+    "base_state_revision": "git:ec7f03f77145a0f151a895c9e804e7715bc95e9c",
+    "occupancy_id": "occupancy.lane-02.activation-01",
+    "summary": "Add the next minimal canonical schemas and deterministic schema fixtures/tests.",
+    "created_at": "2026-09-12T12:07:00Z",
+    "status": "open",
+    "scope_refs": [
+      "schemas/",
+      "fixtures/contracts/",
+      "tests/test_contract_schemas.py"
+    ],
+    "overlap_with_claim_ids": []
+  },
+  "return-packet.schema.json": {
+    "schema_version": "0.1",
+    "id": "packet.lane-02.activation-01",
+    "claim_id": "claim.lane-02.contract-pack",
+    "lane_id": "lane-02",
+    "base_state_revision": "git:ec7f03f77145a0f151a895c9e804e7715bc95e9c",
+    "changes": [
+      "Added minimal canonical object schemas."
+    ],
+    "artifacts_created": [
+      "artifact.contract-pack"
+    ],
+    "artifacts_modified": [],
+    "evidence_refs": [
+      "evidence.schema-suite"
+    ],
+    "uncertainties": [
+      "Cross-object referential validation is intentionally deferred beyond JSON Schema shape validation."
+    ],
+    "failures_or_blockers": [],
+    "downstream_effects": [
+      "Lane 03 can turn stale-reference and evidence-collapse scenarios into contract fixtures."
+    ],
+    "requested_followup": [
+      "Add epoch/barrier descriptor after architecture review."
+    ]
+  },
+  "state-revision.schema.json": {
+    "schema_version": "0.1",
+    "id": "revision.fixture.0001",
+    "parent_revision_id": null,
+    "objective_id": "objective.v0-proof",
+    "lane_ids": [
+      "lane-02"
+    ],
+    "occupancy_ids": [
+      "occupancy.lane-02.activation-01"
+    ],
+    "claim_ids": [
+      "claim.lane-02.contract-pack"
+    ],
+    "artifact_refs": [
+      "artifact.contract-pack"
+    ],
+    "evidence_refs": [
+      "evidence.schema-suite"
+    ],
+    "return_packet_ids": [
+      "packet.lane-02.activation-01"
+    ],
+    "integration_receipt_ids": [],
+    "uncertainties": [
+      "Fixture is schema evidence, not a proof of immutable storage."
+    ],
+    "created_at": "2026-09-12T12:07:00Z"
+  },
+  "integration-receipt.schema.json": {
+    "schema_version": "0.1",
+    "id": "receipt.fixture.0001",
+    "base_state_revision": "revision.fixture.0001",
+    "packet_ids": [
+      "packet.lane-02.activation-01"
+    ],
+    "decision": "deferred",
+    "reasons": [
+      "Fixture demonstrates explicit non-acceptance while state-storage mechanics are not implemented."
+    ],
+    "root_grounding": [
+      {
+        "root": "truth",
+        "assessment": "grounded",
+        "reason": "Receipt distinguishes schema implementation from functioning integration."
+      },
+      {
+        "root": "agency_non_domination",
+        "assessment": "grounded",
+        "reason": "No actor identity is encoded as canonical authority."
+      },
+      {
+        "root": "continuity",
+        "assessment": "grounded",
+        "reason": "Decision inputs and unresolved state remain explicit."
+      },
+      {
+        "root": "wisdom_before_speed",
+        "assessment": "grounded",
+        "reason": "Integration is deferred until immutable state mechanics exist."
+      }
+    ],
+    "unresolved_conflicts": [],
+    "resulting_state_revision": null,
+    "created_at": "2026-09-12T12:07:00Z"
+  }
+}
