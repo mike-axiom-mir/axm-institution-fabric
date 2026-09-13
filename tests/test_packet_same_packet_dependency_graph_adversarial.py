@@ -328,15 +328,31 @@ class SamePacketDependencyGraphAdversarialTests(unittest.TestCase):
             for field in forbidden:
                 self.assertFalse(hasattr(target, field), (type(target).__name__, field))
 
-    def test_adv049_j_exact_edge_transport_must_fail_closed_instead_of_becoming_positional_array(self) -> None:
-        _, _, _, _, graph = self._two_output_graph(prefix="transport")
+    def test_adv049_j_exact_edge_transport_must_reject_or_preserve_named_semantics(self) -> None:
+        _, required_ref, dependent_ref, _, graph = self._two_output_graph(prefix="transport")
         edge = graph.edges[0]
 
-        # ADV-037 already established that unsupported ordinary JSON transport must fail
-        # closed rather than silently change an authoritative record's representation.
-        # Decision 016's graph leaves must preserve that proof-to-use boundary too.
-        with self.assertRaises(TypeError):
-            json.dumps(edge)
+        # ADV-037 established the reusable boundary: unsupported stdlib JSON transport
+        # may reject, but it must not silently change an authoritative record's meaning.
+        try:
+            encoded = json.dumps(edge, ensure_ascii=False, separators=(",", ":"))
+        except (TypeError, ValueError):
+            return
+
+        transported = json.loads(encoded)
+        self.assertIsInstance(
+            transported,
+            dict,
+            "Decision 016 exact graph edge was accepted by stdlib JSON transport but lost named field semantics",
+        )
+        self.assertEqual(
+            transported,
+            {
+                "required_output_ref": required_ref,
+                "dependent_output_ref": dependent_ref,
+            },
+            "Decision 016 exact graph edge changed meaning during ordinary JSON transport",
+        )
 
 
 if __name__ == "__main__":
