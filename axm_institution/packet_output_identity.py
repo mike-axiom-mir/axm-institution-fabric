@@ -19,58 +19,111 @@ class ModifiedArtifactIdentityUnresolvedError(ReturnPacketOutputIdentityError):
     """The current packet contract cannot ground modified-artifact identity safely."""
 
 
-class _FrozenDict(dict[str, Any]):
-    """Recursively immutable JSON object that remains identity-canonicalizable.
+class _FrozenList(tuple[Any, ...]):
+    """Tuple-backed immutable JSON array accepted by the existing Stage 2 boundary.
 
-    The Stage 2 canonicalizer intentionally accepts only JSON-native ``dict``/``list``
-    containers. Subclassing those containers preserves that exact identity language while
-    rejecting mutation after exact verification. The class is private because it is an
-    operational return-value guard, not a new kernel contract type.
+    The object is *not* a ``list`` or a ``list`` subclass, so callers cannot bypass
+    immutability with ``list.__setitem__`` or another builtin list mutator.  The
+    ``__class__`` compatibility view is intentionally narrow: Stage 2 already uses
+    ``isinstance(value, list)`` to recognize its JSON-native array language.  Reporting
+    that compatibility view lets the existing canonicalizer and schema validator read
+    this immutable operational snapshot without changing or broadening Stage 2 itself.
+
+    Storage is entirely tuple-backed and instances have no writable attributes.
     """
 
-    @staticmethod
-    def _immutable(*_args: Any, **_kwargs: Any) -> None:
-        raise TypeError("resolved exact JSON value is immutable")
+    __slots__ = ()
 
-    __setitem__ = _immutable
-    __delitem__ = _immutable
-    clear = _immutable
-    pop = _immutable
-    popitem = _immutable
-    setdefault = _immutable
-    update = _immutable
-    __ior__ = _immutable
+    def __new__(cls, values: Any = ()) -> _FrozenList:
+        return tuple.__new__(cls, values)
+
+    @property
+    def __class__(self) -> type[list[Any]]:
+        return list
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, (list, tuple)):
+            return False
+        return len(self) == len(other) and all(
+            left == right for left, right in zip(tuple.__iter__(self), other)
+        )
+
+    __hash__ = None
 
 
-class _FrozenList(list[Any]):
-    """Recursively immutable JSON array compatible with Stage 2 canonicalization."""
+class _FrozenDict(tuple[tuple[str, Any], ...]):
+    """Tuple-backed immutable JSON object accepted by the existing Stage 2 boundary.
 
-    @staticmethod
-    def _immutable(*_args: Any, **_kwargs: Any) -> None:
-        raise TypeError("resolved exact JSON value is immutable")
+    This is deliberately not a ``dict`` subclass.  Its content is an immutable tuple of
+    key/value pairs whose values are recursively frozen.  Builtin base-class mutators
+    such as ``dict.__setitem__`` therefore reject the object at the Python type boundary.
 
-    __setitem__ = _immutable
-    __delitem__ = _immutable
-    append = _immutable
-    clear = _immutable
-    extend = _immutable
-    insert = _immutable
-    pop = _immutable
-    remove = _immutable
-    reverse = _immutable
-    sort = _immutable
-    __iadd__ = _immutable
-    __imul__ = _immutable
+    As with ``_FrozenList``, ``__class__`` only preserves compatibility with Stage 2's
+    existing ``isinstance(value, dict)`` JSON-object checks; no identity/canonicalization
+    rule is changed and no new general Mapping/Sequence language is introduced.
+    """
+
+    __slots__ = ()
+
+    def __new__(cls, mapping: Mapping[str, Any]) -> _FrozenDict:
+        return tuple.__new__(cls, tuple(mapping.items()))
+
+    @property
+    def __class__(self) -> type[dict[str, Any]]:
+        return dict
+
+    def __iter__(self):
+        return (key for key, _value in tuple.__iter__(self))
+
+    def __getitem__(self, key: str) -> Any:
+        for candidate, value in tuple.__iter__(self):
+            if candidate == key:
+                return value
+        raise KeyError(key)
+
+    def __contains__(self, key: object) -> bool:
+        return any(candidate == key for candidate, _value in tuple.__iter__(self))
+
+    def keys(self) -> tuple[str, ...]:
+        return tuple(key for key, _value in tuple.__iter__(self))
+
+    def items(self) -> tuple[tuple[str, Any], ...]:
+        return tuple(tuple.__iter__(self))
+
+    def values(self) -> tuple[Any, ...]:
+        return tuple(value for _key, value in tuple.__iter__(self))
+
+    def get(self, key: str, default: Any = None) -> Any:
+        try:
+            return self[key]
+        except KeyError:
+            return default
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, dict):
+            return False
+        try:
+            return len(self) == len(other) and all(
+                key in other and value == other[key] for key, value in self.items()
+            )
+        except (KeyError, TypeError):
+            return False
+
+    __hash__ = None
 
 
 def _freeze_json(value: Any) -> Any:
-    """Return a detached recursively immutable JSON-native snapshot.
+    """Return a detached recursively immutable tuple-backed operational snapshot.
 
-    Exact identity is proved against durable bytes by ``FilesystemObjectStore.load()``.
-    This second boundary prevents the returned operational value from drifting away from
-    the immutable reference after that proof. Scalars are already immutable; objects and
-    arrays are copied recursively into mutation-rejecting ``dict``/``list`` subclasses so
-    existing canonical identity functions can still reproduce the paired exact ref.
+    Exact identity is first proved against durable bytes by
+    ``FilesystemObjectStore.load()``.  This second boundary prevents the authoritative
+    operational value from drifting away from that exact reference after verification.
+
+    Objects and arrays are recursively copied into tuple-backed non-builtin containers.
+    They remain readable by the *existing* Stage 2 canonicalizer/schema validator through
+    their bounded ``__class__`` compatibility view, but builtin ``dict`` / ``list`` base
+    mutators cannot operate on them because their real runtime type is tuple-backed.
+    Scalars are already immutable.
     """
 
     if isinstance(value, dict):
@@ -93,9 +146,10 @@ class ResolvedReturnPacketOutputIdentity:
     """Identity-only result for packet-created artifacts and packet evidence records.
 
     This result proves only exact-instance selection through immutable refs and exact
-    object-store loading. Returned JSON values are recursively immutable snapshots so
-    their content cannot drift away from the paired exact refs after resolution. It does
-    not prove artifact provenance closure, evidence subject/quality closure, lane
+    object-store loading. Returned JSON values are recursively immutable tuple-backed
+    snapshots so their content cannot drift away from the paired exact refs through
+    ordinary mutation or builtin ``dict`` / ``list`` base-class mutators. It does not
+    prove artifact provenance closure, evidence subject/quality closure, lane
     compatibility, packet acceptance, claim closure, successor-state publication,
     integration, epochs, or replay.
     """
