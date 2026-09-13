@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, Mapping
+from typing import Any, Mapping, NamedTuple
 
 from .identity import IdentityError, parse_immutable_ref
 from .packet_output_identity import (
@@ -21,13 +20,17 @@ class EvidenceSubjectKindError(EvidenceSubjectResolutionError):
     """An exact evidence subject uses a kind other than ``artifact``."""
 
 
-@dataclass(frozen=True)
-class UnmatchedEvidenceSubject:
+class UnmatchedEvidenceSubject(NamedTuple):
     """One packet evidence record that cannot support a created artifact in this slice.
 
     ``reason`` is intentionally descriptive rather than a compatibility verdict. Evidence
     may remain valid for another purpose even when it cannot satisfy the exact created-
     artifact subject precondition opened by Decision 008.
+
+    A tuple-backed record is used intentionally rather than a frozen dataclass. The
+    subject-binding projection is handed to later stages as operational continuity state;
+    ``object.__setattr__`` must not be able to rewrite that projection after exact subject
+    grounding has already succeeded (ADV-039).
     """
 
     evidence: ExactPacketRelation
@@ -35,23 +38,29 @@ class UnmatchedEvidenceSubject:
     reason: str
 
 
-@dataclass(frozen=True)
-class ExactCreatedArtifactEvidenceBinding:
-    """Evidence records whose subject is one exact packet-created artifact instance."""
+class ExactCreatedArtifactEvidenceBinding(NamedTuple):
+    """Evidence records whose subject is one exact packet-created artifact instance.
+
+    The tuple-backed wrapper is physically non-assignable through the demonstrated
+    ``object.__setattr__`` path, so caller access to the returned projection cannot silently
+    replace the grounded evidence tuple with unrelated exact evidence (ADV-039-A).
+    """
 
     artifact: ExactPacketRelation
     evidence_records: tuple[ExactPacketRelation, ...]
 
 
-@dataclass(frozen=True)
-class ResolvedReturnPacketEvidenceSubjects:
+class ResolvedReturnPacketEvidenceSubjects(NamedTuple):
     """Read-only exact subject binding for one already-grounded return packet.
 
     This result proves only that each bound evidence record explicitly names the exact
-    immutable packet-created artifact ref it is grouped under. It does not decide lane
-    output compatibility, required-state semantics, evidence quality/closure, artifact
-    provenance, packet acceptance, claim closure, successor publication, integration,
-    epochs, or replay.
+    immutable packet-created artifact ref it is grouped under. The tuple-backed result
+    also keeps explicit unmatched evidence non-assignable through the demonstrated
+    ``object.__setattr__`` path (ADV-039-B).
+
+    It does not decide lane output compatibility, required-state semantics, evidence
+    quality/closure, artifact provenance, packet acceptance, claim closure, successor
+    publication, integration, epochs, or replay.
     """
 
     output_identity: ResolvedReturnPacketOutputIdentity
@@ -93,7 +102,10 @@ def resolve_return_packet_evidence_subjects(
     * ``artifact.evidence_refs`` is intentionally ignored because Decision 008 does not
       make that earlier artifact field authoritative for later evidence compatibility.
 
-    The function is read-only and intentionally stops before compatibility semantics.
+    The returned subject-binding projection is tuple-backed so the demonstrated
+    ``object.__setattr__`` wrapper mutation path cannot reassign bindings or erase explicit
+    unmatched evidence after grounding. The function remains read-only and intentionally
+    stops before compatibility semantics.
     """
 
     output_identity = resolve_return_packet_output_identity(store, packet_ref)
