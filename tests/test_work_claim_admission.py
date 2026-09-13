@@ -20,7 +20,9 @@ from axm_institution.store import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-VALID_FIXTURES = json.loads((ROOT / "fixtures/contracts/valid.json").read_text(encoding="utf-8"))
+VALID_FIXTURES = json.loads(
+    (ROOT / "fixtures/contracts/valid.json").read_text(encoding="utf-8")
+)
 
 
 class FinalWriteCallerMutationStore(FilesystemObjectStore):
@@ -97,7 +99,11 @@ class WorkClaimAdmissionTests(unittest.TestCase):
         lane, lane_result = self._store_lane()
         base_result = self._store_base([lane_result.reference])
         _, occupancy_result = self._admit_occupancy(base_result.reference, lane["id"])
-        claim = self._claim_for(base_result.reference, lane["id"], occupancy_result.occupancy_ref)
+        claim = self._claim_for(
+            base_result.reference,
+            lane["id"],
+            occupancy_result.occupancy_ref,
+        )
 
         before_revisions = self._state_revision_files()
         result = open_work_claim(self.store, claim)
@@ -110,7 +116,10 @@ class WorkClaimAdmissionTests(unittest.TestCase):
             result.claim_ref,
             make_immutable_ref("work-claim.schema.json", claim),
         )
-        self.assertEqual(self.store.load(result.claim_ref, "work-claim.schema.json"), claim)
+        self.assertEqual(
+            self.store.load(result.claim_ref, "work-claim.schema.json"),
+            claim,
+        )
         self.assertEqual(before_revisions, after_revisions)
         self.assertEqual(len(after_revisions), 1)
 
@@ -118,7 +127,11 @@ class WorkClaimAdmissionTests(unittest.TestCase):
         lane, lane_result = self._store_lane()
         base_result = self._store_base([lane_result.reference])
         _, occupancy_result = self._admit_occupancy(base_result.reference, lane["id"])
-        claim = self._claim_for(base_result.reference, lane["id"], occupancy_result.occupancy_ref)
+        claim = self._claim_for(
+            base_result.reference,
+            lane["id"],
+            occupancy_result.occupancy_ref,
+        )
 
         first = open_work_claim(self.store, claim)
         second = open_work_claim(self.store, claim)
@@ -134,7 +147,11 @@ class WorkClaimAdmissionTests(unittest.TestCase):
         lane, lane_result = self._store_lane()
         base_result = self._store_base([lane_result.reference])
         _, occupancy_result = self._admit_occupancy(base_result.reference, lane["id"])
-        claim = self._claim_for(base_result.reference, lane["id"], occupancy_result.occupancy_ref)
+        claim = self._claim_for(
+            base_result.reference,
+            lane["id"],
+            occupancy_result.occupancy_ref,
+        )
         claim["status"] = "submitted"
 
         with self.assertRaises(ContractValidationError):
@@ -149,11 +166,12 @@ class WorkClaimAdmissionTests(unittest.TestCase):
         second_result = self.store.store(second, "lane.schema.json")
         base_result = self._store_base([first_result.reference, second_result.reference])
         occupancy = self._occupancy_for(base_result.reference, lane["id"])
-        occupancy_result = admit_occupancy(
-            self.store,
-            {**occupancy, "lane_id": "lane-missing-for-admission"},
-        ) if False else self.store.store(occupancy, "occupancy.schema.json")
-        claim = self._claim_for(base_result.reference, lane["id"], occupancy_result.reference)
+        occupancy_result = self.store.store(occupancy, "occupancy.schema.json")
+        claim = self._claim_for(
+            base_result.reference,
+            lane["id"],
+            occupancy_result.reference,
+        )
 
         with self.assertRaises(RevisionMemberAmbiguityError):
             open_work_claim(self.store, claim)
@@ -165,7 +183,11 @@ class WorkClaimAdmissionTests(unittest.TestCase):
         base_result = self._store_base([lane_result.reference])
         occupancy = self._occupancy_for(base_result.reference, lane["id"])
         occupancy_result = self.store.store(occupancy, "occupancy.schema.json")
-        claim = self._claim_for(base_result.reference, "lane-missing", occupancy_result.reference)
+        claim = self._claim_for(
+            base_result.reference,
+            "lane-missing",
+            occupancy_result.reference,
+        )
 
         with self.assertRaises(RevisionMemberNotFoundError):
             open_work_claim(self.store, claim)
@@ -182,7 +204,11 @@ class WorkClaimAdmissionTests(unittest.TestCase):
         newer_lane_result = self.store.store(newer_lane, "lane.schema.json")
         self.assertNotEqual(base_lane_result.reference, newer_lane_result.reference)
 
-        claim = self._claim_for(base_result.reference, lane["id"], occupancy_result.occupancy_ref)
+        claim = self._claim_for(
+            base_result.reference,
+            lane["id"],
+            occupancy_result.occupancy_ref,
+        )
         result = open_work_claim(self.store, claim)
 
         self.assertEqual(result.lane_ref, base_lane_result.reference)
@@ -193,7 +219,11 @@ class WorkClaimAdmissionTests(unittest.TestCase):
         base_result = self._store_base([lane_result.reference])
         occupancy = self._occupancy_for(base_result.reference, lane["id"])
         missing_occupancy_ref = make_immutable_ref("occupancy.schema.json", occupancy)
-        claim = self._claim_for(base_result.reference, lane["id"], missing_occupancy_ref)
+        claim = self._claim_for(
+            base_result.reference,
+            lane["id"],
+            missing_occupancy_ref,
+        )
 
         with self.assertRaises(ObjectNotFoundError):
             open_work_claim(self.store, claim)
@@ -205,7 +235,11 @@ class WorkClaimAdmissionTests(unittest.TestCase):
         base_result = self._store_base([lane_result.reference])
         _, occupancy_result = self._admit_occupancy(base_result.reference, lane["id"])
         self.store._object_path(occupancy_result.occupancy_ref).write_bytes(b"{}")
-        claim = self._claim_for(base_result.reference, lane["id"], occupancy_result.occupancy_ref)
+        claim = self._claim_for(
+            base_result.reference,
+            lane["id"],
+            occupancy_result.occupancy_ref,
+        )
 
         with self.assertRaises(ObjectCorruptionError):
             open_work_claim(self.store, claim)
@@ -229,8 +263,15 @@ class WorkClaimAdmissionTests(unittest.TestCase):
         decoy["purpose"] = "Second lane used only to prove occupancy/claim lane mismatch."
         decoy_result = self.store.store(decoy, "lane.schema.json")
         base_result = self._store_base([lane_result.reference, decoy_result.reference])
-        _, occupancy_result = self._admit_occupancy(base_result.reference, decoy["id"])
-        claim = self._claim_for(base_result.reference, lane["id"], occupancy_result.occupancy_ref)
+        _, occupancy_result = self._admit_occupancy(
+            base_result.reference,
+            decoy["id"],
+        )
+        claim = self._claim_for(
+            base_result.reference,
+            lane["id"],
+            occupancy_result.occupancy_ref,
+        )
 
         with self.assertRaises(ContractValidationError):
             open_work_claim(self.store, claim)
@@ -239,18 +280,33 @@ class WorkClaimAdmissionTests(unittest.TestCase):
 
     def test_later_claim_base_need_not_equal_occupancy_entry_base(self) -> None:
         lane, lane_result = self._store_lane()
-        occupancy_base = self._store_base([lane_result.reference], revision_id="revision.occupancy-base")
-        _, occupancy_result = self._admit_occupancy(occupancy_base.reference, lane["id"])
-        claim_base = self._store_base([lane_result.reference], revision_id="revision.claim-base")
+        occupancy_base = self._store_base(
+            [lane_result.reference],
+            revision_id="revision.occupancy-base",
+        )
+        _, occupancy_result = self._admit_occupancy(
+            occupancy_base.reference,
+            lane["id"],
+        )
+        claim_base = self._store_base(
+            [lane_result.reference],
+            revision_id="revision.claim-base",
+        )
         self.assertNotEqual(occupancy_base.reference, claim_base.reference)
 
-        claim = self._claim_for(claim_base.reference, lane["id"], occupancy_result.occupancy_ref)
+        claim = self._claim_for(
+            claim_base.reference,
+            lane["id"],
+            occupancy_result.occupancy_ref,
+        )
         result = open_work_claim(self.store, claim)
 
         self.assertEqual(result.lane_ref, lane_result.reference)
         self.assertEqual(result.occupancy_ref, occupancy_result.occupancy_ref)
         self.assertEqual(
-            self.store.load(result.claim_ref, "work-claim.schema.json")["base_state_revision_ref"],
+            self.store.load(result.claim_ref, "work-claim.schema.json")[
+                "base_state_revision_ref"
+            ],
             claim_base.reference,
         )
 
@@ -261,7 +317,11 @@ class WorkClaimAdmissionTests(unittest.TestCase):
         occupancy["status"] = "ended"
         occupancy["ended_at"] = "2026-09-13T06:30:00Z"
         occupancy_result = self.store.store(occupancy, "occupancy.schema.json")
-        claim = self._claim_for(base_result.reference, lane["id"], occupancy_result.reference)
+        claim = self._claim_for(
+            base_result.reference,
+            lane["id"],
+            occupancy_result.reference,
+        )
 
         with self.assertRaises(ContractValidationError):
             open_work_claim(self.store, claim)
@@ -278,15 +338,28 @@ class WorkClaimAdmissionTests(unittest.TestCase):
             lane["id"],
             occupancy=occupancy,
         )
-        claim = self._claim_for(base_result.reference, lane["id"], occupancy_result.occupancy_ref)
+        claim = self._claim_for(
+            base_result.reference,
+            lane["id"],
+            occupancy_result.occupancy_ref,
+        )
         claim["overlap_with_claim_ids"] = ["claim.reported.overlap"]
 
         result = open_work_claim(self.store, claim)
         reloaded_claim = self.store.load(result.claim_ref, "work-claim.schema.json")
-        reloaded_occupancy = self.store.load(result.occupancy_ref, "occupancy.schema.json")
+        reloaded_occupancy = self.store.load(
+            result.occupancy_ref,
+            "occupancy.schema.json",
+        )
 
-        self.assertEqual(reloaded_claim["overlap_with_claim_ids"], ["claim.reported.overlap"])
-        self.assertEqual(reloaded_occupancy["claim_ids"], ["claim.unrelated.snapshot"])
+        self.assertEqual(
+            reloaded_claim["overlap_with_claim_ids"],
+            ["claim.reported.overlap"],
+        )
+        self.assertEqual(
+            reloaded_occupancy["claim_ids"],
+            ["claim.unrelated.snapshot"],
+        )
 
     def test_later_same_logical_occupancy_cannot_rebind_exact_claim_target(self) -> None:
         lane, lane_result = self._store_lane()
@@ -299,7 +372,11 @@ class WorkClaimAdmissionTests(unittest.TestCase):
         later_result = self.store.store(later_occupancy, "occupancy.schema.json")
         self.assertNotEqual(first_result.occupancy_ref, later_result.reference)
 
-        claim = self._claim_for(base_result.reference, lane["id"], first_result.occupancy_ref)
+        claim = self._claim_for(
+            base_result.reference,
+            lane["id"],
+            first_result.occupancy_ref,
+        )
         result = open_work_claim(self.store, claim)
 
         self.assertEqual(result.occupancy_ref, first_result.occupancy_ref)
@@ -312,7 +389,11 @@ class WorkClaimAdmissionTests(unittest.TestCase):
         missing_base_ref = make_immutable_ref("state-revision.schema.json", revision)
         occupancy = self._occupancy_for(missing_base_ref, lane["id"])
         occupancy_result = self.store.store(occupancy, "occupancy.schema.json")
-        claim = self._claim_for(missing_base_ref, lane["id"], occupancy_result.reference)
+        claim = self._claim_for(
+            missing_base_ref,
+            lane["id"],
+            occupancy_result.reference,
+        )
 
         with self.assertRaises(ObjectNotFoundError):
             open_work_claim(self.store, claim)
@@ -323,7 +404,11 @@ class WorkClaimAdmissionTests(unittest.TestCase):
         lane, lane_result = self._store_lane()
         occupancy = self._fixture("occupancy.schema.json")
         occupancy_result = self.store.store(occupancy, "occupancy.schema.json")
-        claim = self._claim_for(lane_result.reference, lane["id"], occupancy_result.reference)
+        claim = self._claim_for(
+            lane_result.reference,
+            lane["id"],
+            occupancy_result.reference,
+        )
 
         with self.assertRaises(ContractValidationError):
             open_work_claim(self.store, claim)
@@ -337,19 +422,32 @@ class WorkClaimAdmissionTests(unittest.TestCase):
         self.store = store
 
         lane, lane_result = self._store_lane()
-        base_result = self._store_base([lane_result.reference], revision_id="revision.claim-original")
+        base_result = self._store_base(
+            [lane_result.reference],
+            revision_id="revision.claim-original",
+        )
         _, occupancy_result = self._admit_occupancy(base_result.reference, lane["id"])
 
         decoy_lane = copy.deepcopy(lane)
         decoy_lane["id"] = "lane-decoy"
         decoy_lane["purpose"] = "Decoy lane for final-write caller mutation."
         decoy_lane_result = store.store(decoy_lane, "lane.schema.json")
-        decoy_base = self._store_base([decoy_lane_result.reference], revision_id="revision.claim-decoy")
-        decoy_occupancy = self._occupancy_for(decoy_base.reference, decoy_lane["id"])
+        decoy_base = self._store_base(
+            [decoy_lane_result.reference],
+            revision_id="revision.claim-decoy",
+        )
+        decoy_occupancy = self._occupancy_for(
+            decoy_base.reference,
+            decoy_lane["id"],
+        )
         decoy_occupancy["id"] = "occupancy.decoy"
         decoy_occupancy_result = admit_occupancy(store, decoy_occupancy)
 
-        caller_claim = self._claim_for(base_result.reference, lane["id"], occupancy_result.occupancy_ref)
+        caller_claim = self._claim_for(
+            base_result.reference,
+            lane["id"],
+            occupancy_result.occupancy_ref,
+        )
         original_claim = copy.deepcopy(caller_claim)
         expected_ref = make_immutable_ref("work-claim.schema.json", original_claim)
 
@@ -367,7 +465,10 @@ class WorkClaimAdmissionTests(unittest.TestCase):
         self.assertEqual(result.claim_ref, expected_ref)
         self.assertEqual(result.lane_ref, lane_result.reference)
         self.assertEqual(result.occupancy_ref, occupancy_result.occupancy_ref)
-        self.assertEqual(store.load(result.claim_ref, "work-claim.schema.json"), original_claim)
+        self.assertEqual(
+            store.load(result.claim_ref, "work-claim.schema.json"),
+            original_claim,
+        )
 
 
 if __name__ == "__main__":
