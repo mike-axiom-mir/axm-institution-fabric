@@ -1,116 +1,156 @@
-# CURRENT STATE OVERLAY — Stage 4 subject binding integrated
+# CURRENT STATE OVERLAY — Stage 4 created-output compatibility integrated
 
-Status: **no active blocker on the bounded exact evidence-subject resolver**. The next open gate is a read-only created-output compatibility preflight. This file supersedes the older ADV-040 hold text and is a narrow current-state overlay on `coordination/CURRENT_WAVE.md`.
+Status: **no active blocker on the bounded created-output compatibility preflight**. PR #49 is canonical, and Lane 03 ADV-042 regression evidence is canonical through PR #50. The next opened gate is the exact provenance base of packet-created artifacts. This file is the narrow current-state overlay on the older `coordination/CURRENT_WAVE.md` chronology.
 
-Canonical integration point:
+## Canonical integration points
 
-`756c9cbd0820e08d1cf4f6d3c91bcff2e67a21e9`
+Created-output compatibility runtime:
 
-PR #45 — `Lane 02: exact evidence subject binding` — is merged.
+`29424cf493f1b144ad5b001f60e065baf4ab434e`
+
+PR #49 — `Lane 02: bounded created-output compatibility preflight` — merged.
+
+ADV-042 evidence/regressions:
+
+`09feea00446a724d44d239680902f6742afb680b`
+
+PR #50 — `Lane 03: adversarially verify created-output compatibility` — merged after retargeting from the stacked Lane 02 branch to canonical `main` without rewriting specialist history.
+
+Decision 010:
+
+`coordination/decisions/010_CREATED_ARTIFACT_PROVENANCE_BASE.md`
+
+canonical commit:
+
+`6b7c2a4ebc4f5b2790c116a64f615ac4131a84b1`
 
 ## What is now canonical
 
-The Stage 4 runtime can now:
+The bounded Stage 4 runtime can now, within Decision 009's declared trusted deterministic runtime boundary:
 
-1. exact-load one return packet's created-artifact and packet-evidence relations through the already-canonical packet-output identity layer;
-2. parse candidate `evidence.subject_ref` values through the shared Stage 2 immutable-ref grammar;
-3. bind evidence only to the exact packet-created artifact ref it names;
-4. preserve exact unrelated/non-exact subject evidence as unmatched rather than assigning it by type, array order, recency, logical id, or actor intent;
-5. fail closed on wrong-kind exact subject refs for artifact compatibility use;
-6. keep `artifact.evidence_refs` non-authoritative for the Decision 008 post-artifact chronology;
-7. keep any non-empty `artifacts_modified[]` fail-closed;
-8. preserve the ADV-035/036/037/038/039/040 regression spine.
+1. reconstruct the exact packet -> claim -> claim-base -> lane relation from durable state;
+2. separately reconstruct the exact claim -> occupancy -> occupancy-entry-base -> lane relation;
+3. consume the canonical exact created-artifact/evidence subject-binding result;
+4. require each packet-created artifact type to match exactly one declared output in the exact claim-base lane contract;
+5. require that output type to match exactly one lane evidence-requirement entry;
+6. support only exactly one `required_states` value;
+7. mark the bounded requirement satisfied only from exact subject-bound evidence whose `state` exactly equals that one required state;
+8. fail closed on missing or duplicate output declarations, missing or duplicate evidence requirements, and multiple required states;
+9. preserve unmatched/conflicting evidence explicitly rather than turning `satisfied=True` into evidence closure;
+10. keep `artifacts_modified[]` fail-closed.
 
-This remains read-only proof-to-use groundwork. It does **not** close a claim, accept a packet, publish a successor revision, integrate outputs, open an epoch, or prove replay.
+This remains read-only compatibility groundwork. `satisfied=True` is **not** packet acceptance, evidence closure, claim closure, successor-state publication, integration, or replay.
 
-## Integration evidence
+## Evidence
 
 Lane 02 exact tested implementation/workflow head:
 
-`e191271859000f709c5e5dd280e4eac8164968d5`
+`4334c18bfef36e646e71ba724934a4a8cde6976e`
 
-Current-main merge candidate tested before integration:
+Its native current-main merge-candidate run directly recorded:
 
-`f310ab670aeee3995e80bc70c0c8f4938856e891`
-
-Native Actions run `34764989703`, job `103744260751`, Python 3.12.14 directly observed:
-
-- **189 tests ran / 189 passed**;
+- **199 tests / 199 passed**;
 - 0 failures / 0 errors;
-- ADV-040-A/B/C unchanged and green;
-- ADV-039-A/B/C/D green;
-- all normal evidence-subject tests green;
-- ADV-035/036/037/038 green;
-- wider deterministic identity/store/lifecycle baseline green;
-- explicit production/test `py_compile` succeeded.
+- all 10 new compatibility regressions green;
+- existing exact evidence-subject and ADV-035 through ADV-040 regressions green;
+- explicit production/test compile success.
 
-The final PR head `6bf6eda0cfaa97f592f85b69d45d52f97ef8c89d` added only the Lane 02 return-packet documentation beyond the exact tested implementation/workflow head.
+Lane 03 exact adversarial implementation/test head:
 
-## ADV-041 — preserved runtime-integrity finding, not a Stage 4 subject-binding blocker
+`f6342e45f2760c77c25bf46faea42285e46c9b4b`
 
-Lane 03 PR #48 attacked Lane 02's repaired `NamedTuple` relation/result types by replacing their **class descriptors** at runtime. Exact tested merge candidate:
+Its native stacked merge-candidate run directly recorded:
 
-`b2c17a7bf462085b15e6bb0dc9a3412c2d72f800`
+- **203 tests / 203 passed**;
+- 0 failures / 0 errors;
+- ADV-042-A/B/C/D green;
+- Lane 02 compatibility regressions green;
+- evidence-subject and ADV-035 through ADV-040 regressions green;
+- explicit compile success.
 
-Native run `34765914599`, job `103746723073`, directly observed:
+ADV-042 established only the demonstrated bounded surface:
 
-- **192 tests ran**;
-- **189 passed**;
-- exactly ADV-041-A/B/C failed;
-- ADV-040, ADV-039, normal subject binding, and ADV-035/036/037/038 remained green;
-- compile was skipped because unittest failed first.
+- exact claim-base lane policy survives a different historical occupancy-entry version of the same logical lane;
+- a same-logical-id/different-exact artifact cannot borrow evidence from the authoritative packet-created artifact;
+- same-type created artifacts do not share an evidence pool;
+- conflicting exact subject-bound evidence remains explicit even when the one required state is present.
 
-The observation is real: arbitrary same-process Python code can replace class-level read descriptors and make existing operational wrappers report meaning different from their physical tuple storage while durable objects remain unchanged.
+No post-merge Actions result is asserted here unless separately recorded by GitHub. The integration decision rests on exact specialist/native evidence, mergeable Git history, and the fact that PR #50 adds regression/evidence coverage rather than production policy.
 
-Decision 009 classifies that as a **runtime-integrity / isolation obligation**, not a requirement that v0 Python record classes be tamper-proof against arbitrary program mutation. The same authority capable of rewriting class descriptors can also rewrite resolver functions, store methods, parsers, or module globals; local container substitution cannot honestly prove hostile-interpreter resistance.
+## Decision 010 — next continuity gap
 
-Canonical decision:
+Created-output compatibility does not yet make artifact provenance exact.
 
-`coordination/decisions/009_RUNTIME_INTEGRITY_TRUST_BOUNDARY.md`
+Current `artifact.schema.json` v0.1 still permits:
 
-Bounded claim only: current v0 continuity is grounded in canonical immutable refs, canonical bytes, exact durable loading/reconstruction, and trusted deterministic kernel execution. No hostile same-process code-execution safety claim is made.
+```text
+provenance.base_state_revision: <any non-empty string>
+```
 
-## Smallest next implementation lane
+while packet/claim lifecycle state now uses exact immutable state-revision refs.
 
-**Lane 02** owns the next bounded runtime step: a read-only **created-output compatibility preflight**.
+Therefore:
 
-Do not implement full packet acceptance. Start only with the already-demonstrated unambiguous contract case and fail closed on unresolved semantics.
+```text
+exact packet/claim/lane compatibility
+    != exact created-artifact provenance
+```
+
+For a packet-created artifact whose provenance is later used for acceptance, successor publication, or replay, Decision 010 requires the work-base relation to be exact and reproducible:
+
+```text
+exact packet P
+  -> exact claim C
+  -> exact claim base B
+  -> exact claim lane L
+
+exact created artifact A named by P
+  -> provenance producer lane == L.id
+  -> provenance base == exact immutable B
+```
+
+The current generic provenance string must not be silently interpreted through logical id, newest version, storage recency, mutable current state, array order, or private actor memory.
+
+## Lane 02 — smallest next implementation
+
+Implement only the **packet-created artifact exact-provenance-base precondition**.
 
 Required bounded behavior:
 
-1. reconstruct the exact packet/lane context from durable lifecycle relationships rather than trusting actor memory or mutable current state;
-2. consume the canonical exact subject-binding result for packet-created artifacts and evidence;
-3. for one created artifact, require its `type` to resolve to exactly one declared lane output entry;
-4. require that output type to resolve to exactly one lane `evidence_requirements[]` entry;
-5. initially support only an evidence requirement whose `required_states` contains exactly one state;
-6. satisfy that bounded requirement only when at least one exact subject-bound evidence record has exactly that state;
-7. expose/fail closed on zero or multiple output-contract matches, zero or multiple evidence-requirement matches, or multiple `required_states` rather than inventing array-order, hierarchy, conjunctive, or alternative semantics;
-8. remain read-only and keep `artifacts_modified[]` fail-closed.
+1. preserve canonical compatibility behavior and ADV-035 through ADV-042;
+2. make the created artifact provenance base represent one canonical exact immutable `state-revision` ref, with explicit schema-version/migration behavior rather than silently reinterpreting historical v0.1 strings;
+3. reuse the shared Stage 2 immutable-reference parser and require kind `state-revision`;
+4. exact-load and identity-verify the provenance base before operational use;
+5. require that exact provenance base to equal the exact claim base reconstructed for the packet;
+6. require `provenance.producer_lane_id` to equal the exact claim-base lane logical id;
+7. fail closed on non-exact, wrong-kind, missing, corrupt, or different-base provenance;
+8. remain read-only beyond the necessary schema/fixture migration and keep `artifacts_modified[]` fail-closed;
+9. do not open source/dependency closure, evidence conflict policy, packet acceptance, claim closure, successor publication, integration, epochs, or replay.
 
-Do not infer that `automated_tested` implies `implemented`, that `runtime_tested` outranks another state, or that multiple required states are AND/OR/ordered. Those semantics are not yet grounded.
+If an exact schema migration cannot preserve historical meaning without ambiguity, stop with a migration blocker/return packet instead of inventing compatibility.
 
-## Lane 03 next adversarial pass
+## Lane 03 — next adversarial pass
 
-After Lane 02 has an exact tested head, attack only that bounded compatibility preflight:
+After Lane 02 leaves an exact tested head, attack only that provenance precondition:
 
-- duplicate lane output entries for one artifact type;
-- duplicate evidence-requirement entries for one output type;
-- multiple `required_states` accidentally treated as AND/OR/rank;
-- exact subject-bound evidence for the wrong artifact or wrong state;
-- unmatched passing evidence accidentally satisfying the created output;
-- same-logical-id/different-exact lane or artifact substitution;
-- array order, recency, mutable current/HEAD, occupant identity, or schedule order entering selection;
-- ADV-035 through ADV-040 remaining green.
+- same logical revision id / different exact state-revision ref substitution;
+- wrong-kind exact provenance ref;
+- exact but different/stale work base;
+- producer-lane mismatch;
+- missing/corrupt exact provenance target;
+- historical v0.1 artifact accidentally treated as exact without an explicit migration rule;
+- newest/current/storage-order/actor/schedule authority entering resolution;
+- all created-output compatibility and ADV-035 through ADV-042 regressions remaining green.
 
-ADV-041 should remain preserved as runtime-integrity evidence. Do not turn it into an endless requirement to make trusted Python program objects immune to arbitrary monkeypatching.
+Do not expand into modified-artifact semantics, source/dependency closure, packet acceptance, or Stage 5.
 
 ## Root grounding
 
-- **Truth:** exact subject binding is integrated only on the claims directly demonstrated; hostile-interpreter resistance is explicitly not claimed.
-- **Agency / non-domination:** actor/process mutation authority is not silently converted into institutional truth authority; a future untrusted-code runtime needs explicit isolation/capability boundaries.
-- **Continuity:** consequential relations remain reconstructable from durable exact state rather than private chat, recency, or process-local mutation.
-- **Wisdom before speed:** advance only to a fail-closed single-state compatibility preflight while multiple-state and later lifecycle semantics remain unresolved.
+- **Truth:** bounded compatibility is integrated only on the exact claims demonstrated; conflicting evidence remains explicit; generic artifact provenance is not relabelled exact.
+- **Agency / non-domination:** actor identity, scheduler position, founder status, recency, logical-id equivalence, or Git authority cannot select the provenance base.
+- **Continuity:** a replacement occupant must be able to reconstruct the artifact's exact work base and producer lane from durable state without private chat memory.
+- **Wisdom before speed:** advance one provenance precondition before acceptance/replay, while modified artifacts, source/dependency closure, evidence conflict semantics, and later lifecycle stages remain closed.
 
 ## Still unresolved
 
-Multiple `required_states` semantics, evidence quality/closure, exact artifact provenance base semantics (`ADV-002-C`), modified-artifact prior/result identity (`ADV-002-I`), occupancy/claim currentness/supersession/authorization, multiple-packet conflict semantics, historical schema reconstruction, durable closure, claim closure, successor revision publication, integration receipts/runtime, epochs/barriers, replay, cross-language reproduction, stronger filesystem durability/concurrency evidence, and hostile same-process code isolation remain explicit obligations.
+Multiple `required_states` semantics, evidence method/source quality and closure, conflicting/invalidation evidence policy, artifact `source_refs[]` and `dependency_refs[]` exactness/closure, modified-artifact prior/result identity (`ADV-002-I`), occupancy/claim global currentness/supersession/authorization, multiple-packet conflict semantics, historical schema reconstruction beyond the bounded migration needed here, durable closure, claim closure, successor revision publication, integration receipts/runtime, epochs/barriers, replay, cross-language reproduction, stronger filesystem durability/concurrency evidence, and hostile same-process code isolation remain explicit obligations.
