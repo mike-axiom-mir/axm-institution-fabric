@@ -30,7 +30,7 @@
     },
     "claim_ref": {
       "type": "string",
-      "pattern": "^axmref:v1:"
+      "minLength": 1
     },
     "lane_id": {
       "type": "string",
