@@ -182,12 +182,14 @@ def preflight_modified_result_compatibility(
     """
 
     identity_resolution = preflight_modified_artifact_identity(store, packet_ref)
-    lane = _load_exact_relation(
-        store,
-        identity_resolution.lane_ref,
-        expected_kind="lane",
-        field="$.claim_base.lane_ref",
-    )
+
+    # Decision 011 already grounds this exact immutable lane ref through the packet's
+    # exact claim base. Loading that exact ref from the object store preserves the same
+    # identity authority while returning the ordinary mapping/list representation that
+    # the existing compatibility evaluator expects. Do not weaken that evaluator merely
+    # to accommodate the canonical-byte operational view used for exposed output data.
+    lane = store.load(identity_resolution.lane_ref, "lane.schema.json")
+
     evidence_records = _packet_evidence_records(store, identity_resolution)
     result_refs = tuple(
         modification.result_artifact.reference
@@ -198,8 +200,8 @@ def preflight_modified_result_compatibility(
         result_refs,
     )
 
-    outputs = lane.value.get("outputs", ())
-    evidence_requirements = lane.value.get("evidence_requirements", ())
+    outputs = lane.get("outputs", ())
+    evidence_requirements = lane.get("evidence_requirements", ())
     compatibility_results: list[ModifiedArtifactResultCompatibility] = []
 
     for modification in identity_resolution.modifications:
