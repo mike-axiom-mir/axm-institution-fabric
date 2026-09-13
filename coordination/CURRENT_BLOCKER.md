@@ -1,9 +1,9 @@
 # Current Stage 4 Sequencing Overlay
 
-Date: 2026-09-13
-Canonical main after Decision 014 + ADV-047 integration: `bbd633f85ab54214256623e27f3d7cd481a4239b`
+Date: 2026-09-14
+Canonical main after Decision 015 + ADV-048 integration: `e832a5f865655c315bdc9fdc3b81db15b8527716`
 Current stage: **Stage 4 — claim / occupancy / return lifecycle**
-Current next bounded gate: **Decision 015 — Exact Dependency Context Membership**
+Current next bounded gate: **Decision 016 — Exact Same-Packet Dependency Graph Facts**
 
 `coordination/CURRENT_WAVE.md` remains historical chronology. This file is the newer current-state overlay and must be read with the numbered decisions and durable specialist return packets.
 
@@ -19,95 +19,101 @@ The deterministic institution kernel now canonically demonstrates, on the bounde
 - exact created-artifact work-base provenance;
 - exact two-sided modified-artifact prior/result identity and modified-result compatibility;
 - one exact mixed created+modified packet compatibility projection from one exact historical context;
-- **Decision 014 exact output dependency target identity** for artifact v0.3 across both created and modified-result output families;
-- historical artifact v0.1/v0.2 non-empty dependency strings remain unresolved rather than silently acquiring v0.3 meaning;
-- ADV-035 through ADV-047 regression pressure preserving proof-to-use identity, exact historical selection, fail-closed transport/materialization, provenance, output/evidence isolation, modification identity, mixed projection, and dependency-target identity.
+- Decision 014 exact output dependency target identity for artifact v0.3 across created and modified-result outputs;
+- **Decision 015 exact dependency-context membership facts**: exact claim-base membership, exact packet-created membership, exact packet-modified-result membership, and explicit outside-all-context standing;
+- historical artifact v0.1/v0.2 dependency strings remain unresolved rather than silently acquiring v0.3 meaning;
+- ADV-035 through ADV-048 regression pressure preserving proof-to-use identity, historical selection, fail-closed transport/materialization, provenance, output/evidence isolation, modification identity, mixed projection, dependency target identity, and dependency context membership.
 
-This remains a read-only proof surface. Exact dependency identity is not dependency validity, membership policy, chronology, closure, packet acceptance, claim closure, publication, integration, epochs, or replay.
+This remains a read-only proof surface. Dependency identity and context membership are not dependency validity, chronology, closure, packet acceptance, claim closure, publication, integration, epochs, or replay.
 
-## Decision 014 integration evidence
+## Decision 015 integration evidence
 
-### Lane 02 — PR #64
+### Lane 02 — PR #68
 
-Lane 02 implemented artifact v0.3 and the read-only exact dependency-identity preflight. Exact implementation head `21724797dcbab35be849f61ed372a7f46039a675` was independently inspected in native Actions:
+Lane 02 implemented only the Decision 015 read-only membership projection by consuming Decision 014.
 
-- **277 / 277 tests passed**;
-- all 12 Decision 014 regressions green;
-- ADV-035 through ADV-046 remained green;
-- explicit `py_compile` passed.
+Its first run reached 292 tests with one error. The failing test tried to construct the same exact artifact simultaneously as a created output and a modified result, while canonical Decision 013 correctly rejects that exact-ref category collision. Lane 02 preserved the failure, repaired the test oracle rather than weakening production semantics, and reran.
 
-The final Lane 02 branch head added only its durable return packet. PR #64 was squash-integrated as:
-
-`c54606910734ed4d1731edc4f29029ba89f0aa11`
-
-### Lane 03 — PR #65 / fresh PR #66
-
-Lane 03 independently attacked Decision 014 with ADV-047 A–G: corrupt exact targets, version/`supersedes_ref` decoys, historical-string laundering, source/evidence metadata authority leakage, same-logical/different-exact parallel dependencies, detached materialization drift, and unsupported JSON transport / authority escalation.
-
-Lane 03 exact tested head `28709aec94589774851e295bb7f83b5ff3ba711b` directly completed **284 / 284 tests** and explicit compile successfully.
-
-Because PR #65 was stacked on Lane 02 ancestry, squash-integrating #64 caused GitHub to expose already-canonical production changes again. Lane 01 did not rewrite or merge duplicate production ancestry. Instead it reapplied only Lane 03's evidence-only workflow/test/return-packet files to fresh canonical main in PR #66.
-
-Fresh PR #66 run `34785415878`, job `103799889107` directly recorded:
+Exact repaired implementation head `624d50e2b705ecc27ba1c0279a145b6517c7c09e` directly completed:
 
 - Python 3.12.14;
-- **284 / 284 tests passed** in 252.451s;
-- ADV-047-A/B/C/D/E/F/G all green;
-- explicit compile, including the ADV-047 module, passed;
+- **292 / 292 tests passed** in 286.773s;
+- all eight Decision 015 regressions green;
+- ADV-035 through ADV-047 green;
+- explicit `py_compile` success.
+
+The final PR head added only the durable Lane 02 return packet beyond the tested implementation. PR #68 was squash-integrated as:
+
+`848900a3857016145357ad2e4a51fb56a6c46b48`
+
+### Lane 03 — PR #69 / fresh PR #70
+
+Lane 03 independently attacked Decision 015 with ADV-048 A–I while changing no production runtime or schema semantics. The original stacked exact head directly completed **301 / 301 tests** plus explicit compile successfully.
+
+Because PR #69 was stacked on Lane 02's pre-squash ancestry, Lane 01 did not merge duplicate production history or rewrite the specialist branch. The exact ADV-048 workflow/test/return-packet files were reapplied to fresh canonical Decision 015 main in PR #70.
+
+Fresh PR #70 run `34788408821`, job `103808025622` directly recorded:
+
+- Python 3.12.14;
+- **301 / 301 tests passed** in 384.554s;
+- ADV-048-A/B/C/D/E/F/G/H/I all green;
+- ADV-035 through ADV-047 remained green in the same full-discovery run;
+- explicit compile, including the Decision 015 runtime and ADV-048 test module, passed;
 - complete job conclusion: success.
 
-PR #66 was integrated as:
+PR #70 was squash-integrated as:
 
-`bbd633f85ab54214256623e27f3d7cd481a4239b`
+`e832a5f865655c315bdc9fdc3b81db15b8527716`
 
-PR #65 was closed as superseded, not invalidated. Its original branch/run remain preserved evidence.
+PR #69 was closed as **superseded, not invalidated**. Its original branch, commits, and run remain preserved evidence.
 
 ## Why Stage 4 is not done
 
-Decision 014 proves that a v0.3 output dependency points to one exact immutable artifact. It deliberately does not say whether that exact artifact belongs to the exact historical claim base, is another exact output of the same packet, or sits outside both contexts.
+Decision 015 tells us exactly where each exact dependency target stands relative to the exact historical claim base and this exact packet's output families. It deliberately does not create a packet-level dependency graph, execution chronology, admissibility policy, dependency closure, or acceptance meaning.
 
-The exact claim-base state revision already carries exact `artifact_refs[]` membership, while Decision 013/014 already carries the packet's exact created and modified-result outputs. That makes dependency **context membership facts** the smallest next mechanical step.
+The immediate risk is now hidden chronology: later code could use packet/output/dependency array order, storage order, recency, version, `supersedes_ref`, logical id, or actor status to decide which same-packet dependency came "before" another.
 
-Jumping directly to a validity rule would be premature: requiring every dependency to be a claim-base member could silently outlaw same-packet dependencies, while accepting every exact-loadable dependency could silently treat later/external artifacts as historically available.
+The exact relations already permit one smaller factual step before policy: reconstruct the exact directed graph among the exact outputs of this one packet, preserve self/cycle facts, and—only for an acyclic graph—expose a deterministic topological witness that is explicitly not historical execution chronology.
 
-## Decision 015 — opened next
+## Decision 016 — opened next
 
 See:
 
-`coordination/decisions/015_EXACT_DEPENDENCY_CONTEXT_MEMBERSHIP.md`
+`coordination/decisions/016_EXACT_SAME_PACKET_DEPENDENCY_GRAPH_FACTS.md`
 
-Decision 015 opens **classification before policy**:
+Decision 016 opens **graph fact before chronology or policy**:
 
-- consume Decision 014 exact dependency relations;
-- exact-load the exact claim-base state revision;
-- report exact-ref membership in claim-base `artifact_refs[]`;
-- report exact-ref membership in the packet's created and/or modified-result output families;
-- preserve a dependency outside both contexts explicitly rather than accepting or rejecting it;
-- preserve all simultaneously true factual contexts rather than inventing precedence;
-- use exact-ref equality only, with no logical-id/version/`supersedes_ref`/recency/order fallback;
-- add no dependency-validity, chronology, closure, cycle, completeness, acceptance, or integration semantics.
+- consume Decision 015 rather than rebuilding identity/membership;
+- nodes are exact packet created and modified-result output refs;
+- an exact same-packet dependency creates one directed `required_output_ref -> dependent_output_ref` edge;
+- base-only and external/unclassified dependencies remain preserved in the nested Decision 015 result but create no packet-local edge;
+- exact self-edges and deterministic SCC/cycle facts remain explicit without being accepted or rejected;
+- an acyclic graph may expose one exact-ref-lexically-tiebroken topological witness, labelled only as a witness, never as historical execution order;
+- no logical-id/version/`supersedes_ref`/recency/array/store/actor/founder/scheduler/Git authority may change graph facts;
+- no dependency validity, admissibility, satisfaction, closure, acceptance, publication, integration, epoch, or replay semantics open.
 
-No artifact schema version change is required because this step adds no new artifact-authored claim; it derives facts from already exact immutable state.
+No schema migration is required because the step derives facts from already exact immutable relations.
 
 ## Lane boundaries
 
 ### Lane 02 — next implementation lane
 
-Implement only Decision 015's read-only exact dependency-context membership projection. Consume Decision 014 rather than rebuilding packet or dependency selection. Keep ADV-035 through ADV-047 green. Stop before dependency validity, same-packet chronology policy, transitive closure/cycles/completeness, source closure, evidence precedence, lineage, packet acceptance, claim closure, successor publication, Stage 5 integration, epochs, or replay.
+Implement only Decision 016's read-only exact same-packet dependency graph projection. Consume Decision 015 as the sole context/membership authority. Preserve exact node/edge/self-edge/SCC/cycle facts, expose a topological witness only if acyclic, keep base-only/external dependency facts visible through the nested result, and keep ADV-035 through ADV-048 green. Stop before dependency admissibility, actual chronology, closure/completeness, source closure, packet acceptance, claim closure, successor publication, Stage 5 integration, epochs, or replay.
 
 ### Lane 03 — next adversarial lane
 
-After Lane 02 leaves an exact tested head, attack only Decision 015: same-logical/different-exact base substitution, version/`supersedes_ref`/recency/order authority, output-family cross-laundering, external exact targets being silently accepted/rejected, simultaneous factual contexts being collapsed, metadata authority leakage, corrupt/missing/wrong-kind exact base, materialization/transport drift, and accidental validity/closure/acceptance claims.
+After Lane 02 leaves an exact tested head, attack only Decision 016: order/recency/version/`supersedes_ref` authority, same-logical decoy nodes/edges, external/base-only edge promotion, output-family precedence, dropped self-edges, hidden cycles, fake topological witnesses, witness-edge violations, parallel-packet rebinding, metadata authority leakage, transport/materialization drift, and accidental validity/chronology/closure/acceptance authority.
 
 ### Lane 01 — integration lane
 
-Do not implement Decision 015 in parallel with Lane 02. Review the exact tested implementation and independent Lane 03 evidence, preserve failures/dissent, and integrate only if the four-root gate is grounded.
+Do not implement Decision 016 in parallel with Lane 02. Review the exact tested implementation and independent Lane 03 evidence, preserve failures/dissent, and integrate only if the four-root gate is grounded.
 
 ## Still explicitly unresolved
 
-- dependency validity and allowed-context policy;
-- dependency chronology and same-packet producer/consumer ordering;
-- transitive dependency closure, cycle semantics, and declaration completeness;
+- dependency admissibility / allowed-context policy;
+- actual dependency chronology and same-packet producer/consumer execution ordering;
+- transitive dependency closure and declaration completeness;
+- whether cycles/self-dependencies are acceptable;
 - exact source provenance / `provenance.source_refs[]` taxonomy and closure;
 - evidence method/source quality, precedence, invalidation dominance, and closure;
 - multiple `required_states` semantics;
@@ -125,7 +131,7 @@ Do not implement Decision 015 in parallel with Lane 02. Review the exact tested 
 
 ## Four-root gate
 
-- **Truth:** exact target identity and exact historical/context membership remain distinct facts; neither is promoted into validity or closure.
-- **Agency / non-domination:** membership comes from exact immutable state, not status, recency, version, ordering, founder/specialist identity, or Git permission.
-- **Continuity:** replacement occupants can reconstruct both the exact dependency and its exact historical/packet context without hidden chat or mutable names.
-- **Wisdom before speed:** classify context before deciding chronology, validity, closure, acceptance, integration, epochs, or replay.
+- **Truth:** exact dependency context and exact packet-local topology remain facts; neither is relabelled as execution history, validity, or closure.
+- **Agency / non-domination:** graph facts come from exact immutable relations, not founder/specialist/Git status, version, recency, order, or logical naming.
+- **Continuity:** replacement occupants can reconstruct dependency targets, contexts, and packet-local topology from durable state without private chat memory.
+- **Wisdom before speed:** graph facts are opened before dependency admissibility, actual chronology, closure, acceptance, integration, epochs, or replay.
