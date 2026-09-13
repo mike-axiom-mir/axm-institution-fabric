@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://axm.local/schemas/institution/return-packet.schema.json",
   "title": "AXM Institution Fabric Return Packet",
-  "description": "Structured lane handoff bound to one exact immutable base revision and the exact immutable work-claim instance it returns from, while preserving changes, evidence, uncertainty, blockers, downstream effects, and follow-up.",
+  "description": "Structured lane handoff bound to one exact immutable base revision and the exact immutable work-claim instance it returns from, while preserving changes, evidence, uncertainty, blockers, downstream effects, and follow-up. Schema v0.3 preserves the historical opaque modified-artifact entry; v0.4 adds an explicit exact prior/result pair without reinterpreting v0.3.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -22,7 +22,10 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "0.3"
+      "enum": [
+        "0.3",
+        "0.4"
+      ]
     },
     "id": {
       "type": "string",
@@ -57,10 +60,6 @@
     },
     "artifacts_modified": {
       "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
       "uniqueItems": true
     },
     "evidence_refs": {
@@ -99,5 +98,65 @@
         "minLength": 1
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "0.3"
+          }
+        },
+        "required": [
+          "schema_version"
+        ]
+      },
+      "then": {
+        "properties": {
+          "artifacts_modified": {
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "0.4"
+          }
+        },
+        "required": [
+          "schema_version"
+        ]
+      },
+      "then": {
+        "properties": {
+          "artifacts_modified": {
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "prior_artifact_ref",
+                "result_artifact_ref"
+              ],
+              "properties": {
+                "prior_artifact_ref": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "result_artifact_ref": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }
