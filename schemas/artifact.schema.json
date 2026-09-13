@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://axm.local/schemas/institution/artifact.schema.json",
   "title": "AXM Institution Fabric Artifact",
-  "description": "Typed continuation-relevant output with explicit version, provenance, evidence, and dependencies. Schema v0.1 preserves the historical logical provenance-base string; v0.2 adds an exact immutable state-revision work-base reference for created-artifact continuity.",
+  "description": "Typed continuation-relevant output with explicit version, provenance, evidence, and dependencies. Schema v0.1 preserves the historical logical provenance-base string; v0.2 adds an exact immutable state-revision work-base reference; v0.3 preserves that exact work-base contract and gives dependency_refs an exact immutable artifact-reference meaning.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -19,7 +19,8 @@
     "schema_version": {
       "enum": [
         "0.1",
-        "0.2"
+        "0.2",
+        "0.3"
       ]
     },
     "id": {
@@ -147,6 +148,38 @@
               "required": [
                 "base_state_revision"
               ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "0.3"
+          }
+        },
+        "required": [
+          "schema_version"
+        ]
+      },
+      "then": {
+        "properties": {
+          "provenance": {
+            "required": [
+              "base_state_revision_ref"
+            ],
+            "not": {
+              "required": [
+                "base_state_revision"
+              ]
+            }
+          },
+          "dependency_refs": {
+            "items": {
+              "type": "string",
+              "pattern": "^axmref:v1:artifact:[^:]+:(?:-|v=[^:]+):sha256:[0-9a-f]{64}(?![\\s\\S])"
             }
           }
         }
