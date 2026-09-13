@@ -68,9 +68,14 @@ def preflight_exact_artifact_work_base_provenance(
 
     This helper is deliberately narrower than packet-created output compatibility. The
     caller must already have grounded the exact packet lifecycle context and exact-loaded
-    the artifact relation. The helper then requires artifact schema v0.2, exact-loads the
-    declared provenance state revision, requires exact equality to ``claim_base_ref``,
-    and requires ``producer_lane_id`` to equal the exact ``lane_ref`` logical id.
+    the artifact relation. The helper then requires an artifact contract with the exact
+    v0.2 work-base semantics (currently schema v0.2 or v0.3), exact-loads the declared
+    provenance state revision, requires exact equality to ``claim_base_ref``, and requires
+    ``producer_lane_id`` to equal the exact ``lane_ref`` logical id.
+
+    Artifact v0.3 extends dependency identity only; it preserves v0.2 provenance meaning.
+    Historical v0.1 remains unresolved for exact work-base provenance. Future artifact
+    versions are not silently assumed compatible.
 
     It does not evaluate output type, evidence state, evidence closure, source/dependency
     closure, logical lineage, ``supersedes_ref``, packet acceptance, claim closure,
@@ -112,12 +117,12 @@ def preflight_exact_artifact_work_base_provenance(
 
     artifact_value = artifact.value
     schema_version = artifact_value.get("schema_version")
-    if schema_version != "0.2":
+    if schema_version not in ("0.2", "0.3"):
         raise ArtifactProvenanceSchemaVersionError(
             f"exact artifact {artifact.reference!r} uses schema_version "
-            f"{schema_version!r}; Decision 010 requires artifact schema v0.2 "
-            "with explicit base_state_revision_ref and does not reinterpret "
-            "historical v0.1 base_state_revision strings"
+            f"{schema_version!r}; Decision 010 requires the exact work-base provenance "
+            "contract carried by artifact schema v0.2/v0.3 and does not reinterpret "
+            "historical v0.1 base_state_revision strings or unknown future versions"
         )
 
     provenance = artifact_value.get("provenance")
@@ -183,14 +188,16 @@ def preflight_created_artifact_provenance(
 
     exact packet -> exact claim -> exact claim base -> exact claim-base lane
         then
-    exact packet-created artifact -> artifact schema v0.2 exact provenance base
+    exact packet-created artifact -> artifact schema v0.2/v0.3 exact provenance base
         -> exact-load that state revision -> require equality to the claim base
         -> require producer_lane_id equality to the claim-base lane logical id.
 
     Historical artifact schema v0.1 remains loadable as historical state, but its
     ``provenance.base_state_revision`` string is not silently reinterpreted as an exact
     immutable relation. Such an artifact therefore fails this preflight until an
-    explicit migration produces a v0.2 artifact instance.
+    explicit migration produces an artifact instance carrying the v0.2 exact work-base
+    provenance semantics. Artifact v0.3 preserves those provenance semantics while
+    extending dependency identity separately.
 
     The function first runs the canonical read-only created-output compatibility
     preflight, so exact packet/claim/lane/artifact/evidence selection, subject binding,
