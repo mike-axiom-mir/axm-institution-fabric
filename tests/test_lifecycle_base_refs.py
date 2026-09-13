@@ -125,9 +125,9 @@ class ExactLifecycleBaseTests(unittest.TestCase):
             },
         }
         expected_versions = {
-            "occupancy.schema.json": "0.2",
-            "work-claim.schema.json": "0.3",
-            "return-packet.schema.json": "0.3",
+            "occupancy.schema.json": ("0.2",),
+            "work-claim.schema.json": ("0.3",),
+            "return-packet.schema.json": ("0.3", "0.4"),
         }
         for schema_name in LIFECYCLE_SCHEMAS:
             with self.subTest(schema=schema_name):
@@ -141,10 +141,17 @@ class ExactLifecycleBaseTests(unittest.TestCase):
                 if schema_name == "return-packet.schema.json":
                     expected.remove("claim_id")
                     expected.add("claim_ref")
-                self.assertEqual(
-                    schema["properties"]["schema_version"]["const"],
-                    expected_versions[schema_name],
-                )
+                version_contract = schema["properties"]["schema_version"]
+                if len(expected_versions[schema_name]) == 1:
+                    self.assertEqual(
+                        version_contract["const"],
+                        expected_versions[schema_name][0],
+                    )
+                else:
+                    self.assertEqual(
+                        tuple(version_contract["enum"]),
+                        expected_versions[schema_name],
+                    )
                 self.assertEqual(set(schema["properties"]), expected)
                 self.assertIn("base_state_revision_ref", schema["required"])
                 self.assertNotIn("base_state_revision", schema["properties"])

@@ -89,7 +89,10 @@ class PostBaseAuthoritativeReferenceTests(unittest.TestCase):
         self.assertIn("lane_id", work_schema["properties"])
         self.assertIn("overlap_with_claim_ids", work_schema["properties"])
 
-        self.assertEqual(packet_schema["properties"]["schema_version"]["const"], "0.3")
+        self.assertEqual(
+            tuple(packet_schema["properties"]["schema_version"]["enum"]),
+            ("0.3", "0.4"),
+        )
         self.assertIn("claim_ref", packet_schema["required"])
         self.assertNotIn("claim_id", packet_schema["properties"])
         self.assertEqual(packet_schema["properties"]["claim_ref"], {"type": "string", "minLength": 1})
