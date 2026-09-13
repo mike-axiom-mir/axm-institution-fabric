@@ -35,7 +35,7 @@
     },
     "occupancy_ref": {
       "type": "string",
-      "pattern": "^axmref:v1:"
+      "minLength": 1
     },
     "summary": {
       "type": "string",
