@@ -1,183 +1,138 @@
-# CURRENT STATE OVERLAY — Decision 012 integrated; mixed packet compatibility opened
+# Current Stage 4 Sequencing Overlay
 
-Status: **Decision 012 exact modified-result output/evidence compatibility is canonical on its demonstrated read-only surface, and ADV-045 reproduced no blocker after Lane 02's bounded representation repair.** PR #57 integrated the runtime/tests and PR #58 integrated Lane 03's evidence-only adversarial regressions. The next opened gate is Decision 013: a read-only mixed created+modified packet compatibility projection. Packet acceptance, evidence closure, lineage/supersession policy, source/dependency closure, claim closure, successor-state publication, Stage 5 integration receipts/runtime, epochs/barriers, and replay remain closed.
+Date: 2026-09-13
+Canonical main after this activation's Decision 013 integration: `be9a59786af663d7fd8ef58dc0471e447672794b`
+Current stage: **Stage 4 — claim / occupancy / return lifecycle**
+Current next bounded gate: **Decision 014 — Exact Output Dependency Identity**
 
-This file is the narrow current-state overlay on the older `coordination/CURRENT_WAVE.md` chronology. Earlier overlays, decisions, commits, PRs, failed runs, and specialist return packets remain repository history and are not silently rewritten by this summary.
-
-## Canonical integration points
-
-Decision 012 runtime/test integration:
-
-`3d34cc043b99eccf8eb9c3db319dca431c6dcff4`
-
-PR #57 — `Lane 02: modified-result output compatibility preflight` — merged.
-
-ADV-045 regression integration:
-
-`d4e9080d379236169225db322ec06d1b3b1c1b5b`
-
-PR #58 — `Lane 03: adversarially verify modified-result compatibility` — retargeted from the stacked Lane 02 branch to canonical `main` after PR #57 merged, then merged without rewriting the specialist branch.
-
-Decision 012:
-
-`coordination/decisions/012_MODIFIED_RESULT_OUTPUT_COMPATIBILITY.md`
-
-Decision 013:
-
-`coordination/decisions/013_MIXED_PACKET_COMPATIBILITY_PROJECTION.md`
+`coordination/CURRENT_WAVE.md` remains historical chronology. This file is the newer current-state overlay and must be read together with the numbered decisions and specialist return packets.
 
 ## What is now canonical
 
-Within Decision 009's declared trusted deterministic runtime boundary, the bounded Stage 4 read-only path can reconstruct and verify:
+The deterministic institution kernel now canonically demonstrates, on the bounded Python v0 path:
 
-1. exact packet -> claim -> claim-base -> lane / occupancy historical context;
-2. exact packet-created artifact and packet evidence identities for the created-only surface;
-3. exact evidence-to-created-artifact subject binding;
-4. bounded created-output compatibility for one unambiguous required evidence state;
-5. exact created-artifact work-base / producer-lane provenance;
-6. return-packet v0.4 explicit `{prior_artifact_ref, result_artifact_ref}` modification relations while historical v0.3 modified entries remain opaque;
-7. exact prior membership in the exact claim base and exact result identity/provenance against the same base/lane;
-8. bounded modified-result compatibility for exactly one output declaration, one evidence requirement, and one currently-supported required evidence state;
-9. exact evidence may satisfy a modification result only when `evidence.subject_ref` exactly equals that exact result ref;
-10. prior evidence, same-logical decoys, version / `supersedes_ref`, later same-logical lane contracts, recency, storage order, and evidence array order gain no compatibility authority;
-11. conflicting/additional exact result evidence remains explicit and `satisfied=True` remains narrower than evidence closure or packet acceptance.
+- strict canonical identity and immutable references;
+- exact revision membership and exact lifecycle bases;
+- occupancy admission, work-claim admission, and return-packet admission from exact historical state;
+- exact packet created-artifact / evidence identity;
+- Decision 008 exact evidence-subject chronology;
+- Decision 009 trusted-runtime boundary without claiming hostile same-process isolation;
+- Decision 010 exact created-artifact work-base provenance;
+- Decision 011 exact two-sided modified-artifact prior/result identity;
+- Decision 012 exact modification-result output/evidence compatibility;
+- Decision 013 one read-only mixed created+modified packet compatibility projection from one exact packet/claim/base/occupancy/lane context;
+- ADV-035 through ADV-046 regression pressure preserving proof-to-use identity, fail-closed transport/materialization behavior, historical-contract boundaries, exact evidence subjects, exact provenance, two-sided modification identity, compatibility isolation, and mixed-projection non-acceptance semantics.
 
-Decision 012 does **not** prove logical lineage, valid supersession, source/dependency closure, evidence closure, packet acceptance, claim closure, successor publication, integration, epochs, or replay.
+Decision 013 remains deliberately narrow. Per-output `satisfied` facts are compatibility observations only; they are not packet acceptance, evidence closure, claim closure, successor-state publication, integration, epochs, or replay.
 
-## Decision 012 evidence
+## Decision 013 integration evidence
 
-### Preserved failed implementation evidence
+### Lane 02 PR #60 — production implementation
 
-Lane 02's first Decision 012 implementation head `fe7232957cbb1e7978fd6e8465067c071b3a1e0e` reached the new evaluator but exposed a real proof-to-use representation mismatch: its native run recorded 243 tests with 9 errors at `lane.outputs[] must expose a mapping`, and compile was skipped after the failing unittest gate.
+PR #60 was integrated as canonical commit:
 
-That failure remains evidence. It was not relabelled flaky or erased.
+`dedb6017244ee2061353435de070c2c33d1de687`
 
-### Lane 02 repaired baseline
+Lane 02 preserved its first failed implementation run rather than rewriting it: 259 tests reached the new surface with 6 implementation errors and compile was skipped. The repaired implementation was then directly observed green at 259/259 with explicit compile success.
 
-Exact repaired implementation/workflow head:
+### Lane 03 ADV-046 — independent adversarial evidence
 
-`0d235f10766e4d8eed58ff73ef39f6fa1558cb56`
+Lane 03 PR #61 remained evidence/test-only. Its final head:
 
-Final PR #57 head:
+`90c0137e7359aa59f9f8737e664b5adff5d85562`
 
-`dfa446056489d4ffde276935c95137bca5a18662`
+proved the ADV-046 A–F surface: historical lane recency cannot rebind either output family; high-version/`supersedes_ref` same-logical decoys stay exact-separated; evidence order cannot erase conflicts/unmatched evidence; detached materialization cannot mutate exact operational facts; unsupported ordinary JSON transport fails closed; and component compatibility does not become packet acceptance/rejection.
 
-The only change after the tested repaired head was the durable Lane 02 return packet:
+Because PR #60 was squash-merged, retargeting stacked PR #61 to `main` exposed already-canonical production commits again. Lane 01 therefore preserved PR #61 unchanged and reapplied only its evidence files on fresh canonical main in PR #62.
 
-`coordination/returns/02/2026-09-13_ACTIVATION_031.md`
+PR #62 head:
 
-GitHub Actions run/job inspected by Lane 01:
+`3a36573a8f7dd8baa644f6fcf2cb93b06953b154`
 
-- run `34777655519`;
-- job `103778601150`;
-- exact head `0d235f10766e4d8eed58ff73ef39f6fa1558cb56`;
-- deterministic unittest step: success;
-- explicit compile step: success;
-- complete job: success.
+had tree:
 
-Lane 02's durable packet records **243/243 passed** plus explicit compile success, including all eleven Decision 012 tests and prior ADV-035 through ADV-044 regressions. Lane 01 independently confirmed exact head identity and successful test/compile job steps but did not retrieve raw stdout, so the numeric count remains attributed to specialist evidence.
+`1918932be7c23235afe1730a21a47ead9aa11fc2`
 
-The repair preserved the exact `lane_ref` already grounded by Decision 011 and loaded that same exact immutable ref through `FilesystemObjectStore.load(...)` for the ordinary mapping representation expected by the compatibility evaluator. It did not add logical-id/current/newest fallback authority.
+which is byte-for-byte the same tree as Lane 03 final head `90c0137...`. Fresh native Actions then independently completed on PR #62 merge candidate `f9987a3c0cf4dafbec2be86e6a187149b8661fdd`:
 
-### Lane 03 / ADV-045
+- Python 3.12.14;
+- **265 / 265 tests passed** in 296.738s;
+- ADV-046-A/B/C/D/E/F all green;
+- explicit `py_compile`, including the ADV-046 regression file, passed;
+- job conclusion: success.
 
-Exact tested adversarial head:
+PR #62 was integrated as:
 
-`55ec072591c007c43573c3f9bd77e598ebde4fcd`
+`be9a59786af663d7fd8ef58dc0471e447672794b`
 
-Final PR #58 head:
+PR #61 was then closed as superseded, not invalidated; its stacked evidence history remains preserved.
 
-`fc361e4466cf2115d67abb14b2d6dedf5e2ffc2e`
+## Why Stage 4 is not done
 
-The only change after that tested head was the durable Lane 03 return packet:
+Mixed output compatibility still does not establish the exact identity or validity of declared artifact dependencies. Current artifact v0.1/v0.2 contracts accept `dependency_refs[]` as arbitrary non-empty strings. The historical valid fixture uses `schemas/lane.schema.json`, proving old dependency strings may be path-like and therefore must not be silently reinterpreted as immutable institutional refs. Artifact v0.2 exacted the work-base provenance ref but did not change dependency semantics.
 
-`coordination/returns/03/2026-09-13_ACTIVATION_033.md`
+That is now the smallest mechanical continuity gap that can be advanced without inventing evidence precedence, lineage policy, source taxonomy, packet acceptance, or integration semantics.
 
-GitHub Actions run/job inspected by Lane 01:
+## Decision 014 — opened next
 
-- run `34777866613`;
-- job `103779182656`;
-- exact head `55ec072591c007c43573c3f9bd77e598ebde4fcd`;
-- deterministic unittest step: success;
-- explicit compile step: success;
-- complete job: success.
+See:
 
-Lane 03's durable packet records **248/248 passed** plus explicit compile success. ADV-045-A/B/C/D/E preserve that evidence order does not choose standing, later same-logical/high-version/superseding decoys gain no authority, `supersedes_ref` cannot launder prior evidence into result evidence, passing prior evidence cannot mask invalidated exact-result evidence, and a later same-logical lane contract cannot replace the exact claim-base contract. Lane 01 independently confirmed exact head identity and successful test/compile job steps but did not retrieve raw stdout, so the numeric count remains attributed to specialist evidence.
+`coordination/decisions/014_EXACT_OUTPUT_DEPENDENCY_IDENTITY.md`
 
-No post-merge-main Actions run is asserted for merge commits `3d34cc043...` or `d4e9080d...` unless a later activation observes one.
+Decision 014 opens **dependency target identity only**:
 
-## Decision 013 — next composition gap
+- artifact v0.3 will give non-empty `dependency_refs[]` an explicit canonical exact `artifact`-ref meaning;
+- every such ref must parse through the shared Stage 2 immutable-reference grammar and exact-load to the same artifact identity;
+- historical v0.1/v0.2 non-empty dependency strings remain operationally unresolved, even when exact-looking;
+- empty historical dependency arrays may continue because they assert no dependency target on this surface;
+- Decision 013 remains the packet/output context authority;
+- no base-membership rule, same-packet dependency rule, chronology, transitive closure, cycle policy, completeness claim, or packet acceptance meaning is introduced;
+- `provenance.source_refs[]`, `evidence_refs[]`, `content_ref`, `version`, and `supersedes_ref` gain no dependency authority.
 
-Created-output and modified-result compatibility are now individually grounded, but a packet containing **both** output families still lacks one truthful read-only projection.
+## Lane boundaries
 
-The older created-output path intentionally consumes a resolver that fails closed whenever `artifacts_modified[]` is non-empty. Decision 011/012, meanwhile, understands v0.4 modifications but does not expose created-output compatibility. Treating modification results as created artifacts would erase the explicit prior/result relation, while independently reconstructing context could let the two paths disagree about authoritative lane or evidence state.
+### Lane 02 — next implementation lane
 
-Decision 013 therefore opens only this chronology:
+Implement only Decision 014's read-only exact output dependency identity preflight:
 
-```text
-one exact packet P
-  -> one exact claim / base / occupancy / historical lane context
+1. add artifact v0.3 without changing v0.1/v0.2 meaning;
+2. require v0.3 dependency entries to be canonical exact artifact refs;
+3. consume Decision 013's exact packet/output context;
+4. exact-load each dependency and preserve exact ref/value pairing;
+5. fail closed on non-empty historical v0.1/v0.2 dependency arrays;
+6. preserve created-only, modified-only, and mixed behavior;
+7. keep ADV-035 through ADV-046 green;
+8. stop before membership/chronology/closure, source closure, evidence precedence, lineage, packet acceptance, claim closure, successor publication, Stage 5 integration, epochs, or replay.
 
-created outputs
-  -> exact artifacts_created[] refs
-  -> existing exact subject binding
-  -> existing narrow created-output compatibility
+### Lane 03 — next adversarial lane
 
-modified outputs
-  -> Decision 011 exact prior/result pairs
-  -> Decision 012 narrow result compatibility
+After Lane 02 leaves an exact tested head, attack only the Decision 014 surface for historical exact-looking-string laundering, path/logical fallback, wrong-kind refs, missing/corrupt targets, same-logical/different-exact substitution, order/version/`supersedes_ref` authority, source/evidence refs being mistaken for dependencies, output-family divergence, materialization/transport drift, and accidental dependency-closure or packet-acceptance claims.
 
-mixed projection
-  -> prove both families use the same exact historical context
-  -> preserve per-output compatibility and unmatched/conflicting evidence
-  -> no aggregate packet acceptance/closure boolean
-```
+### Lane 01 — integration lane
 
-If the same exact artifact ref is classified simultaneously as a created artifact and a modification result, the mixed projection must fail closed rather than silently pick or deduplicate a category. This is a composition ambiguity only; Decision 013 does not declare the packet globally invalid.
+Do not implement Decision 014 in parallel with Lane 02. Review the exact tested implementation and Lane 03 evidence, preserve failures, and integrate only if the four-root gate is grounded.
 
-## Lane 02 — smallest next implementation
+## Still explicitly unresolved
 
-Implement only Decision 013's **read-only mixed created+modified compatibility projection**.
+- artifact dependency membership, chronology, completeness, transitive closure, and cycles;
+- exact source provenance / `provenance.source_refs[]` taxonomy and closure;
+- evidence method/source quality, precedence, invalidation dominance, and closure;
+- multiple `required_states` semantics;
+- logical lineage and `supersedes_ref` validity for modifications;
+- global occupancy/claim currentness, supersession, and authorization;
+- multiple-packet conflict/selection semantics;
+- packet acceptance/rejection and durable closure;
+- claim closure;
+- successor state-revision publication;
+- Stage 5 integration receipts/runtime;
+- epochs/barriers and replay;
+- cross-language reproduction and supported serialized compatibility transport;
+- stronger filesystem durability/concurrency evidence;
+- hostile same-process code isolation beyond Decision 009's declared trusted deterministic runtime boundary.
 
-Required bounded behavior:
+## Four-root gate
 
-1. use one exact packet and grounded historical claim/base/occupancy/lane context;
-2. exact-load created refs and evidence refs through the existing Stage 2 exact-reference language without weakening the older resolver's historical proof boundary;
-3. preserve existing created-output subject-binding and one-state compatibility semantics unchanged;
-4. consume Decision 012 unchanged for exact modification results;
-5. prove exact context agreement before composing component results;
-6. fail closed on exact-ref collision between created and modified-result categories rather than using array order, logical id, type, version, recency, or `supersedes_ref`;
-7. preserve unmatched, conflicting, and invalidated evidence explicitly;
-8. expose per-output facts only — no packet-level `accepted`, `closed`, `complete`, or aggregate `satisfied` boolean;
-9. preserve ADV-035 through ADV-045 and historical v0.3 non-reinterpretation;
-10. stop before conflict precedence, evidence/source/dependency closure, lineage/supersession policy, packet acceptance, claim closure, successor publication, integration, epochs, or replay.
-
-A small shared exact-context / compatibility helper refactor is acceptable only if tests prove created-only and modified-only behavior remain unchanged.
-
-## Lane 03 — next adversarial pass
-
-Attack only the exact Lane 02 Decision 013 head:
-
-- created and modified components reconstructing different exact lane/context authority;
-- the same exact artifact classified as both created and modification result;
-- same-logical/different-exact outputs across families being collapsed;
-- created evidence pooled into modified results or modified-result evidence pooled into created outputs;
-- evidence/category selection by array order, storage order, recency, version, `supersedes_ref`, actor, scheduler, founder, or Git authority;
-- conflicting / `invalidated` evidence disappearing during composition;
-- component compatibility accidentally becoming packet acceptance/rejection;
-- multiple `required_states` gaining semantics through the wrapper;
-- historical v0.3 modified entries leaking into the mixed path;
-- all ADV-035 through ADV-045 regressions staying green.
-
-Do not expand into source/dependency closure, lineage policy, packet acceptance, claim closure, successor publication, integration, epochs, or replay.
-
-## Root grounding
-
-- **Truth:** Decision 012 is integrated only for the exact surface actually tested; two component compatibility surfaces are not relabelled as acceptance.
-- **Agency / non-domination:** exact durable relations, not actor identity, order, recency, confidence, founder status, or Git permission, determine context and evidence standing.
-- **Continuity:** a replacement occupant can reconstruct the demonstrated modified-result decision today; Decision 013 requires a mixed packet to become equally reconstructable from one exact historical context.
-- **Wisdom before speed:** close the concrete composition gap before evidence precedence, packet acceptance, immutable integration, epochs, or replay.
-
-## Still unresolved
-
-Multiple `required_states` semantics, evidence method/source quality and closure, conflicting/invalidation evidence precedence, `artifact.source_refs[]` and `dependency_refs[]` exactness/closure, modified-artifact logical lineage and `supersedes_ref` semantics, occupancy/claim global currentness/supersession/authorization, multiple-packet conflict semantics, broader historical schema reconstruction, durable closure, packet acceptance, claim closure, successor revision publication, integration receipts/runtime, epochs/barriers, replay, cross-language reproduction, stronger filesystem durability/concurrency evidence, and hostile same-process code isolation remain explicit obligations.
+- **Truth:** failed runs and historical schema meanings remain visible; no arbitrary dependency string is promoted to exact identity by resemblance.
+- **Agency / non-domination:** neither founder status, specialist identity, scheduler position, Git permission, recency, order, nor version metadata gains dependency standing.
+- **Continuity:** the next proof requires dependency targets to become reconstructable from durable exact refs rather than mutable names or private intent.
+- **Wisdom before speed:** dependency identity is opened before dependency closure, acceptance, immutable integration, epochs, or replay.
