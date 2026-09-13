@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://axm.local/schemas/institution/work-claim.schema.json",
   "title": "AXM Institution Fabric Work Claim",
-  "description": "Bounded coordination state for intended work against one exact immutable base revision.",
+  "description": "Bounded coordination state for intended work against one exact immutable base revision, bound to the exact immutable occupancy instance that created it.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -10,7 +10,7 @@
     "id",
     "lane_id",
     "base_state_revision_ref",
-    "occupancy_id",
+    "occupancy_ref",
     "summary",
     "created_at",
     "status",
@@ -19,7 +19,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "0.2"
+      "const": "0.3"
     },
     "id": {
       "type": "string",
@@ -33,9 +33,9 @@
       "type": "string",
       "pattern": "^axmref:v1:state-revision:[a-z0-9][a-z0-9._-]*:-:sha256:[0-9a-f]{64}(?![\\s\\S])"
     },
-    "occupancy_id": {
+    "occupancy_ref": {
       "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+      "pattern": "^axmref:v1:"
     },
     "summary": {
       "type": "string",
