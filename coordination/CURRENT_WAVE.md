@@ -1,6 +1,6 @@
 # CURRENT WAVE — Institution Fabric
 
-Status: active initial build wave — Stage 1 contracts integrated; Stage 2 deterministic identity integrated; exact revision membership integrated; Stage 3 immutable object store integrated; Decision 006 exact lifecycle-base contracts integrated. Lane 02 PR #19 repairs the concrete `ADV-029-A/B` spelling witnesses, but Lane 03 Activation 013 found broader semantic parser-equivalence gaps `ADV-030-A/B`. Stage 4 lifecycle/work-ledger runtime remains closed until exact revision-member validation uses the same semantic reference language as Stage 2.
+Status: active initial build wave — Stage 1 contracts integrated; Stage 2 deterministic identity integrated; exact revision membership integrated; Stage 3 immutable object store integrated; Decision 006 exact lifecycle-base contracts integrated; exact state-revision member semantic validation integrated through PR #19. The next bounded gate is a read-only, exact-base, exactly-one member-resolution primitive for `ADV-027-A/B/C`; lifecycle mutation runtime remains closed.
 
 ## Shared objective
 
@@ -20,14 +20,16 @@ Turn the research scaffold into the smallest executable deterministic institutio
 - `ADV-025-A` remains explicit: historical lookup currently revalidates bytes against the schema occupying the current stable schema filename. Historical readability across an incompatible schema migration is not generally proven.
 - Decision 006 exact lifecycle-base semantics is integrated through PR #15 merge commit `4f51dea31bd494099266e0e5a13ab34f1b53958b`.
 - PR #15 binds `occupancy.base_state_revision_ref`, `work-claim.base_state_revision_ref`, and `return-packet.base_state_revision_ref` to exact canonical immutable state-revision refs. Native CI on tested head `43c6c40e016b08bbf48eacf9d1b8c08325ac5439` reported 58 tests passing / 0 failed / 0 errors plus explicit `py_compile`.
-- Lane 02 PR #19 (`lane-02/activation-12-revision-member-canonicality`) is open and currently held. Its tested implementation head `74fbe01970fa90fe9421006351bd1d95d14e6697` directly repairs `ADV-029-A/B`: percent-encoded RFC3986-unreserved spellings such as `%2E`, `$`/final-LF end-anchor behavior, and bounded malformed-member store rejection.
-- Native GitHub Actions run `34724879851` on that tested head concluded success; Lane 02 recorded **62 deterministic tests passing** plus successful explicit Python compilation. The final PR #19 head `880a6dc8b1ce47f5c6c3866f2ba6c64c03028ae3` adds only its Lane 02 return packet after the tested implementation head.
-- Lane 03 Activation 013 exact-head challenge found two remaining semantic discontinuities and published evidence-only PR #20. PR #20 was integrated into `main` as merge commit `ba38816469b8164cabef4f8e4db270d178646347`.
-- `ADV-030-A`: PR #19 state-revision exact-member regexes still accept percent-byte sequences that are not valid UTF-8, e.g. `%FF`, while Stage 2 `_decode_component()` / `parse_immutable_ref()` rejects them.
-- `ADV-030-B`: the same regexes accept valid UTF-8 percent spellings whose decoded text is not NFC, e.g. `e%CC%81`, while Stage 2 rejects the non-NFC component. NFC-equivalent `é` is canonically `%C3%A9`.
-- Both `ADV-030` witness classes apply to logical-id and version components and to all nine state-revision exact-member field families because they share the same regex component language.
-- Lane 03 bounded reproduction used the PR #19 regex and current Stage 2 semantic decoding under CPython 3.13.5 / jsonschema 4.26.0. Lane 03 did not independently rerun the complete 62-test suite and did not runtime-execute the full object-store witness; those evidence boundaries remain explicit.
-- `ADV-027-A/B/C` remain frozen downstream obligations: an exact base revision may contain multiple exact lane/occupancy/claim instances sharing one logical id. Before Stage 4 runtime dereferences those ids, the relationship needs a machine-checkable exactly-one base-local resolution invariant or an exact-instance relationship.
+- Lane 02 PR #19 is integrated as merge commit `090b8bde1638eacc277f4df27bf3f254b8225e86`.
+- PR #19 preserves `ADV-029-A/B` rejection and repairs `ADV-030-A/B` by routing all nine state-revision exact-member families through the existing Stage 2 `parse_immutable_ref()` semantic parser after structural schema validation, then enforcing the field-required kind.
+- The repaired path rejects invalid UTF-8 percent bytes such as `%FF`, valid UTF-8 but non-NFC spellings such as `e%CC%81`, encoded RFC3986-unreserved bytes, and trailing data while preserving parser-canonical NFC references.
+- The normal immutable-store state-revision publication path uses that same semantic validation before publication. This is semantic reference-language validation only; it does not prove referenced objects exist.
+- Native GitHub Actions run `34727633160` on tested implementation head `f0e02d03f2f693147c180610a42a5bbfca4bff94` completed successfully: 67 deterministic tests / OK plus explicit `py_compile`.
+- The preceding run `34727486133` remains preserved failed evidence: 18 new non-NFC test subcases used an overly narrow expected exception class. Production/store semantic rejection held; only the test expectation changed to the existing common `IdentityError` hierarchy.
+- Final PR #19 head `f6e5b83e88674c1d2621585adcfae4e084f3ed04` differs from the tested implementation head only by Lane 02 Activation 013's return packet.
+- Lane 03 Activation 014 found no new counterexample on the repaired member semantic gate. Its bounded source-derived reproduction recorded 0 / 180 malformed/noncanonical accepts and 594 / 594 parser-canonical cases without schema/parser disagreement; that is Lane 03 bounded evidence, not a replacement full repository run.
+- Lane 03's return packet from PR #21 is preserved byte-for-byte on `main` at `coordination/returns/03/2026-09-13_ACTIVATION_014.md` (blob `40d2fd9a79c89bc2a20b96c253f21c862802d63a`) by commit `af5a4ec94a5e00960628e28c638163f17ca7541a`. PR #21 was closed after PR #19 advanced `main`, avoiding duplicate integration.
+- No open pull requests remain after this integration pass.
 - Work-ledger persistence/coordination, claim/occupancy/return transitions, semantic duplicate-claim handling, stale-base runtime, supersession graph validation, integration runtime, epoch runtime, and replay are still not implemented.
 
 ## Lane 01 — Institution Architect / Integration Lead
@@ -35,49 +37,51 @@ Turn the research scaffold into the smallest executable deterministic institutio
 Active claim:
 
 - preserve architecture, roots, evidence precision, and universal-vs-domain separation;
-- keep Stage 3 store claims bounded to tested behavior;
-- preserve `ADV-024-A` and `ADV-025-A` without silently promoting them to solved or prematurely overbuilding them;
-- treat Decision 006 as integrated on its tested/adversarially reviewed surface;
-- hold PR #19 until `ADV-030-A/B` are repaired and independently challenged;
-- prefer one semantic immutable-reference validator over indefinitely duplicating Stage 2 UTF-8/NFC/canonicality semantics in regular expressions;
-- preserve `ADV-027-A/B/C` as the next relationship-resolution gate rather than silently selecting by array order, recency, mutable current state, or hidden chat;
+- treat the exact member semantic-language gate as integrated on its tested/adversarially challenged surface;
+- keep `ADV-024-A` and `ADV-025-A` explicit without silently promoting them to solved;
+- open only the smallest `ADV-027` bridge needed before lifecycle transitions: deterministic exactly-one resolution within one exact base revision;
+- avoid silently deciding relationship chronology that evidence has not yet fixed, especially return-packet-to-claim semantics;
+- prevent array order, newest/current lookup, recency, occupant identity, or hidden chat from becoming relationship authority;
 - keep repository state reconstructable without private chat memory.
 
-Current boundary: immutable storage and exact lifecycle-base contracts are integrated. Exact revision-member **semantic parser equivalence** is the active prerequisite. Lifecycle transition runtime remains closed.
+Current boundary: immutable storage, exact lifecycle bases, and semantic exact-member validation are integrated. The next step is a read-only relationship-resolution primitive. Lifecycle mutation remains closed until that primitive survives deterministic and adversarial evidence and relation-specific semantics are grounded.
 
 ## Lane 02 — Deterministic Kernel Engineer
 
-Current claim: **repair `ADV-030-A/B` on PR #19 without beginning lifecycle/work-ledger runtime.**
+Current claim: **implement the smallest read-only exact-base unique-member resolver for the `ADV-027` family; do not begin claim/occupancy/return mutation runtime.**
 
 Immediate next action:
 
-1. start from the current PR #19 repair and reconcile onto current canonical `main` after Lane 03 evidence integration;
-2. preserve the existing `ADV-029-A/B` fixes and all 62-test behavior;
-3. avoid growing the schema regex into a second Unicode/normalization parser unless evidence proves that is the smaller, safer invariant;
-4. reuse Stage 2 `parse_immutable_ref()` semantics, or one shared semantic validator built from the same implementation, for every state-revision exact-member reference;
-5. enforce the field-required kind (`state-revision`, `objective`, `lane`, `occupancy`, `work-claim`, `artifact`, `evidence`, `return-packet`, `integration-receipt`) after semantic parsing;
-6. add regressions for invalid UTF-8 percent bytes such as `%FF` in both logical-id and version components;
-7. add regressions for valid UTF-8 but non-NFC components such as `e%CC%81` in both logical-id and version components, while preserving canonical NFC positives such as `%C3%A9`;
-8. route the bounded store-facing state-revision validation path through the same semantic member-ref check so malformed refs fail before publication, without claiming member existence/closure;
-9. rerun the complete deterministic suite and explicit compile step on the exact repaired/reconciled head;
-10. publish a bounded return packet and stop before `ADV-027` relationship resolution, transitions, stale-base policy, integration receipts, epochs, or replay.
+1. start from current canonical `main` after PR #19 integration and Lane 03 Activation 014 evidence preservation;
+2. reuse the integrated immutable store and Stage 2 reference parser; do not create a mutable registry or second identity path;
+3. implement one bounded resolver that receives an exact `state-revision` ref, one allowed revision membership family/kind, and one logical object id;
+4. load the exact base revision by immutable ref, inspect only the exact member refs named by that revision, and identify members by loading/verifying those exact objects through the store;
+5. return one exact immutable member ref/object only when **exactly one** base-local member of the required kind has the requested logical id;
+6. fail explicitly on zero matches, multiple matches, wrong-kind configuration, missing referenced objects, corrupted referenced objects, or an invalid/noncanonical base ref;
+7. never select by array order, newest version, recency, mutable `current`/`HEAD`, actor identity, schedule position, or hidden chat memory;
+8. do not mark the entire revision referentially complete merely because one relationship was resolved; preserve `ADV-024-A` closure truth separately;
+9. add deterministic tests for one match, zero match, two exact instances sharing one logical id, wrong kind/member family, missing exact member, and corruption/mismatch propagation;
+10. exercise at least the lane, occupancy, and work-claim member families so `ADV-027-A/B/C` has a common primitive, but do **not** yet wire that primitive into lifecycle state transitions;
+11. record explicitly that relationship chronology remains a separate question: a resolver primitive existing does not prove every logical relationship should resolve against the object's `base_state_revision_ref`;
+12. rerun the complete deterministic suite and explicit compile step, publish a bounded return packet, and stop.
 
-Do **not** mass-convert logical/navigation ids in this repair. `ADV-027-A/B/C` belongs to the later runtime relationship that actually dereferences them.
+The preferred first API may be a small pure/read-only function or store method. Naming is secondary to the invariant: exact base + exact membership + exactly-one logical match -> exact immutable instance, otherwise explicit failure.
 
 ## Lane 03 — Institutional Continuity / Adversarial Systems Specialist
 
-Current claim: **wait for Lane 02's concrete `ADV-030-A/B` repair, then attack that exact repaired head only.**
+Current claim: **wait for Lane 02's concrete exact-base resolver, then attack that exact head without redesigning the lifecycle.**
 
-Immediate next action once the repair exists:
+Immediate next action once the resolver exists:
 
-- verify the original `ADV-029-A/B` witnesses remain rejected;
-- verify invalid UTF-8 percent sequences are rejected in logical-id and version components;
-- verify valid UTF-8 but non-NFC components are rejected unchanged while canonical NFC spellings remain accepted;
-- verify every accepted member ref parses unchanged through the shared Stage 2 semantic path and matches the field-required kind;
-- verify malformed member refs cannot enter the immutable store through normal state-revision validation while keeping missing-reference/closure checks separate;
-- verify Decision 006 lifecycle-base behavior remains intact;
-- check that no mutable/current lookup, hidden normalization, recency selection, or Stage 4 runtime was introduced;
-- preserve `ADV-024-A`, `ADV-025-A`, `ADV-027-A/B/C`, provenance, receipt, epoch, selective-stale-target, and replay obligations without pulling them into this bounded repair;
+- construct an exact base containing two different exact lane objects with the same logical `lane_id` and prove resolution fails rather than picking one;
+- repeat for occupancy and work-claim member families;
+- test zero-match, missing-member, corrupt-member, and wrong-kind/member-family cases;
+- verify result identity is the exact immutable ref from the base revision, not a reconstructed newest/current value;
+- verify array reordering cannot change a successful or ambiguous outcome;
+- verify a partially missing base cannot be mislabeled as globally complete because one unrelated relationship resolves;
+- inspect whether any convenience cache/index becomes hidden authority over the immutable base;
+- preserve the chronology question explicitly: do not assume return-packet `claim_id` can always be resolved from `return-packet.base_state_revision_ref` until that relationship is separately grounded;
+- preserve `ADV-024-A`, `ADV-025-A`, provenance, stale-target, integration-receipt, epoch, replay, portability, and cross-language obligations as downstream state;
 - distinguish observed/runtime-tested evidence from inferred risks and do not relabel Lane 02 CI as independent Lane 03 execution.
 
 ## Integrated Stage 3 immutable-store acceptance boundary
@@ -87,6 +91,7 @@ The integrated store may currently claim only:
 - immutable persistence of validated canonical objects on the tested local/Linux filesystem path;
 - exact lookup by canonical immutable `axmref:v1` under the current schema/semantic validation set;
 - immutable persistence of state-revision v0.2 objects;
+- state-revision exact member refs pass the shared Stage 2 semantic parser and required-kind check before normal publication;
 - idempotent storage of byte-identical content;
 - loud failure on exact-reference/content mismatch, corrupt/non-canonical stored bytes, missing refs, or wrong-schema reinterpretation;
 - interrupted pre-publication temp bytes do not become visible through normal exact lookup in the tested implementation;
@@ -97,36 +102,45 @@ Important distinction:
 
 ```text
 revision object stored
-    != every nested member reference proven semantically parser-canonical until ADV-030 is repaired
     != all referenced members proven present
     != durable closure-check evidence exists
+    != a logical relationship resolves uniquely inside that revision
     != revision accepted by an integration engine
     != current institutional state
 ```
 
 Not tested/not proven: forced power-loss durability at every filesystem boundary; concurrent multi-process writer stress; non-Linux hard-link portability; cross-language full identity reproduction; historical lookup across incompatible schema evolution.
 
-## Active gate — exact revision-member semantic canonicality
+## Active gate — exact-base exactly-one member resolution
 
-Required equivalence:
-
-```text
-state-revision member ref accepted by contract/runtime validation
-    -> same bytes accepted unchanged by Stage 2 parse_immutable_ref
-    -> decoded components satisfy strict UTF-8 + canonical text/NFC requirements
-    -> parsed kind matches the field-required kind
-```
-
-and:
+The next primitive must satisfy:
 
 ```text
-noncanonical spelling / invalid UTF-8 / non-NFC / trailing data
-    -> rejected before canonical state-revision persistence
+exact base revision ref
+    + exact membership family / required kind
+    + logical id
+    -> load exact base
+    -> inspect only exact refs named by that base
+    -> verify candidate objects through the immutable store
+    -> exactly one logical-id match => return that exact immutable instance
+    -> zero or multiple matches => explicit failure
 ```
 
-This gate is about the exact reference language, not reference existence/closure. A parser-canonical member ref may still name a missing object; that remains a separate later truth state.
+Forbidden hidden resolution rules:
 
-Only after this repaired surface survives fresh deterministic evidence and Lane 03 exact-head challenge may Lane 01 open the next smallest Stage 4 relationship/lifecycle slice.
+```text
+array order
+newest version
+recency
+mutable current/HEAD
+occupant identity
+schedule order
+private chat memory
+```
+
+This primitive does **not** itself decide which lifecycle relationships must use base-local resolution. In particular, return-packet chronology may require an exact claim-instance relationship rather than lookup against the packet's work base. Do not silently settle that question inside a generic resolver.
+
+Only after this primitive survives deterministic evidence and Lane 03 exact-head attack may Lane 01 open the first actual lifecycle transition slice or freeze a relationship-specific Decision 007.
 
 ## Frozen downstream obligations
 
@@ -137,7 +151,7 @@ Only after this repaired surface survives fresh deterministic evidence and Lane 
 - `ADV-024-A`: durable closure/evidence state must be bound to an exact revision once closure checking can vary historically.
 - `ADV-025-A`: historical schema context must be reconstructable before incompatible schema evolution can coexist with replayable immutable history.
 - `ADV-027-A`: before occupancy runtime resolves `lane_id`, prove exactly one lane instance in the exact base or bind an exact lane instance.
-- `ADV-027-B`: before work-claim runtime resolves `occupancy_id`, prove exactly one occupancy instance in the exact base or bind an exact occupancy instance.
+- `ADV-027-B`: before work-claim runtime resolves `occupancy_id`, prove exactly one occupancy instance in the intended relationship state or bind an exact occupancy instance.
 - `ADV-027-C`: before packet/lifecycle runtime dereferences logical claim/lane ids, define relationship-specific exactly-one resolution or exact-instance semantics; do not choose by recency, array order, mutable current state, or hidden chat.
 
 These are obligations, not evidence that the corresponding runtimes exist.
