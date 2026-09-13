@@ -21,12 +21,13 @@ VALID_FIXTURES = json.loads((ROOT / "fixtures/contracts/valid.json").read_text(e
 
 
 class AliasingProbeStore(FilesystemObjectStore):
-    """Deterministically simulate caller mutation at the final occupancy write boundary.
+    """Mutate caller input at the final occupancy write boundary.
 
-    The production API receives a caller-owned mutable dict. This probe mutates that
-    exact dict only after admission has already grounded its base/lane relationship,
-    immediately before the real immutable store serializes it. That avoids timing-
-    dependent threading while exercising the same input-aliasing failure surface.
+    The probe deliberately does *not* require the value passed to ``store()`` to be
+    the original caller-owned mapping. A continuity-safe repair may pass a detached
+    function-owned candidate instead. The probe mutates only ``caller_occupancy``;
+    an aliased implementation will therefore publish the mutation, while a detached
+    candidate will remain unchanged.
     """
 
     def __init__(self, root: Path, caller_occupancy: dict[str, Any]) -> None:
@@ -42,7 +43,6 @@ class AliasingProbeStore(FilesystemObjectStore):
         expected_reference: str | None = None,
     ):
         if schema_name == "occupancy.schema.json" and not self.mutated:
-            self.assert_same_object(value)
             self.caller_occupancy["lane_id"] = "lane-decoy"
             self.mutated = True
         return super().store(
@@ -50,12 +50,6 @@ class AliasingProbeStore(FilesystemObjectStore):
             schema_name,
             expected_reference=expected_reference,
         )
-
-    def assert_same_object(self, value: Mapping[str, Any]) -> None:
-        if value is not self.caller_occupancy:
-            raise AssertionError(
-                "probe expected admit_occupancy to pass the caller-owned object into store()"
-            )
 
 
 class OccupancyAdmissionAdversarialTests(unittest.TestCase):
