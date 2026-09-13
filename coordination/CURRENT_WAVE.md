@@ -1,12 +1,12 @@
 # CURRENT WAVE — Institution Fabric
 
-Status: active initial build wave. Stage 1 contracts, Stage 2 deterministic identity, exact revision membership, Stage 3 immutable object storage, exact lifecycle bases, deterministic exactly-one member resolution, Decision 007 relationship chronology, and the three bounded Stage 4 lifecycle-admission primitives — occupancy, work claim, and return packet — are canonical. The current opened gate remains **return-packet output/evidence exact-instance semantics before compatibility**, but canonical integration is now **held on ADV-037 proof-to-use JSON transport drift**. Claim closure, successor-state publication, integration receipts/runtime, epochs/barriers, and replay remain closed.
+Status: active initial build wave. Stage 1 contracts, Stage 2 deterministic identity, exact revision membership, Stage 3 immutable object storage, exact lifecycle bases, deterministic exactly-one member resolution, Decisions 001–008, and the bounded Stage 4 occupancy / work-claim / return-packet admission primitives are canonical. The return-packet created-artifact/evidence exact-instance precondition is also canonical through PR #37, with ADV-035/036/037 repairs and ADV-038 materialization regressions preserved. The next opened gate is **exact evidence-to-created-artifact subject binding before packet output/evidence compatibility**. Claim closure, successor-state publication, integration receipts/runtime, epochs/barriers, and replay remain closed.
 
 ## Shared objective
 
 Turn the research scaffold into the smallest executable deterministic institution kernel without losing the universal boundary or pretending the v0 proof is complete before replayable immutable evidence exists.
 
-The immediate requirement is narrower: exact packet/artifact/evidence selection must remain exact when the resolved value is operationally consumed or transported. A verified immutable ref may not sit beside an authoritative value that can later be emitted as different semantic content without explicit failure.
+The immediate requirement is narrower: an exact evidence record may count toward an exact created output only when the evidence explicitly names that exact artifact as its subject. Exact evidence identity alone does not establish evidence relevance.
 
 ## Constitutional merge boundary
 
@@ -36,8 +36,10 @@ Key canonical milestones remain:
 - Bounded occupancy admission through PR #26 / `b7c68b7d9212562f159170f40c12d3be7bac86f0`, with ADV-032-A/B/C through PR #28 / `d3bddb783cf0a4c63405d790404d403b20cfe60c`.
 - Bounded work-claim admission through PR #29 / `db769438a2dfdcd7e17a8acc4a116b7a37b32855`, with ADV-033-C through PR #32 / `26c3c89400a1cfbc314d1742d575ebd1063d5d70`.
 - Bounded return-packet admission through PR #33 / `62a1533e901e6ecef825a0b103ecf87e6a23e620`.
-- ADV-034-A/B/C/D return-packet continuity regressions on canonical-main integration head `13ceeac1b5930b00458a66dd6db85913c311752c`: native run `34748872041`, job `103701628200`, **151/151 passed**, explicit compile success.
-- Latest canonical lead decision packet: `coordination/returns/01/2026-09-13_ACTIVATION_024.md`, commit `c715798f0e619f76bacf7d45a4d373aa86692cf6`.
+- ADV-034-A/B/C/D return-packet continuity regressions on canonical-main integration head `13ceeac1b5930b00458a66dd6db85913c311752c`: native run `34748872041`, job `103701628200`, 151/151 passed, explicit compile success.
+- Exact return-packet created-artifact/evidence identity precondition through PR #37 / merge `bf20e7bd1fa641dab7c5c51bee608ed541171a80`.
+- ADV-038 materialization regressions and Lane 03 Activation 026 preserved through PR #42 / merge `63b9b80c5d25a85cd477a721fb5286fcbee5ded1`.
+- Decision 008 evidence subject chronology through PR #43 / merge `3c04a38033cd2c10fc5d6daf88abc0ae9b9f32c5`.
 
 ## Integrated lifecycle relationship boundary
 
@@ -98,168 +100,122 @@ Occupancy entry base may differ from later claim base. Snapshot fields such as `
 
 Bounded claim only: immutable packet persistence is **not** packet acceptance, evidence closure, claim closure, successor-state publication, or integration.
 
-## Active gate — return-packet output/evidence exact-instance semantics
+## Canonical return-packet output/evidence identity precondition
 
-Compatibility is still closed because packet output/evidence relationships first need exact operational identity across use and transport boundaries.
-
-Current contract facts remain:
-
-- `lane.outputs[]` names output `type` values.
-- `lane.evidence_requirements[]` maps output type to required evidence states.
-- `artifact.type` exists only on an artifact object.
-- `evidence-record.state` exists only on an evidence-record object.
-- `return-packet.artifacts_created`, `artifacts_modified`, and `evidence_refs` are strings unless the runtime constrains their operational meaning.
-- artifact provenance still records `base_state_revision` without the exact semantics required by `ADV-002-C`.
-- `supersedes_ref` still does not by itself express the two-sided modified-artifact relationship required by `ADV-002-I`.
-
-### Lane 02 PR #37 — exact selection + ADV-036 repair, integration still held
-
-PR #37 implements read-only `resolve_return_packet_output_identity(...)` for exact created-artifact and evidence-record selection. It:
+`resolve_return_packet_output_identity(...)` is now canonical for the demonstrated created-artifact/evidence surface. It:
 
 - exact-loads one exact immutable return packet;
-- requires canonical exact refs for created artifacts and evidence records;
-- reuses shared Stage 2 `parse_immutable_ref()` semantics;
-- exact-loads selected objects and checks required kind/logical id;
-- does not select by logical id, newest object, storage order, array order, current/HEAD state, actor identity, or hidden history;
-- fails closed on any non-empty `artifacts_modified` because the present contract cannot truthfully express both exact observed prior target and exact produced result.
+- treats `artifacts_created[]` as direct canonical exact immutable `artifact` refs;
+- treats packet `evidence_refs[]` as direct canonical exact immutable `evidence-record` refs;
+- reuses shared Stage 2 immutable-reference parsing;
+- exact-loads and verifies required kind/logical id;
+- returns canonical-byte-backed immutable operational views whose demonstrated direct-use and bounded materialization paths remain exact;
+- fails closed on any non-empty `artifacts_modified[]` because the current contract cannot truthfully express both the exact observed prior artifact and exact produced result.
 
-Lane 02 first repaired ADV-035 ordinary aliasing with recursively frozen builtin-container subclasses. ADV-036 then demonstrated that builtin base-class mutators could bypass those overrides.
+### Repair / adversarial evidence retained
 
-Lane 02 Activation 023 repaired ADV-036 using tuple-backed non-`dict` / non-`list` operational views plus a bounded `__class__` compatibility view for the existing Stage 2 `isinstance(..., dict/list)` path.
+- ADV-035: ordinary post-resolution alias mutation was demonstrated and repaired.
+- ADV-036: builtin base-class mutator bypass was demonstrated and repaired.
+- ADV-037: tuple-backed operational views could serialize through stdlib JSON into arrays of keys; repaired by the canonical-byte-backed representation, where unsupported ordinary transport may reject rather than silently change meaning.
+- ADV-038-A/B/C: mapping/list/canonical materialization re-attacked the repaired representation; no contradiction reproduced.
 
-Exact tested repair/workflow head:
+Lane 02 exact repaired implementation/workflow head `627a878dbcdade96c0602efddb2f5e06974a3442` directly recorded **171/171 passed** plus explicit compile success before its documentation-only final commit.
 
-`88836bc6ff47a1010ca4080102d0a447055fff9a`
+Lane 03 exact tested ADV-038 head `a3a119f6c5b62bd2b982ff54ab05cd8984b39ccf` had native run `34757374230` with full test discovery success and explicit compile success. Its numerical total `174` remains a source-accounting inference from the prior observed 171 plus exactly three added unittest methods, not relabelled as directly observed stdout.
 
-Final documentation head:
+Lane 01 then reapplied those exact ADV-038 fixtures on a fresh current-main branch after PR #37 merged. Native run `34758666774`, job `103727428236`, exact head `5b98fc8043965a1053784352901ff33f566502cd` completed with:
 
-`69b741bbc22c006289fccb2d27ed7c75b3703588`
+- full deterministic unittest discovery: **success**;
+- explicit compile including ADV-038: **success**;
+- complete job: **success**.
 
-Native run `34753966159`, job `103715090370`:
+PR #42 integrated those regressions and the Lane 03 return packet without changing production runtime.
 
-- complete unittest discovery: **success**;
-- ADV-035-A/B/C and adopted ADV-036-A/B/C: **green through unchanged discovery**;
-- explicit compile: **success**;
-- numerical `169` count: **source-accounting inference**, not directly observed stdout on that run.
+Historical failing adversarial PRs #38, #39, and #40 are closed without merging; their failure evidence remains preserved. Stacked successful PR #41 is also closed as superseded by canonical PR #42 rather than rewritten or deleted.
 
-This is valid positive evidence for the demonstrated mutation paths. It is **not sufficient for integration** after ADV-037.
+## Active gate — exact evidence subject binding before compatibility
 
-### Lane 03 PR #40 — current blocker / repair oracle
-
-PR #40 changes no production runtime. It adds ADV-037-A/B against Lane 02's tuple-backed repair.
-
-The tests accept either:
-
-1. explicit stdlib JSON serialization rejection; or
-2. successful JSON transport that round-trips to the same exact immutable ref.
-
-They fail only on silent semantic drift.
-
-Exact tested Lane 03 head:
-
-`fbdb2ea4f56a53e03854f0bf0efb61d3d604ee3e`
-
-Native merge candidate:
-
-`11f34721881ea5e4ad5be7e515049f2176f2ac79`
-
-Run `34754749509`, job `103717127039` directly reports:
-
-- **171 tests run**;
-- **169 passed**;
-- **exactly 2 failed**;
-- only ADV-037-A/B failed;
-- prior ADV-035-A/B/C and ADV-036-A/B/C remained green;
-- compile skipped after unittest failure.
-
-Observed failure:
+Decision 008 records the next missing institutional fact:
 
 ```text
-tuple-backed _FrozenDict
-    -> exact identity path reads it through __class__ compatibility view
-    -> Python stdlib json.dumps accepts real tuple-backed runtime type
-    -> serializes iteration as JSON array of keys
-    -> values / nested relationship meaning are discarded
-    -> json.loads returns array, not object
-    -> original exact immutable ref cannot be reproduced
+exact evidence identity
+    != evidence that this exact record supports this exact output
 ```
 
-Representative artifact transport output:
+Current contract facts:
+
+- `lane.outputs[]` declares output `type` values;
+- `lane.evidence_requirements[]` declares required evidence states for an output type;
+- an `artifact` has `type` and `evidence_refs[]`;
+- an `evidence-record` has `subject_ref` and `state`;
+- the current evidence schema permits `subject_ref` to be a general string;
+- the packet identity resolver can now bind exact created-artifact and exact evidence-record instances.
+
+A type/state-only compatibility check could therefore launder unrelated passing evidence into support for an output.
+
+Decision 008 opens only this acyclic Stage 4 subject chronology:
 
 ```text
-["content_ref","dependency_refs","evidence_refs","id","provenance","schema_version","type","version"]
+exact created artifact A
+    -> exact evidence E created/selected later
+    -> E.subject_ref must be the canonical exact artifact ref A
+    -> exact packet P names A and E
 ```
 
-Representative packet transport output:
+For this bounded path, `artifact.evidence_refs` does not become authoritative for post-artifact evidence compatibility. Requiring both A to exact-ref E and E to exact-ref A would create a content-addressed reciprocal dependency; the kernel must not invent recency/currentness to escape that cycle.
 
-```text
-["artifacts_created","artifacts_modified","base_state_revision_ref","changes","claim_ref","downstream_effects","evidence_refs","failures_or_blockers","id","lane_id","requested_followup","schema_version","uncertainties"]
-```
-
-Durable object-store corruption was not observed. The failure is proof-to-use/transport drift after successful exact verification.
-
-## Current integration decision
-
-**Do not merge PR #37 in its current form.**
-
-Preserve its exact-selection behavior, ADV-035/ADV-036 closure, and `artifacts_modified` fail-closed boundary, but repair only the exposed JSON transport contradiction before compatibility is opened.
-
-**Treat PR #40 as adversarial evidence / repair oracle, not production runtime.** Its witnesses do not require generic JSON-transport support; explicit rejection is acceptable. They only forbid successful transport into different meaning.
-
-PR #38 retains the original ADV-035 failure evidence. PR #39 retains the ADV-036 failure evidence. They are historical/adversarial evidence, not current production candidates.
+Evidence whose subject is a path, logical id, content reference, or other non-exact string may remain a valid evidence object for other purposes, but it cannot satisfy exact created-artifact output compatibility without a later grounded relation.
 
 ## Lane 02 — smallest next implementation
 
-Repair only ADV-037.
+Implement only a **read-only exact evidence-subject resolver** around the already-grounded packet output/evidence identity result.
 
-Required invariant:
+Required behavior:
 
-```text
-exact immutable ref + authoritative operational value
-    -> exposed ordinary JSON transport must either
-       A. reject explicitly before emitting different meaning
-       OR
-       B. round-trip to the same exact immutable ref
-```
+1. use the shared Stage 2 immutable-reference parser for candidate `evidence.subject_ref` values;
+2. require kind `artifact` when an evidence record is being considered against a created artifact;
+3. bind evidence only to the exact created-artifact ref it names;
+4. expose unmatched/non-artifact subject evidence explicitly or fail closed — never assign by output type, array order, newest version, storage order, or logical id;
+5. preserve `artifacts_modified` fail-closed behavior;
+6. remain read-only; do not close claims, publish successor revisions, integrate packets, or mutate evidence;
+7. keep ADV-035/036/037/038 green.
 
-Requirements:
+Required regressions:
 
-1. preserve shared Stage 2 exact-ref parsing and exact object-store loading;
-2. preserve kind/logical-id verification;
-3. preserve created-artifact/evidence direct exact selection;
-4. preserve ADV-035 ordinary-mutation closure;
-5. preserve ADV-036 builtin-base-class mutation closure;
-6. preserve `artifacts_modified` fail-closed behavior;
-7. adopt/rerun ADV-037-A/B unchanged;
-8. rerun full native unittest discovery and explicit compile;
-9. stop before compatibility, provenance/evidence closure, claim closure, successor publication, integration, epochs, or replay.
+- exact subject A binds to exact created artifact A;
+- same logical artifact id / different exact artifact ref does not bind;
+- bare logical id, path, or content string does not count as exact artifact subject evidence;
+- wrong-kind exact subject ref fails closed for artifact compatibility;
+- exact packet evidence about unrelated artifact B cannot satisfy artifact A even when type/state appear compatible;
+- `artifact.evidence_refs` cannot override a contradictory exact evidence subject;
+- no recency/current/array-order/actor authority enters selection.
 
-A dedicated immutable mapping/sequence representation, bounded exact transport adapter, exact reload/reverification around materialization, explicit unsupported-transport rejection, or another mechanism may be acceptable if the invariant is proven. Implementation fashion is not authority; evidence against the invariant is.
+Stop after subject binding. Do **not** decide the semantics of multiple `required_states`, full compatibility, provenance/evidence closure, claim closure, successor publication, integration, epochs, or replay in the same lane.
 
 ## Lane 03 — next adversarial pass
 
-Wait for Lane 02's exact ADV-037 repaired head, then attack only this proof-to-use/transport surface:
+Attack the exact Lane 02 subject-binding head only:
 
-- ADV-035 ordinary mutation;
-- ADV-036 builtin base-class mutation;
-- ADV-037 JSON transport drift;
-- nested arrays/maps;
-- same-logical-id / different-exact-instance substitution;
-- any adapter/materialization/reverification boundary introduced by the repair;
-- preservation of the modified-artifact fail-closed boundary.
+- same-logical-id/different-exact artifact substitution;
+- unrelated passing-evidence laundering;
+- wrong-kind exact subject refs;
+- non-exact subject strings accidentally accepted through fallback logic;
+- `artifact.evidence_refs` attempting to override contradictory subject identity;
+- multiple evidence records with conflicting states for the same exact subject;
+- nested/materialized views still preserving ADV-035/036/037/038 invariants.
 
-Do not expand into compatibility or later lifecycle/integration stages.
+Do not expand into full lane compatibility or later lifecycle/integration stages.
 
 ## Lane 01 — sequencing boundary
 
 Protect this order:
 
 ```text
-exact output/evidence selection
-    -> proof-to-use exact identity continuity
-    -> proof-to-transport exact identity continuity or explicit rejection
+exact packet/artifact/evidence selection
+    -> proof-to-use/materialization continuity
+    -> exact evidence-to-output subject binding
     before
-packet output/evidence compatibility
+packet output/evidence compatibility semantics
     before
 claim closure / successor revision publication
     before
@@ -270,6 +226,9 @@ Do not promote domain-specific output policy into the universal kernel.
 
 ## Frozen downstream obligations
 
+- Semantics of multiple lane `required_states` remain unresolved; do not assume conjunctive/alternative/ordered meaning yet.
+- Evidence method/source quality beyond current schema validation remains unresolved.
+- Artifact `evidence_refs` chronology/exact semantics remains unresolved and is not compatibility authority in the current slice.
 - `ADV-002-C`: artifact provenance base revision needs exact-instance semantics before exact provenance/replay claims.
 - `ADV-002-I`: modified-artifact semantics must represent/derive both exact observed prior target and exact produced result; stale-target compatibility remains unresolved.
 - `ADV-002-G/H`: integration receipts must bind exact base/result revisions and exact packet instances before integration/replay claims.
@@ -279,13 +238,10 @@ Do not promote domain-specific output policy into the universal kernel.
 - `ADV-031-A`: authoritative post-base refs must be exact-loaded/identity-verified before operational relationship use.
 - `ADV-033-A/B/C`: exact lifecycle object presence does not prove the object's historical relationships; later transitions re-ground relationships they rely on unless a future explicit closure proof supersedes that mechanism.
 - `ADV-034-A/B/C/D`: packet admission remains exact-base/exact-claim grounded and detached handoff content remains stable through publication.
-- `ADV-035`: ordinary proof-to-use aliasing must remain closed after any new repair.
-- `ADV-036`: builtin base-class mutator bypass must remain closed after any new repair.
-- `ADV-037`: successful JSON transport must not silently change exact operational meaning; explicit rejection remains acceptable.
+- ADV-035/036/037/038 exact operational/materialization regressions must remain green as later consumers are added.
 - occupancy/claim global currentness, supersession, authorization, and stale-base semantics remain unresolved.
 - multiple exact packets for one claim need explicit future selection/conflict semantics.
-- artifact/evidence closure remains unimplemented.
-- packet output/evidence compatibility remains unimplemented.
+- packet output/evidence compatibility remains unimplemented beyond the exact-identity and subject-binding preconditions.
 - claim closure/status-transition publication remains unimplemented.
 - successor state revision publication remains unimplemented.
 - integration runtime, epochs/barriers, and replay remain unimplemented.
