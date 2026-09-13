@@ -15,6 +15,7 @@ on:
       - "lane-02/activation-09-exact-lifecycle-bases"
       - "lane-02/activation-16-occupancy-admission"
       - "lane-02/activation-20-return-packet-admission"
+      - "lane-01/activation-21-integrate-adv034"
     paths:
       - "axm_institution/**"
       - "schemas/**"
