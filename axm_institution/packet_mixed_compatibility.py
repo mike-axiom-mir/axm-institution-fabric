@@ -329,7 +329,7 @@ def _require_modified_evidence_agreement(
         result.modification.result_artifact.reference: result
         for result in modified_compatibility.modified_results
     }
-    if Counter(component_results) != Counter(mixed_modified_evidence):
+    if set(component_results) != set(mixed_modified_evidence):
         raise MixedComponentEvidenceMismatchError(
             "Decision 012 result identities disagree with the mixed output categories"
         )
