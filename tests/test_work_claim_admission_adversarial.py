@@ -137,6 +137,89 @@ class WorkClaimAdmissionAdversarialTests(unittest.TestCase):
 
         self.assertEqual(self._claim_files(), [])
 
+    def test_adv_033_c_separate_historical_bases_preserve_exact_relations_without_hidden_authority(self) -> None:
+        """Valid chronology must remain exact even with later decoys and snapshot hints."""
+
+        entry_lane, entry_lane_result = self._store_lane(
+            purpose="Exact lane instance grounded by the occupancy entry base."
+        )
+        _, entry_base = self._store_base(
+            [entry_lane_result.reference],
+            revision_id="revision.occupancy-entry-base-valid",
+        )
+
+        occupancy = self._fixture("occupancy.schema.json")
+        occupancy["base_state_revision_ref"] = entry_base.reference
+        occupancy["lane_id"] = entry_lane["id"]
+        occupancy["status"] = "active"
+        occupancy["ended_at"] = None
+        occupancy["claim_ids"] = ["claim.snapshot-hint-only"]
+        occupancy_result = self.store.store(occupancy, "occupancy.schema.json")
+
+        unrelated_lane = copy.deepcopy(entry_lane)
+        unrelated_lane["id"] = "lane-unrelated"
+        unrelated_lane["purpose"] = "Array-order decoy that must not win selection."
+        unrelated_lane_result = self.store.store(unrelated_lane, "lane.schema.json")
+
+        claim_lane = copy.deepcopy(entry_lane)
+        claim_lane["purpose"] = "Later exact lane instance selected only by the claim base."
+        claim_lane_result = self.store.store(claim_lane, "lane.schema.json")
+        self.assertNotEqual(entry_lane_result.reference, claim_lane_result.reference)
+
+        _, claim_base = self._store_base(
+            [unrelated_lane_result.reference, claim_lane_result.reference],
+            revision_id="revision.later-clean-claim-base",
+        )
+        self.assertNotEqual(entry_base.reference, claim_base.reference)
+
+        newest_same_id_lane = copy.deepcopy(entry_lane)
+        newest_same_id_lane["purpose"] = "Newest same-id lane stored outside the exact claim base."
+        newest_same_id_lane_result = self.store.store(
+            newest_same_id_lane,
+            "lane.schema.json",
+        )
+        self.assertNotEqual(claim_lane_result.reference, newest_same_id_lane_result.reference)
+
+        later_same_logical_occupancy = copy.deepcopy(occupancy)
+        later_same_logical_occupancy["actor_ref"] = "fixture:occupant-b"
+        later_occupancy_result = self.store.store(
+            later_same_logical_occupancy,
+            "occupancy.schema.json",
+        )
+        self.assertNotEqual(occupancy_result.reference, later_occupancy_result.reference)
+
+        claim = self._claim_for(
+            claim_base.reference,
+            entry_lane["id"],
+            occupancy_result.reference,
+        )
+        claim["overlap_with_claim_ids"] = ["claim.reported-overlap-only"]
+
+        result = open_work_claim(self.store, claim)
+        persisted_claim = self.store.load(result.claim_ref, "work-claim.schema.json")
+        persisted_occupancy = self.store.load(
+            result.occupancy_ref,
+            "occupancy.schema.json",
+        )
+
+        self.assertEqual(result.lane_ref, claim_lane_result.reference)
+        self.assertNotEqual(result.lane_ref, entry_lane_result.reference)
+        self.assertNotEqual(result.lane_ref, newest_same_id_lane_result.reference)
+        self.assertEqual(result.occupancy_ref, occupancy_result.reference)
+        self.assertNotEqual(result.occupancy_ref, later_occupancy_result.reference)
+        self.assertEqual(
+            persisted_claim["base_state_revision_ref"],
+            claim_base.reference,
+        )
+        self.assertEqual(
+            persisted_claim["overlap_with_claim_ids"],
+            ["claim.reported-overlap-only"],
+        )
+        self.assertEqual(
+            persisted_occupancy["claim_ids"],
+            ["claim.snapshot-hint-only"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
