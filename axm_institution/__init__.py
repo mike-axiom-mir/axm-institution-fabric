@@ -27,6 +27,14 @@ from .store import (
     ObjectStoreError,
     StoreWriteResult,
 )
+from .resolution import (
+    ResolvedRevisionMember,
+    RevisionMemberAmbiguityError,
+    RevisionMemberConfigurationError,
+    RevisionMemberNotFoundError,
+    RevisionMemberResolutionError,
+    resolve_exact_revision_member,
+)
 
 __all__ = [
     "STRONG_EVIDENCE_STATES",
@@ -54,4 +62,10 @@ __all__ = [
     "ObjectReferenceMismatchError",
     "ObjectStoreError",
     "StoreWriteResult",
+    "ResolvedRevisionMember",
+    "RevisionMemberAmbiguityError",
+    "RevisionMemberConfigurationError",
+    "RevisionMemberNotFoundError",
+    "RevisionMemberResolutionError",
+    "resolve_exact_revision_member",
 ]
