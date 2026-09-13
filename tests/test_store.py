@@ -137,6 +137,25 @@ class FilesystemObjectStoreTests(unittest.TestCase):
                 stored_json = list((Path(self.tempdir.name) / "objects").rglob("*.json"))
                 self.assertEqual(stored_json, [])
 
+    def test_adv030_semantic_member_failures_are_rejected_before_storage(self) -> None:
+        base = copy.deepcopy(VALID_FIXTURES["state-revision.schema.json"])
+        digest = "a" * 64
+        malformed_refs = (
+            f"axmref:v1:objective:%FF:-:sha256:{digest}",
+            f"axmref:v1:objective:member:v=%FF:sha256:{digest}",
+            f"axmref:v1:objective:e%CC%81:-:sha256:{digest}",
+            f"axmref:v1:objective:member:v=e%CC%81:sha256:{digest}",
+        )
+
+        for malformed_ref in malformed_refs:
+            with self.subTest(reference=malformed_ref):
+                revision = copy.deepcopy(base)
+                revision["objective_ref"] = malformed_ref
+                with self.assertRaises(ContractValidationError):
+                    self.store.store(revision, "state-revision.schema.json")
+                stored_json = list((Path(self.tempdir.name) / "objects").rglob("*.json"))
+                self.assertEqual(stored_json, [])
+
     def test_explicit_wrong_schema_cannot_reinterpret_reference(self) -> None:
         result = self.store.store(self.objective, "objective.schema.json")
         with self.assertRaises(ObjectReferenceMismatchError):

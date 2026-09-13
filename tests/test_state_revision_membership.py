@@ -139,17 +139,9 @@ class ExactRevisionMembershipTests(unittest.TestCase):
     def test_all_revision_membership_fields_are_typed_exact_refs(self):
         revision = self.revision()
         validate_instance(revision, "state-revision.schema.json")
-        expected_kinds = {
-            "objective_ref": "objective",
-            "lane_refs": "lane",
-            "occupancy_refs": "occupancy",
-            "claim_refs": "work-claim",
-            "artifact_refs": "artifact",
-            "evidence_refs": "evidence-record",
-            "return_packet_refs": "return-packet",
-            "integration_receipt_refs": "integration-receipt",
-        }
-        for field, expected_kind in expected_kinds.items():
+        for field, expected_kind in FIELD_KINDS.items():
+            if field == "parent_revision_ref" and revision[field] is None:
+                continue
             values = revision[field] if isinstance(revision[field], list) else [revision[field]]
             for reference in values:
                 with self.subTest(field=field, reference=reference):
@@ -205,6 +197,57 @@ class ExactRevisionMembershipTests(unittest.TestCase):
                     self.set_member_ref(candidate, field, canonical + suffix)
                     with self.assertRaises(ContractValidationError):
                         validate_instance(candidate, "state-revision.schema.json")
+
+    def test_adv030a_invalid_utf8_is_rejected_for_id_and_version_everywhere(self):
+        for field, kind in FIELD_KINDS.items():
+            witnesses = (
+                f"axmref:v1:{kind}:%FF:-:sha256:{DIGEST}",
+                f"axmref:v1:{kind}:member:v=%FF:sha256:{DIGEST}",
+            )
+            for reference in witnesses:
+                with self.subTest(field=field, reference=reference):
+                    with self.assertRaises(ImmutableReferenceError):
+                        parse_immutable_ref(reference)
+                    candidate = self.revision()
+                    self.set_member_ref(candidate, field, reference)
+                    with self.assertRaises(ContractValidationError):
+                        validate_instance(candidate, "state-revision.schema.json")
+
+    def test_adv030b_non_nfc_is_rejected_for_id_and_version_everywhere(self):
+        for field, kind in FIELD_KINDS.items():
+            witnesses = (
+                f"axmref:v1:{kind}:e%CC%81:-:sha256:{DIGEST}",
+                f"axmref:v1:{kind}:member:v=e%CC%81:sha256:{DIGEST}",
+            )
+            for reference in witnesses:
+                with self.subTest(field=field, reference=reference):
+                    with self.assertRaises(ImmutableReferenceError):
+                        parse_immutable_ref(reference)
+                    candidate = self.revision()
+                    self.set_member_ref(candidate, field, reference)
+                    with self.assertRaises(ContractValidationError):
+                        validate_instance(candidate, "state-revision.schema.json")
+
+    def test_adv030b_nfc_equivalents_remain_accepted_everywhere(self):
+        for field, kind in FIELD_KINDS.items():
+            references = (
+                f"axmref:v1:{kind}:%C3%A9:-:sha256:{DIGEST}",
+                f"axmref:v1:{kind}:member:v=%C3%A9:sha256:{DIGEST}",
+            )
+            for reference in references:
+                with self.subTest(field=field, reference=reference):
+                    parsed = parse_immutable_ref(reference)
+                    self.assertEqual(str(parsed), reference)
+                    candidate = self.revision()
+                    self.set_member_ref(candidate, field, reference)
+                    validate_instance(candidate, "state-revision.schema.json")
+
+    def test_semantic_validator_still_enforces_field_required_kind(self):
+        candidate = self.revision()
+        wrong_kind = f"axmref:v1:lane:member:-:sha256:{DIGEST}"
+        candidate["objective_ref"] = wrong_kind
+        with self.assertRaises(ContractValidationError):
+            validate_instance(candidate, "state-revision.schema.json")
 
     def test_legacy_logical_membership_shape_is_rejected(self):
         legacy = {

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://axm.local/schemas/institution/state-revision.schema.json",
   "title": "AXM Institution Fabric State Revision",
-  "description": "Immutable canonical snapshot whose membership binds exact immutable object instances per Decision 005.",
+  "description": "Immutable canonical snapshot whose membership binds exact immutable object instances per Decision 005. JSON Schema filters structure and bounded spelling; kernel validation additionally requires every member reference to round-trip unchanged through the shared Stage 2 semantic parser and match the field-required kind.",
   "type": "object",
   "additionalProperties": false,
   "required": [

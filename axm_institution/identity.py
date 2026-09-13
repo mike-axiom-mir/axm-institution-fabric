@@ -36,6 +36,17 @@ _SHORT_JSON_ESCAPES = {
     "\f": "\\f",
     "\r": "\\r",
 }
+_STATE_REVISION_MEMBER_KINDS: tuple[tuple[str, str, bool], ...] = (
+    ("parent_revision_ref", "state-revision", False),
+    ("objective_ref", "objective", False),
+    ("lane_refs", "lane", True),
+    ("occupancy_refs", "occupancy", True),
+    ("claim_refs", "work-claim", True),
+    ("artifact_refs", "artifact", True),
+    ("evidence_refs", "evidence-record", True),
+    ("return_packet_refs", "return-packet", True),
+    ("integration_receipt_refs", "integration-receipt", True),
+)
 
 
 class IdentityError(ValueError):
@@ -47,7 +58,7 @@ class CanonicalizationError(IdentityError):
 
 
 class ContractValidationError(IdentityError):
-    """An object does not satisfy its Stage 1 JSON Schema contract."""
+    """An object does not satisfy its kernel contract."""
 
 
 class ImmutableReferenceError(IdentityError):
@@ -251,6 +262,8 @@ def validate_instance(
         raise ContractValidationError(
             f"{schema_name} validation failed at {location}: {err.message}"
         )
+    if schema_name == "state-revision.schema.json":
+        _validate_state_revision_member_refs(value)
     return value
 
 
@@ -366,6 +379,36 @@ def parse_immutable_ref(reference: str) -> ImmutableRef:
     if str(parsed) != reference:
         raise ImmutableReferenceError("reference is not in canonical form")
     return parsed
+
+
+def _validate_state_revision_member_refs(value: Mapping[str, Any]) -> None:
+    """Require state-revision members to use the exact Stage 2 reference language.
+
+    JSON Schema remains the structural/spelling filter. This semantic pass reuses the
+    canonical Stage 2 parser for UTF-8, NFC, percent-encoding, digest, and round-trip
+    checks, then enforces the kind required by each membership field. It intentionally
+    does not check whether referenced objects exist in the store.
+    """
+
+    for field, expected_kind, is_array in _STATE_REVISION_MEMBER_KINDS:
+        raw = value.get(field)
+        if raw is None:
+            continue
+        references = raw if is_array else [raw]
+        for index, reference in enumerate(references):
+            location = f"$.{field}[{index}]" if is_array else f"$.{field}"
+            try:
+                parsed = parse_immutable_ref(reference)
+            except IdentityError as exc:
+                raise ContractValidationError(
+                    "state-revision.schema.json semantic reference validation failed "
+                    f"at {location}: {exc}"
+                ) from exc
+            if parsed.kind != expected_kind:
+                raise ContractValidationError(
+                    "state-revision.schema.json semantic reference validation failed "
+                    f"at {location}: expected kind {expected_kind!r}, got {parsed.kind!r}"
+                )
 
 
 def make_immutable_ref(
