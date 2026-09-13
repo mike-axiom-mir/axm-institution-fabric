@@ -98,11 +98,11 @@
     ]
   },
   "work-claim.schema.json": {
-    "schema_version": "0.2",
+    "schema_version": "0.3",
     "id": "claim.lane-02.stage1-repair",
     "lane_id": "lane-02",
     "base_state_revision_ref": "axmref:v1:state-revision:revision.fixture.0001:-:sha256:2222222222222222222222222222222222222222222222222222222222222222",
-    "occupancy_id": "occupancy.lane-02.activation-02",
+    "occupancy_ref": "axmref:v1:occupancy:occupancy.lane-02.activation-02:-:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
     "summary": "Repair Stage 1 contract ambiguities and add the epoch/barrier descriptor.",
     "created_at": "2026-09-12T13:09:00Z",
     "status": "open",
@@ -114,9 +114,9 @@
     "overlap_with_claim_ids": []
   },
   "return-packet.schema.json": {
-    "schema_version": "0.2",
+    "schema_version": "0.3",
     "id": "packet.lane-02.activation-02",
-    "claim_id": "claim.lane-02.stage1-repair",
+    "claim_ref": "axmref:v1:work-claim:claim.lane-02.stage1-repair:-:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
     "lane_id": "lane-02",
     "base_state_revision_ref": "axmref:v1:state-revision:revision.fixture.0001:-:sha256:2222222222222222222222222222222222222222222222222222222222222222",
     "changes": [
