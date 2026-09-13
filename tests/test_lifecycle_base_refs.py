@@ -124,18 +124,34 @@ class ExactLifecycleBaseTests(unittest.TestCase):
                 "failures_or_blockers", "downstream_effects", "requested_followup",
             },
         }
+        expected_versions = {
+            "occupancy.schema.json": "0.2",
+            "work-claim.schema.json": "0.3",
+            "return-packet.schema.json": "0.3",
+        }
         for schema_name in LIFECYCLE_SCHEMAS:
             with self.subTest(schema=schema_name):
                 schema = json.loads((SCHEMA_DIR / schema_name).read_text(encoding="utf-8"))
                 expected = set(legacy_property_sets[schema_name])
                 expected.remove("base_state_revision")
                 expected.add("base_state_revision_ref")
-                self.assertEqual(schema["properties"]["schema_version"]["const"], "0.2")
+                if schema_name == "work-claim.schema.json":
+                    expected.remove("occupancy_id")
+                    expected.add("occupancy_ref")
+                if schema_name == "return-packet.schema.json":
+                    expected.remove("claim_id")
+                    expected.add("claim_ref")
+                self.assertEqual(
+                    schema["properties"]["schema_version"]["const"],
+                    expected_versions[schema_name],
+                )
                 self.assertEqual(set(schema["properties"]), expected)
                 self.assertIn("base_state_revision_ref", schema["required"])
                 self.assertNotIn("base_state_revision", schema["properties"])
                 validate_instance(self.valid[schema_name], schema_name)
 
+        self.assertIn("claim_ids", self.valid["occupancy.schema.json"])
+        self.assertIn("overlap_with_claim_ids", self.valid["work-claim.schema.json"])
         packet = self.valid["return-packet.schema.json"]
         for preserved in (
             "evidence_refs", "uncertainties", "failures_or_blockers",

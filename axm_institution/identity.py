@@ -47,6 +47,10 @@ _STATE_REVISION_MEMBER_KINDS: tuple[tuple[str, str, bool], ...] = (
     ("return_packet_refs", "return-packet", True),
     ("integration_receipt_refs", "integration-receipt", True),
 )
+_EXACT_REFERENCE_FIELDS: dict[str, tuple[tuple[str, str], ...]] = {
+    "work-claim.schema.json": (("occupancy_ref", "occupancy"),),
+    "return-packet.schema.json": (("claim_ref", "work-claim"),),
+}
 
 
 class IdentityError(ValueError):
@@ -264,6 +268,9 @@ def validate_instance(
         )
     if schema_name == "state-revision.schema.json":
         _validate_state_revision_member_refs(value)
+    exact_fields = _EXACT_REFERENCE_FIELDS.get(schema_name)
+    if exact_fields:
+        _validate_exact_reference_fields(value, schema_name, exact_fields)
     return value
 
 
@@ -409,6 +416,30 @@ def _validate_state_revision_member_refs(value: Mapping[str, Any]) -> None:
                     "state-revision.schema.json semantic reference validation failed "
                     f"at {location}: expected kind {expected_kind!r}, got {parsed.kind!r}"
                 )
+
+
+def _validate_exact_reference_fields(
+    value: Mapping[str, Any],
+    schema_name: str,
+    fields: tuple[tuple[str, str], ...],
+) -> None:
+    """Validate authoritative exact-reference fields through the Stage 2 parser."""
+
+    for field, expected_kind in fields:
+        reference = value.get(field)
+        if reference is None:
+            continue
+        try:
+            parsed = parse_immutable_ref(reference)
+        except IdentityError as exc:
+            raise ContractValidationError(
+                f"{schema_name} semantic reference validation failed at $.{field}: {exc}"
+            ) from exc
+        if parsed.kind != expected_kind:
+            raise ContractValidationError(
+                f"{schema_name} semantic reference validation failed at $.{field}: "
+                f"expected kind {expected_kind!r}, got {parsed.kind!r}"
+            )
 
 
 def make_immutable_ref(
