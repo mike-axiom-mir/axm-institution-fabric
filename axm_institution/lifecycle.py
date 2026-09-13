@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from dataclasses import dataclass
 from typing import Any, Mapping
 
@@ -28,6 +29,13 @@ def admit_occupancy(
 ) -> OccupancyAdmissionResult:
     """Admit one occupancy against the lane recorded in its exact entry base.
 
+    One function-owned deep snapshot is created before validation or dependency
+    grounding. The same detached candidate is then used through validation, exact
+    base loading, exact lane resolution, identity derivation inside the store, and
+    final immutable publication. Caller mutation after entry therefore cannot silently
+    change the authoritative occupancy that gets persisted after a different relation
+    was grounded.
+
     The occupancy contract is validated first. Its exact ``base_state_revision_ref``
     must then load as a state revision, and ``lane_id`` must resolve to exactly one
     immutable lane member inside that base. Only after those checks succeed is the
@@ -40,7 +48,8 @@ def admit_occupancy(
     successor institutional revision.
     """
 
-    validated = validate_instance(occupancy, "occupancy.schema.json", store.schema_dir)
+    candidate = copy.deepcopy(dict(occupancy))
+    validated = validate_instance(candidate, "occupancy.schema.json", store.schema_dir)
     base_revision_ref = validated["base_state_revision_ref"]
 
     # Make the exact entry base an explicit prerequisite before any relationship is
