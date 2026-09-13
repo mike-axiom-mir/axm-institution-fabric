@@ -19,6 +19,67 @@ class ModifiedArtifactIdentityUnresolvedError(ReturnPacketOutputIdentityError):
     """The current packet contract cannot ground modified-artifact identity safely."""
 
 
+class _FrozenDict(dict[str, Any]):
+    """Recursively immutable JSON object that remains identity-canonicalizable.
+
+    The Stage 2 canonicalizer intentionally accepts only JSON-native ``dict``/``list``
+    containers. Subclassing those containers preserves that exact identity language while
+    rejecting mutation after exact verification. The class is private because it is an
+    operational return-value guard, not a new kernel contract type.
+    """
+
+    @staticmethod
+    def _immutable(*_args: Any, **_kwargs: Any) -> None:
+        raise TypeError("resolved exact JSON value is immutable")
+
+    __setitem__ = _immutable
+    __delitem__ = _immutable
+    clear = _immutable
+    pop = _immutable
+    popitem = _immutable
+    setdefault = _immutable
+    update = _immutable
+    __ior__ = _immutable
+
+
+class _FrozenList(list[Any]):
+    """Recursively immutable JSON array compatible with Stage 2 canonicalization."""
+
+    @staticmethod
+    def _immutable(*_args: Any, **_kwargs: Any) -> None:
+        raise TypeError("resolved exact JSON value is immutable")
+
+    __setitem__ = _immutable
+    __delitem__ = _immutable
+    append = _immutable
+    clear = _immutable
+    extend = _immutable
+    insert = _immutable
+    pop = _immutable
+    remove = _immutable
+    reverse = _immutable
+    sort = _immutable
+    __iadd__ = _immutable
+    __imul__ = _immutable
+
+
+def _freeze_json(value: Any) -> Any:
+    """Return a detached recursively immutable JSON-native snapshot.
+
+    Exact identity is proved against durable bytes by ``FilesystemObjectStore.load()``.
+    This second boundary prevents the returned operational value from drifting away from
+    the immutable reference after that proof. Scalars are already immutable; objects and
+    arrays are copied recursively into mutation-rejecting ``dict``/``list`` subclasses so
+    existing canonical identity functions can still reproduce the paired exact ref.
+    """
+
+    if isinstance(value, dict):
+        return _FrozenDict({key: _freeze_json(item) for key, item in value.items()})
+    if isinstance(value, list):
+        return _FrozenList(_freeze_json(item) for item in value)
+    return value
+
+
 @dataclass(frozen=True)
 class ExactPacketRelation:
     """One exact immutable object selected directly by a packet relationship."""
@@ -32,9 +93,11 @@ class ResolvedReturnPacketOutputIdentity:
     """Identity-only result for packet-created artifacts and packet evidence records.
 
     This result proves only exact-instance selection through immutable refs and exact
-    object-store loading. It does not prove artifact provenance closure, evidence
-    subject/quality closure, lane compatibility, packet acceptance, claim closure,
-    successor-state publication, integration, epochs, or replay.
+    object-store loading. Returned JSON values are recursively immutable snapshots so
+    their content cannot drift away from the paired exact refs after resolution. It does
+    not prove artifact provenance closure, evidence subject/quality closure, lane
+    compatibility, packet acceptance, claim closure, successor-state publication,
+    integration, epochs, or replay.
     """
 
     packet_ref: str
@@ -83,7 +146,7 @@ def _load_exact_relation(
             f"verified {expected_kind!r} at {field} exposes logical id "
             f"{logical_id!r}, not reference id {parsed.logical_id!r}"
         )
-    return ExactPacketRelation(reference=reference, value=value)
+    return ExactPacketRelation(reference=reference, value=_freeze_json(value))
 
 
 def resolve_return_packet_output_identity(
@@ -154,7 +217,7 @@ def resolve_return_packet_output_identity(
 
     return ResolvedReturnPacketOutputIdentity(
         packet_ref=packet_ref,
-        packet=packet,
+        packet=_freeze_json(packet),
         created_artifacts=created_artifacts,
         evidence_records=evidence_records,
     )
