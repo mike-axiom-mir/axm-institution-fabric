@@ -102,6 +102,13 @@ def open_work_claim(
     post-base ``occupancy_ref`` must exact-load as the immutable occupancy instance it
     names before the claim is persisted.
 
+    Exact object presence is not treated as proof that the occupancy's own historical
+    admission relation was grounded. Before operational use, the loaded occupancy's
+    exact ``base_state_revision_ref`` must itself load as a state revision and the
+    occupancy's logical ``lane_id`` must resolve exactly once from that entry base.
+    The occupancy entry base may differ from the claim base; each relation is grounded
+    against its own exact historical revision.
+
     The exact occupancy and claim must name the same persistent logical lane. This
     primitive also requires the loaded occupancy snapshot itself to say ``active``;
     that is only a necessary property of this exact snapshot and is not evidence that
@@ -135,6 +142,16 @@ def open_work_claim(
 
     occupancy_ref = validated["occupancy_ref"]
     occupancy = store.load(occupancy_ref, "occupancy.schema.json")
+
+    occupancy_entry_base_ref = occupancy["base_state_revision_ref"]
+    store.load(occupancy_entry_base_ref, "state-revision.schema.json")
+    resolve_exact_revision_member(
+        store,
+        occupancy_entry_base_ref,
+        "lane_refs",
+        "lane",
+        occupancy["lane_id"],
+    )
 
     if occupancy["lane_id"] != validated["lane_id"]:
         raise ContractValidationError(
