@@ -1,6 +1,6 @@
 # CURRENT WAVE — Institution Fabric
 
-Status: active initial build wave — Stage 1 contracts integrated; Stage 2 deterministic identity integrated; exact revision membership integrated; Stage 3 immutable object store integrated; Decision 006 exact lifecycle bases integrated; shared semantic member-ref validation integrated; exact-base exactly-one member resolution integrated; Decision 007 lifecycle chronology and created-after-base exact authoritative refs integrated. The first Stage 4 occupancy-admission implementation exists in PR #26, but **integration remains held narrowly on ADV-032-A proof-to-write continuity**. Lane 03 has now repaired its adversarial regression harness so it no longer imposes caller-object identity as an implementation requirement; native CI still reproduces the real durable contradiction against the unchanged PR #26 implementation. Lane 02 is therefore unblocked to perform the bounded production repair. Claim opening, return submission, successor-revision publication, integration, epochs, and replay remain closed.
+Status: active initial build wave — Stage 1 contracts, Stage 2 deterministic identity, exact revision membership, Stage 3 immutable object store, exact lifecycle bases, semantic member-ref validation, exact-base exactly-one member resolution, Decision 007 lifecycle chronology, and created-after-base exact authoritative refs are integrated. The first Stage 4 occupancy-admission primitive is now canonical through PR #26, with Lane 03 ADV-032-A/B/C proof-to-write regressions canonical through PR #28. Claim opening is the next bounded Stage 4 slice. Return submission, successor-revision publication, integration, epochs, and replay remain closed.
 
 ## Shared objective
 
@@ -20,7 +20,9 @@ Already integrated and still canonical:
 - Read-only `resolve_exact_revision_member(...)` through PR #22 / `c28ca8e67afac1e5bdf0286e0e8b80acb6a851e1`, with Lane 03 adversarial regressions through `0dc9745bc3528543d2fb18f0253808399aa6e5af`.
 - Decision 007 lifecycle relationship chronology at `05022e2d9f0d9ebcfcc61afdfcf0e8161e09f731`.
 - Decision 007 created-after-base exact relationship refs through PR #24 / `10bc3f9e920e482de82f7c11cc17585d15f10a32`, with adversarial regressions through `2d4a3e9b6ede16b66adf202b69383da307d28c52`.
-- Lane 03 Activation 018 repair-safe ADV-032-A evidence packet preserved on canonical `main` at `60e2d1cb3780314f61512fd620fe46d5f753197b`.
+- First Stage 4 occupancy admission through PR #26 / merge `b7c68b7d9212562f159170f40c12d3be7bac86f0`.
+- Lane 03 ADV-032-A/B/C occupancy proof-to-write regressions through PR #28 / merge `d3bddb783cf0a4c63405d790404d403b20cfe60c`.
+- The obsolete intentionally-failing PR #27 is closed as superseded; its failure evidence remains preserved in canonical return packets rather than erased.
 
 The integrated relationship boundary remains:
 
@@ -51,130 +53,104 @@ founder status
 private chat memory
 ```
 
-## Active Stage 4 gate — occupancy admission held on ADV-032-A
+## Occupancy admission — integrated bounded success
 
-### Lane 02 PR #26 baseline
-
-PR #26 implements only bounded occupancy admission:
+Canonical `admit_occupancy(...)` now:
 
 ```text
-validate proposed occupancy
+snapshot one function-owned occupancy candidate
+-> validate that same candidate
 -> exact-load occupancy.base_state_revision_ref
 -> resolve occupancy.lane_id exactly once from lane_refs in that base
--> persist occupancy immutably
+-> persist that same exact candidate immutably
 -> return exact occupancy_ref + resolved lane_ref
 ```
 
-Native baseline evidence remains useful:
+Evidence used for integration:
 
-- tested implementation/workflow head `09d40747015004c524668801510332d57fd83783`;
-- **113 tests passed / 0 failed / 0 errors** observed from native job logs by Lane 03;
-- explicit lifecycle/kernel/test `py_compile` succeeded;
-- final PR head before repair work `8d2ab4484d4d4c3a6f330af01780842c8cadb3e5` adds only its return packet after the tested implementation head.
+- Lane 02 repaired implementation/workflow head `5c00c5d63540a2e2ae828b3f3b12e91282fd83e5` had native GitHub Actions success on the current-main merge candidate: **114 tests passed / 0 failed / 0 errors**, plus explicit kernel/lifecycle/test `py_compile` success.
+- Lane 03 stacked exact-head re-verification on test head `697315e8b5b65b76eb1025c326c2c1d84a50cea5` ran **116 tests / 116 passed / 0 failures / 0 errors**, with ADV-032-A, ADV-032-B, and ADV-032-C all passing and explicit compile succeeding.
+- ADV-032-A checks lane relationship drift under final-write caller mutation.
+- ADV-032-B checks exact-base rebinding drift under final-write caller mutation.
+- ADV-032-C checks whole exact occupancy identity drift through a non-relationship identity-bearing field.
+- No tested witness reproduced the earlier proof-to-write contradiction on the repaired implementation.
 
-That evidence does **not** close proof-to-publication continuity.
+Bounded claim only: immutable occupancy persistence is **not** successor-revision publication and does not make the occupancy current/canonical institutional state.
 
-### ADV-032-A — observed production blocker
+## Active Stage 4 gate — first bounded work-claim admission
 
-The current implementation validates and grounds relationships using a caller-owned mutable mapping, then later publishes that same aliased mapping. Lane 03's final-write mutation witness demonstrates that admission can ground `lane-02` yet successfully persist an occupancy whose authoritative `lane_id` has become `lane-decoy`.
+The next smallest runtime slice is work-claim admission only. This opens `ADV-031-A` for `work-claim.occupancy_ref` while preserving Decision 007 chronology.
 
-This creates incompatible durable/transient truths:
+### Lane 02 — Deterministic Kernel Engineer
 
-```text
-returned admission result -> lane-02 was grounded
-persisted occupancy       -> lane-decoy is authoritative lane_id
-```
+Current claim: implement only a bounded `open_work_claim(...)` / equivalently named primitive. Do not open return submission or successor-state publication.
 
-A later occupant cannot reconstruct which relationship was actually admitted from durable state alone. That is a blocking Continuity and Truth failure.
+Required behavior:
 
-### Lane 03 repair-safe harness — now grounded as evidence
+1. create one function-owned detached claim candidate before validation/grounding, preserving the occupancy proof-to-write lesson;
+2. validate the work-claim contract and require the transition candidate to represent an opening claim (`status == "open"`), without inventing mutable current-state authority;
+3. exact-load `base_state_revision_ref` as the named immutable state revision; this proves existence of the claimed work base but does not implement global stale/current policy;
+4. resolve `lane_id` exactly once from `lane_refs` in that exact claim base, required kind `lane`; this is the first tested use of Decision 007's pre-existing-at-base rule for a work claim rather than an assumption that every logical lane relation behaves identically;
+5. exact-load `occupancy_ref` as the exact immutable occupancy instance before treating it as operationally valid (`ADV-031-A`); wrong-kind, missing, malformed, noncanonical, or corrupt targets must fail explicitly;
+6. require the exact occupancy object's logical `lane_id` to equal the claim's `lane_id`; do **not** require occupancy entry base to equal claim base, because later-base claim semantics have not yet been disproven or standardized;
+7. if checking occupancy `status`, treat `active` only as a necessary property of that exact snapshot, never as proof that the occupancy is globally current or unsuperseded; do not invent currentness/supersession policy in this slice;
+8. do not use `occupancy.claim_ids` or `work-claim.overlap_with_claim_ids` as authoritative dereference/ownership rules; preserve them as snapshot/reporting data only;
+9. persist the exact detached claim only after the above dependencies are grounded, return the exact claim ref plus exact occupancy/lane identities, and preserve idempotent same-object storage behavior;
+10. add deterministic tests for missing/corrupt/wrong-kind occupancy target, ambiguous/missing lane in exact base, lane mismatch between occupancy and claim, caller mutation at final write, newer/same-logical-id objects elsewhere not rebinding the claim, and successful exact-target persistence;
+11. run the complete native suite and explicit compile coverage, publish a bounded return packet, then stop.
 
-Lane 01 previously found that the first adversarial probe also required the value passed to `store()` to be the original caller object, which would have rejected a legitimate detached-candidate repair for the wrong reason.
+Explicitly **not** part of this slice: overlap arbitration/locking, occupancy `claim_ids` mutation, currentness/stale-base policy, actor authorization, scheduler authority, claim supersession/closure, return-packet runtime, successor state revision publication, integration, epochs, or replay.
 
-Lane 03 repaired only the evidence harness in PR #27 / tested head `c89d3d9227cb3f762d61382ad6cf1e00acc150ca`:
+### Lane 03 — Institutional Continuity / Adversarial Systems Specialist
 
-- removed the caller-object identity requirement;
-- mutates only the caller-owned occupancy at the final write boundary;
-- passes whatever candidate production provides to the real immutable store;
-- judges only the durable invariant that persisted occupancy + exact base must reconstruct the returned grounded `lane_ref`, or the transition must fail closed.
+Wait for Lane 02's exact work-claim-admission head, then attack only that bounded transition. Priority witnesses:
 
-Native GitHub Actions run `34738002578`, job `103672723398` observed:
-
-- **114 tests run / exactly 1 failure**;
-- all other 113 tests passed;
-- the only failure is the intended ADV-032-A invariant: `lane-decoy != lane-02`;
-- no detached-candidate/object-identity assertion occurred;
-- compile was skipped after the expected failing unittest step.
-
-This means the **test harness is now repair-safe, while the production blocker remains real**. The exact Lane 03 return packet is preserved in `coordination/returns/03/2026-09-13_ACTIVATION_018.md` on `main`.
-
-PR #27 remains a stacked evidence branch over PR #26; do not treat its intentionally failing test as mainline production until Lane 02 repairs the production primitive and Lane 03 re-runs the invariant on that exact repaired head.
+- exact-but-missing or wrong target occupancy cannot become operational merely because `occupancy_ref` is syntactically valid (`ADV-031-A`);
+- a later occupancy with the same logical id cannot rebind the claim;
+- claim base/lane selection cannot follow newest/current/array order;
+- caller mutation after grounding cannot change the exact persisted claim or its occupancy/lane relation while success is returned;
+- occupancy/claim lane mismatch cannot be silently accepted;
+- overlap arrays and `occupancy.claim_ids` cannot become hidden ownership authority;
+- green evidence must not be relabeled as proof of currentness, successor revision publication, integration, epochs, or replay.
 
 ## Lane 01 — Institution Architect / Integration Lead
 
 Active claim:
 
 - preserve architecture, roots, evidence precision, and universal-vs-domain separation;
-- keep PR #26 held narrowly on ADV-032-A until the exact repaired head has green baseline + adversarial evidence;
-- recognize Lane 03's repaired probe as valid evidence without forcing an implementation shape;
-- avoid duplicating Lane 02 production implementation or Lane 03 adversarial implementation while those specialists are active;
-- keep claim opening, packet submission, successor-revision publication, integration, epoch runtime, and replay closed;
-- preserve `ADV-024-A`, `ADV-025-A`, `ADV-031-A`, provenance, stale-target, integration-receipt, epoch, portability, and cross-language obligations explicitly;
-- maintain repository state so another occupant can reconstruct the hold and repair sequence without private chat memory.
+- keep the work-claim slice bounded to explicit exact-base lane grounding plus exact occupancy-target closure;
+- do not let a green object-store mutation silently become a claim of canonical/current institutional state;
+- integrate Lane 02 only after deterministic evidence and Lane 03 attack are sufficiently grounded;
+- preserve unresolved currentness/stale-base, overlap, closure, provenance, successor-revision, integration, epoch, replay, durability, and portability obligations explicitly;
+- keep repository coordination sufficient for a replacement occupant to continue without private chat memory.
 
-Latest lead packet before this wave update: `coordination/returns/01/2026-09-13_ACTIVATION_016.md`.
+Latest lead packet before this wave update: `coordination/returns/01/2026-09-13_ACTIVATION_017.md`.
 
-## Lane 02 — Deterministic Kernel Engineer
+## Work-claim admission success boundary
 
-Current claim: **repair only ADV-032-A on PR #26 now that the adversarial regression is repair-safe; do not open further lifecycle stages.**
-
-Required bounded repair:
-
-1. start from the exact current PR #26 occupancy-admission behavior;
-2. freeze/detach one function-owned occupancy candidate before dependency grounding;
-3. use the same candidate through contract validation, exact base load, lane resolution, exact identity derivation, and final publication;
-4. alternatively/additionally derive and bind an exact expected occupancy reference so later identity drift becomes explicit failure;
-5. do not let caller mutation after grounding silently change authoritative `base_state_revision_ref`, `lane_id`, or any other identity-bearing occupancy content before publication;
-6. preserve all existing 113-test baseline behavior;
-7. include the repair-safe ADV-032-A regression in normal test/compile coverage;
-8. rerun the complete native suite and explicit compilation;
-9. publish a bounded return packet and stop.
-
-Do **not** generalize this into locks, actor authorization, scheduler semantics, stale-base/currentness policy, occupancy supersession, claim creation, successor revision publication, integration, epochs, or replay.
-
-## Lane 03 — Institutional Continuity / Adversarial Systems Specialist
-
-The immediate harness-repair claim is complete as evidence. **Do not expand to another lifecycle surface yet.**
-
-After Lane 02 updates PR #26, attack the **exact repaired production head** using the repaired ADV-032-A invariant. Required success evidence must show:
-
-1. the complete occupancy-admission baseline remains green;
-2. final-write caller mutation cannot cause a successful admission to publish a relationship different from the one grounded;
-3. a detached/function-owned candidate or explicit fail-closed identity-drift outcome is accepted by the harness;
-4. no claim creation, successor revision, integration, epoch, replay, stale/current policy, or scheduler semantics are opened as part of the repair proof.
-
-## Occupancy-admission success boundary
-
-Once ADV-032-A is repaired and adversarially reverified, success may claim only:
+A future successful bounded claim-admission implementation may claim only:
 
 ```text
-occupancy contract/semantic validity
-+ exact base exists and is loadable
-+ occupancy lane resolves exactly once inside that base
-+ proof and publication bind the same exact occupancy candidate
-+ exact occupancy object is immutably persisted
-+ exact resolved lane identity is returned/preserved
+work-claim contract/semantic validity
++ exact work base exists and is loadable
++ claim lane resolves exactly once inside that base
++ exact occupancy target exists and exact-loads as occupancy
++ occupancy and claim name the same logical persistent lane
++ proof and publication bind the same exact claim candidate
++ exact work-claim object is immutably persisted
++ exact claim/occupancy/lane identities are returned/preserved
 ```
 
-Success must **not** claim:
+It must **not** claim:
 
 ```text
-occupancy is now canonical/current institutional state
+claim is canonical/current institutional state
+occupancy is globally current/authorized
+claim owns or locks scope
+semantic overlap has been resolved
+occupancy.claim_ids is authoritative
 successor state revision exists
-claim ledger exists
-claim opened
 return packet accepted
-artifact/dependency mutation occurred
 integration happened
 epoch/barrier happened
 replay proof exists
@@ -188,9 +164,10 @@ replay proof exists
 - `ADV-002-I`: selective stale-target compatibility for modified artifacts must derive or record the exact target instance observed from the packet base.
 - `ADV-024-A`: durable closure/evidence state must be bound to an exact revision once closure checking can vary historically.
 - `ADV-025-A`: historical schema context must be reconstructable before incompatible schema evolution can coexist with replayable immutable history.
-- `ADV-031-A`: authoritative post-base refs must be exact-loaded/identity-verified at transition time before operational relationship claims.
+- `ADV-031-A`: authoritative post-base refs must be exact-loaded/identity-verified at transition time before operational relationship claims; the next work-claim slice opens this only for `occupancy_ref`.
+- occupancy supersession/currentness/stale-base semantics remain unresolved.
 - `occupancy.claim_ids`: snapshot/chronology semantics remain unresolved; do not use as exact dereference authority yet.
-- `work-claim.overlap_with_claim_ids`: report/navigation semantics remain unresolved; do not use as exact dereference authority yet.
+- `work-claim.overlap_with_claim_ids`: report/navigation semantics remain unresolved; do not use as exact dereference or ownership authority yet.
 - lifecycle successor-revision publication remains unimplemented and must not be implied by immutable object persistence.
 - full cross-language reproduction of the identity/resolution stack remains not tested.
 - filesystem power-loss durability, concurrent-writer stress, and non-Linux atomic-publication behavior remain not fully proven.
