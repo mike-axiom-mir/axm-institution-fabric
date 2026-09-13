@@ -35,6 +35,7 @@ from .resolution import (
     RevisionMemberResolutionError,
     resolve_exact_revision_member,
 )
+from .lifecycle import OccupancyAdmissionResult, admit_occupancy
 
 __all__ = [
     "STRONG_EVIDENCE_STATES",
@@ -68,4 +69,6 @@ __all__ = [
     "RevisionMemberNotFoundError",
     "RevisionMemberResolutionError",
     "resolve_exact_revision_member",
+    "OccupancyAdmissionResult",
+    "admit_occupancy",
 ]
