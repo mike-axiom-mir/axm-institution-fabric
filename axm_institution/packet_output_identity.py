@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping
 
-from .identity import ImmutableReferenceError, parse_immutable_ref
+from .identity import IdentityError, parse_immutable_ref
 from .store import FilesystemObjectStore, ObjectStoreError
 
 
@@ -59,7 +59,10 @@ def _load_exact_relation(
 
     try:
         parsed = parse_immutable_ref(reference)
-    except ImmutableReferenceError as exc:
+    except IdentityError as exc:
+        # parse_immutable_ref intentionally surfaces both malformed reference errors
+        # and canonicalization errors (for example non-NFC decoded components). They
+        # are one fail-closed Stage 2 reference-language boundary here.
         raise ReturnPacketOutputIdentityError(
             f"return-packet output identity failed at {field}: {exc}"
         ) from exc
@@ -108,7 +111,7 @@ def resolve_return_packet_output_identity(
 
     try:
         parsed_packet = parse_immutable_ref(packet_ref)
-    except ImmutableReferenceError as exc:
+    except IdentityError as exc:
         raise ReturnPacketOutputIdentityError(
             f"invalid exact return-packet reference: {exc}"
         ) from exc
