@@ -7,6 +7,7 @@ from pathlib import Path
 
 from axm_institution.identity import (
     ContractValidationError,
+    IdentityError,
     ImmutableRef,
     ImmutableReferenceError,
     make_immutable_ref,
@@ -206,7 +207,7 @@ class ExactRevisionMembershipTests(unittest.TestCase):
             )
             for reference in witnesses:
                 with self.subTest(field=field, reference=reference):
-                    with self.assertRaises(ImmutableReferenceError):
+                    with self.assertRaises(IdentityError):
                         parse_immutable_ref(reference)
                     candidate = self.revision()
                     self.set_member_ref(candidate, field, reference)
@@ -221,7 +222,7 @@ class ExactRevisionMembershipTests(unittest.TestCase):
             )
             for reference in witnesses:
                 with self.subTest(field=field, reference=reference):
-                    with self.assertRaises(ImmutableReferenceError):
+                    with self.assertRaises(IdentityError):
                         parse_immutable_ref(reference)
                     candidate = self.revision()
                     self.set_member_ref(candidate, field, reference)
