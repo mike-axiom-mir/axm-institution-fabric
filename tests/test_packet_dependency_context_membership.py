@@ -372,44 +372,60 @@ class DependencyContextMembershipTests(unittest.TestCase):
         ):
             self.assertFalse(hasattr(resolved, forbidden))
 
-    def test_same_exact_packet_target_can_preserve_both_output_family_facts(self) -> None:
+    def test_created_and_modified_dependency_contexts_remain_independent(self) -> None:
         context = self._ground_context()
-        shared_ref = self._store_output(
+        created_target_ref = self._store_output(
             context,
-            artifact_id="artifact.packet.shared-output",
-            content_ref="artifact://decision015/shared-output",
+            artifact_id="artifact.packet.created.target",
+            content_ref="artifact://decision015/created-target",
+        )
+        modified_target_ref = self._store_output(
+            context,
+            artifact_id="artifact.packet.modified.target",
+            content_ref="artifact://decision015/modified-target",
         )
         consumer_ref = self._store_output(
             context,
-            artifact_id="artifact.consumer.shared-output",
-            content_ref="artifact://decision015/consumer-shared-output",
-            dependency_refs=[shared_ref],
+            artifact_id="artifact.consumer.mixed-targets",
+            content_ref="artifact://decision015/consumer-mixed-targets",
+            dependency_refs=[modified_target_ref, created_target_ref],
         )
-        shared_evidence = self._store_evidence(
-            evidence_id="evidence.decision015.shared-output",
-            subject_ref=shared_ref,
+        created_target_evidence = self._store_evidence(
+            evidence_id="evidence.decision015.created-target",
+            subject_ref=created_target_ref,
+        )
+        modified_target_evidence = self._store_evidence(
+            evidence_id="evidence.decision015.modified-target",
+            subject_ref=modified_target_ref,
         )
         consumer_evidence = self._store_evidence(
-            evidence_id="evidence.decision015.shared-consumer",
+            evidence_id="evidence.decision015.mixed-consumer",
             subject_ref=consumer_ref,
         )
         packet_ref = self._submit_packet(
             context,
-            created_refs=[consumer_ref, shared_ref],
-            modified_result_ref=shared_ref,
-            evidence_refs=[consumer_evidence, shared_evidence],
-            packet_id="packet.decision015.shared-contexts",
+            created_refs=[consumer_ref, created_target_ref],
+            modified_result_ref=modified_target_ref,
+            evidence_refs=[
+                consumer_evidence,
+                created_target_evidence,
+                modified_target_evidence,
+            ],
+            packet_id="packet.decision015.mixed-targets",
         )
 
         resolved = preflight_dependency_context_membership(self.store, packet_ref)
         consumer = next(
             item for item in resolved.created_outputs if item.artifact.reference == consumer_ref
         )
-        fact = consumer.dependencies[0]
+        by_ref = {fact.dependency.reference: fact for fact in consumer.dependencies}
 
-        self.assertFalse(fact.in_claim_base)
-        self.assertTrue(fact.in_packet_created)
-        self.assertTrue(fact.in_packet_modified_result)
+        self.assertFalse(by_ref[created_target_ref].in_claim_base)
+        self.assertTrue(by_ref[created_target_ref].in_packet_created)
+        self.assertFalse(by_ref[created_target_ref].in_packet_modified_result)
+        self.assertFalse(by_ref[modified_target_ref].in_claim_base)
+        self.assertFalse(by_ref[modified_target_ref].in_packet_created)
+        self.assertTrue(by_ref[modified_target_ref].in_packet_modified_result)
 
     def test_empty_dependency_arrays_preserve_context_without_closure_claim(self) -> None:
         context = self._ground_context()
