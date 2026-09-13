@@ -35,7 +35,12 @@ from .resolution import (
     RevisionMemberResolutionError,
     resolve_exact_revision_member,
 )
-from .lifecycle import OccupancyAdmissionResult, admit_occupancy
+from .lifecycle import (
+    OccupancyAdmissionResult,
+    WorkClaimAdmissionResult,
+    admit_occupancy,
+    open_work_claim,
+)
 
 __all__ = [
     "STRONG_EVIDENCE_STATES",
@@ -70,5 +75,7 @@ __all__ = [
     "RevisionMemberResolutionError",
     "resolve_exact_revision_member",
     "OccupancyAdmissionResult",
+    "WorkClaimAdmissionResult",
     "admit_occupancy",
+    "open_work_claim",
 ]
