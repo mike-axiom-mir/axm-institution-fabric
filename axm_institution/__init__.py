@@ -37,9 +37,11 @@ from .resolution import (
 )
 from .lifecycle import (
     OccupancyAdmissionResult,
+    ReturnPacketAdmissionResult,
     WorkClaimAdmissionResult,
     admit_occupancy,
     open_work_claim,
+    submit_return_packet,
 )
 
 __all__ = [
@@ -75,7 +77,9 @@ __all__ = [
     "RevisionMemberResolutionError",
     "resolve_exact_revision_member",
     "OccupancyAdmissionResult",
+    "ReturnPacketAdmissionResult",
     "WorkClaimAdmissionResult",
     "admit_occupancy",
     "open_work_claim",
+    "submit_return_packet",
 ]
