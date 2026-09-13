@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://axm.local/schemas/institution/return-packet.schema.json",
   "title": "AXM Institution Fabric Return Packet",
-  "description": "Structured lane handoff bound to one exact immutable base revision while preserving changes, evidence, uncertainty, blockers, downstream effects, and follow-up.",
+  "description": "Structured lane handoff bound to one exact immutable base revision and the exact immutable work-claim instance it returns from, while preserving changes, evidence, uncertainty, blockers, downstream effects, and follow-up.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "schema_version",
     "id",
-    "claim_id",
+    "claim_ref",
     "lane_id",
     "base_state_revision_ref",
     "changes",
@@ -22,15 +22,15 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "0.2"
+      "const": "0.3"
     },
     "id": {
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9._-]*$"
     },
-    "claim_id": {
+    "claim_ref": {
       "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+      "pattern": "^axmref:v1:"
     },
     "lane_id": {
       "type": "string",
