@@ -1,178 +1,182 @@
-# CURRENT STATE OVERLAY — Stage 4 exact created-artifact provenance integrated
+# CURRENT STATE OVERLAY — Decision 011 integrated; modified-result compatibility opened
 
-Status: **no active blocker on Decision 010's bounded packet-created artifact provenance-base precondition**. PR #51 is canonical and Lane 03 ADV-043 regression evidence is canonical through PR #52. The next opened gate is Decision 011: two-sided exact identity for `artifacts_modified[]`. Claim closure, successor-state publication, Stage 5 integration receipts/runtime, epochs/barriers, and replay remain closed.
+Status: **Decision 011 exact modified-artifact two-sided identity is canonical and no new blocker was reproduced on its demonstrated read-only surface.** PR #54 integrated the runtime/schema migration and PR #55 integrated ADV-044 adversarial regressions. The next opened gate is Decision 012: read-only output/evidence compatibility for the exact **result** endpoint of each already-grounded modification relation. Packet acceptance, evidence closure, claim closure, successor-state publication, Stage 5 integration receipts/runtime, epochs/barriers, and replay remain closed.
 
-This file is the narrow current-state overlay on the older `coordination/CURRENT_WAVE.md` chronology.
+This file is the narrow current-state overlay on the older `coordination/CURRENT_WAVE.md` chronology. Earlier overlays, decisions, commits, PRs, and specialist return packets remain repository history and are not silently rewritten by this summary.
 
 ## Canonical integration points
 
-Created-artifact exact provenance runtime:
+Decision 011 runtime/schema integration:
 
-`3ced7ee1bb88d7744923fb2cb968af8b3cdb45f9`
+`52d90f39ebc977588c7c59dfd7be6761eeecdc09`
 
-PR #51 — `Lane 02: exact created-artifact provenance base preflight` — merged.
+PR #54 — `Lane 02: exact modified-artifact two-sided identity preflight` — merged.
 
-ADV-043 evidence/regressions:
+ADV-044 regression integration:
 
-`daa36e15456c6ae5879f9884f4093f0ae188462c`
+`316c197e469624b649fb178942e5d4b583d7dbd4`
 
-PR #52 — `Lane 03: adversarially verify created-artifact provenance` — retargeted from the stacked Lane 02 branch to canonical `main` after PR #51 merged, then merged without rewriting the specialist branch.
-
-Decision 010:
-
-`coordination/decisions/010_CREATED_ARTIFACT_PROVENANCE_BASE.md`
+PR #55 — `Lane 03: adversarially verify modified-artifact two-sided identity` — retargeted from the stacked Lane 02 branch to canonical `main` after PR #54 merged, then merged without rewriting the specialist branch.
 
 Decision 011:
 
 `coordination/decisions/011_MODIFIED_ARTIFACT_TWO_SIDED_IDENTITY.md`
 
-canonical Decision 011 commit:
+Decision 012:
 
-`bf91e735a1fb0dc464974071531b5985cc7fafc4`
-
-A separate public-checkpoint workflow commit (`281df25bc90f335a80680375b2864931e5b91a46`) landed on `main` between the prior lead activation and these integrations. It adds only release-workflow state and explicitly describes the checkpoint as a prerelease/research scaffold rather than production or CANON completion. It does not alter the deterministic kernel contracts or runtime used by Decision 010.
+`coordination/decisions/012_MODIFIED_RESULT_OUTPUT_COMPATIBILITY.md`
 
 ## What is now canonical
 
-Within Decision 009's declared trusted deterministic runtime boundary, the bounded Stage 4 read-only path can now:
+Within Decision 009's declared trusted deterministic runtime boundary, the bounded Stage 4 read-only path can now reconstruct and verify:
 
-1. reconstruct the exact packet -> claim -> claim-base -> lane relation from durable state;
-2. reconstruct exact packet-created artifact and evidence identities;
-3. bind exact evidence records only to the exact created artifacts they name;
-4. apply the bounded created-output compatibility preflight for one unambiguous required evidence state;
-5. preserve conflicting/unmatched evidence explicitly rather than treating compatibility success as evidence closure;
-6. require a packet-created artifact used by the provenance preflight to use artifact schema v0.2 exact work-base semantics;
-7. parse `provenance.base_state_revision_ref` through the shared Stage 2 immutable-reference parser and require kind `state-revision`;
-8. exact-load and identity-verify that provenance base;
-9. require it to equal the packet's exact claim base;
-10. require `provenance.producer_lane_id` to equal the exact claim-base lane logical id;
-11. reject historical artifact v0.1 as insufficient for this exact provenance use rather than silently reinterpret its generic `base_state_revision` string;
-12. keep `artifacts_modified[]` fail-closed because its current one-string contract still cannot represent both exact prior and exact result identity.
+1. exact packet -> claim -> claim-base -> lane / occupancy historical context;
+2. exact packet-created artifact and packet evidence identities;
+3. exact evidence-to-created-artifact subject binding;
+4. bounded created-output compatibility for one unambiguous required evidence state;
+5. exact created-artifact work-base / producer-lane provenance;
+6. historical return-packet v0.3 modified entries as opaque historical strings with no modern two-sided reinterpretation;
+7. return-packet v0.4 explicit `{prior_artifact_ref, result_artifact_ref}` modification relations;
+8. exact prior artifact membership in the exact claim base plus exact-load/identity verification;
+9. exact result artifact loading plus Decision 010 work-base / producer-lane provenance against the same claim base and lane;
+10. tested rejection of legacy exact-looking-string laundering, wrong-kind/missing/corrupt result endpoints, same-logical result recency substitution, and packet-array-order hiding of an invalid prior relation.
 
-This is still pre-acceptance groundwork. A successful provenance preflight is **not** packet acceptance, evidence closure, dependency/source closure, claim closure, successor-state publication, integration, or replay.
+Decision 011 proves only exact modification endpoint identity and result provenance. It does **not** prove that prior/result are one logical lineage, that the result supersedes the prior, that `version` or `supersedes_ref` has authority, or that packet evidence satisfies the result's lane output contract.
 
 ## Evidence
 
-### Lane 02 / PR #51
+### Lane 02 / PR #54
 
-Exact final PR head:
+Exact implementation/test-oracle head attacked by Lane 03:
 
-`2508279a607d47a61cf1da3dbe40ac8a1203601d`
+`85cbea5d697bce842399e8e7abde45f84563b742`
 
-GitHub PR merge-candidate workflow run inspected by Lane 01:
+Final PR head:
 
-- run `34771329874`;
-- job `103761355190`;
-- deterministic unittest discovery: **212 tests / 212 passed**;
-- 0 failures / 0 errors;
-- explicit compile step including the Decision 010 runtime/tests: **success**.
+`57d60c96e5c664d264b5ca81b7cf4a712da97f7a`
 
-Lane 02's return packet separately records its exact implementation/workflow head `e07e1a311db51d205af1b51f46f5793131421a59` and native evidence. The final branch head adds only the durable Lane 02 return packet beyond the tested implementation head.
+Lane 01 compared those heads and confirmed the only later change was the durable Lane 02 return packet:
 
-The later public-checkpoint workflow commit was disjoint from the kernel change. No post-merge Actions run for merge commit `3ced7ee1...` is asserted here.
+`coordination/returns/02/2026-09-13_ACTIVATION_030.md`
 
-### Lane 03 / PR #52
+GitHub Actions run/job independently inspected by Lane 01:
 
-Exact final specialist head:
+- run `34774659124`;
+- job `103770444690`;
+- exact head `85cbea5d697bce842399e8e7abde45f84563b742`;
+- deterministic unittest step: success;
+- explicit compile step including the Decision 011 runtime/tests: success;
+- complete job: success.
 
-`d008442a3fa97504534d239123c2a8026533368e`
+Lane 02's durable return packet records `Ran 227 tests ... OK` for that exact head. The connector-visible job metadata independently confirms the test and compile steps succeeded, but this lead activation did not retrieve raw job stdout and therefore does not relabel the numeric 227 count as independently re-observed here.
 
-Native stacked merge-candidate run directly inspected by Lane 01:
+A prior intermediate Lane 02 run was red because older schema-version tests still assumed return-packet `schema_version.const == 0.3`. That failure remains preserved in specialist evidence; it was repaired before the green exact head above.
 
-- run `34771942649`;
-- job `103763008908`;
-- **217 tests / 217 passed**;
-- ADV-043-A/B/C/D/E all green;
-- explicit compile including `tests/test_packet_artifact_provenance_adversarial.py`: **success**.
+### Lane 03 / PR #55
 
-ADV-043 demonstrated on the bounded surface that:
+Exact tested head before its return-packet-only commit:
 
-- a structural exact-lookalike/noncanonical ref cannot bypass the Stage 2 parser;
-- corrupt exact provenance targets fail closed during exact-load/identity verification;
-- an exact historical ancestor cannot substitute for the exact claim base;
-- packet array order cannot hide one stale created artifact among valid ones;
-- same-logical-id revisions stored before/after the authoritative base gain no recency/storage-order authority.
+`700740246a272bd8a7a7c3a62ec05d70a4a7182e`
 
-That 217-test run was on the specialist's stacked provenance candidate before Lane 01 retargeted PR #52 to canonical `main`. PR #52 changes only workflow compile coverage, ADV-043 tests, and its durable Lane 03 return packet; it does not alter production runtime. No post-merge Actions result for `daa36e15...` is asserted here.
+Final specialist head:
 
-## Decision 011 — next continuity gap
+`d44f3ca10c9bebb1e05da6f02e832c4581419d8f`
 
-The current return-packet schema v0.3 still represents:
+Lane 01 compared those heads and confirmed the only later change was the durable Lane 03 return packet:
 
-```text
-artifacts_modified[] -> one opaque string per entry
-```
+`coordination/returns/03/2026-09-13_ACTIVATION_032.md`
 
-while the canonical output-identity runtime correctly fails closed because a modification requires two identities:
+GitHub Actions run/job independently inspected by Lane 01:
 
-```text
-exact prior artifact observed by the work
-exact produced artifact result
-```
+- run `34774804143`;
+- job `103770852559`;
+- exact head `700740246a272bd8a7a7c3a62ec05d70a4a7182e`;
+- deterministic unittest step: success;
+- explicit compile step including `tests/test_packet_modified_artifact_identity_adversarial.py`: success;
+- complete job: success.
 
-One opaque value cannot establish both without hidden interpretation. State revisions already bind exact `artifact_refs`, and Decision 010 can ground an exact post-base result's claim-base provenance, so the smallest next repair is now explicit two-sided modification identity.
+Lane 03's durable return packet records `Ran 232 tests ... OK` and ADV-044-A/B/C/D/E green for that exact head. As above, this activation independently verified job/step success and head identity but did not retrieve raw job stdout, so the numeric 232 count remains attributed to the durable specialist evidence rather than re-labelled as freshly observed stdout.
 
-Decision 011 opens only this bounded chronology for v0:
+ADV-044 preserves the bounded findings that:
+
+- historical v0.3 does not gain two-sided exact semantics because its opaque string happens to look like an immutable ref;
+- wrong-kind, missing, and corrupt exact result endpoints fail closed;
+- later same-logical-id result objects gain no recency/storage-order authority over the explicit result ref;
+- one valid modification relation cannot hide another invalid prior relation through packet array order.
+
+No post-merge-main Actions run is asserted for merge commits `52d90f39...` or `316c197e...` unless a later activation observes one.
+
+## Decision 012 — next continuity/compatibility gap
+
+Decision 011 can reconstruct the exact modification pair, but Stage 4 still cannot truthfully claim that the exact result artifact satisfies the exact historical lane's output/evidence contract.
+
+The next bounded chronology is:
 
 ```text
 exact packet P
   -> exact claim C
   -> exact claim base B
+  -> exact claim-base lane L
 
 modified relation M
-  -> exact prior artifact A0
-     -> A0 is an exact artifact member of B
-  -> exact result artifact A1
-     -> A1 exact-loads
-     -> A1 satisfies Decision 010 against B and the exact claim-base lane
+  -> exact prior A0 (exact member of B)
+  -> exact result A1 (Decision 010 provenance against B/L)
+
+modified-result compatibility
+  -> A1.type matches exactly one L.outputs[] entry
+  -> exactly one L.evidence_requirements[] entry for that type
+  -> exactly one currently-supported required state
+  -> exact packet evidence E may satisfy only when E.subject_ref == exact A1 ref
 ```
 
-No logical-id equivalence, newest/current object, artifact version, `supersedes_ref`, storage order, packet array order, actor identity, scheduler position, founder status, or Git permission may manufacture the pair.
+The exact prior `A0` does not satisfy result evidence requirements. Same-logical ids, artifact `version`, `supersedes_ref`, `artifact.evidence_refs`, newest/current lookup, storage order, packet array order, actor identity, scheduler position, founder status, or Git permission gain no compatibility authority.
 
-Historical return-packet v0.3 one-string entries remain historical truth and must not be silently reinterpreted as two exact refs.
+A result may report `satisfied=True` only for the same narrow single-required-state compatibility meaning already established for created outputs. Conflicting/additional evidence remains explicit; `satisfied=True` is not evidence closure or packet acceptance.
 
 ## Lane 02 — smallest next implementation
 
-Implement only Decision 011's **read-only modified-artifact two-sided identity precondition**.
+Implement only Decision 012's **read-only modified-result output/evidence compatibility preflight**.
 
 Required bounded behavior:
 
-1. preserve historical return-packet v0.3 meaning without reinterpretation;
-2. add an explicit newer packet contract only if old/new behavior remains unambiguous;
-3. represent each operational modification with one exact prior artifact ref and one exact result artifact ref;
-4. parse both through the shared Stage 2 immutable-ref parser and require kind `artifact`;
-5. reconstruct the exact claim base through the existing packet lifecycle path;
-6. require the exact prior artifact to be an exact member of that base revision and exact-load/identity-verify it;
-7. exact-load the result artifact and apply Decision 010's exact work-base / producer-lane checks;
-8. preserve all created-output/evidence/provenance and ADV-035 through ADV-043 regressions;
-9. remain read-only and stop before same-logical-id lineage rules, `supersedes_ref` authority, evidence closure, packet acceptance, claim closure, successor publication, integration, epochs, or replay.
+1. consume `preflight_modified_artifact_identity(...)` as the authoritative Decision 011 pair/context input;
+2. exact-load packet `evidence_refs[]` through the existing Stage 2 immutable reference language and require kind `evidence-record`;
+3. bind evidence to an exact modification result only when `evidence.subject_ref` exactly equals that result ref;
+4. keep non-exact/unrelated evidence explicit and fail closed on wrong-kind exact subjects; never assign by logical id, type, recency, order, or actor intent;
+5. use the exact claim-base lane grounded by Decision 011;
+6. apply the existing narrow compatibility semantics: exactly one output contract, exactly one evidence requirement, exactly one required state;
+7. preserve conflicting exact evidence instead of converting one satisfying record into closure;
+8. preserve historical v0.3 non-reinterpretation and all ADV-035 through ADV-044 regressions;
+9. remain read-only and stop before lineage/supersession policy, source/dependency closure, packet acceptance, claim closure, successor publication, Stage 5 integration, epochs, or replay.
 
-If the schema migration cannot preserve historical meaning without ambiguous old/new authority, stop with an explicit migration blocker rather than guessing.
+A small shared helper/refactor is acceptable if it preserves the already-tested created-output semantics rather than silently broadening them.
 
 ## Lane 03 — next adversarial pass
 
-Attack only the exact Lane 02 Decision 011 head:
+Attack only the exact Lane 02 Decision 012 head:
 
-- same-logical-id/different-exact prior substitution;
-- exact prior artifact not present in the exact claim base;
-- same-logical-id/different-exact result substitution;
-- result provenance bound to another exact revision or producer lane;
-- wrong-kind/noncanonical refs on either side;
-- missing/corrupt prior or result;
-- array-order, newest/current, storage-order, actor, schedule, founder, or Git authority;
-- historical v0.3 one-string modifications accidentally acquiring new exact meaning;
-- `supersedes_ref`, version, or logical id silently overriding the explicit pair;
-- all ADV-035 through ADV-043 regressions remaining green.
+- evidence about exact prior `A0` laundered into support for exact result `A1`;
+- same-logical-id/different-exact result subject substitution;
+- evidence for one modification result pooled into another;
+- bare logical id/path/content subject fallback;
+- wrong-kind exact evidence subjects;
+- `artifact.evidence_refs` overriding contradictory exact subject identity;
+- duplicate/missing output declarations or evidence requirements;
+- multiple `required_states` accidentally gaining AND/OR/rank semantics;
+- conflicting evidence silently collapsed into closure;
+- array order, newest/current, storage order, artifact version, `supersedes_ref`, actor, scheduler, founder, or Git authority;
+- historical v0.3 modified entries entering compatibility;
+- all ADV-035 through ADV-044 regressions remaining green.
 
-Do not expand into lineage policy, evidence conflict/closure, packet acceptance, successor-state publication, Stage 5 integration, epochs, or replay.
+Do not expand into logical lineage, source/dependency closure, acceptance, claim closure, successor revision publication, integration, epochs, or replay.
 
 ## Root grounding
 
-- **Truth:** Decision 010 is integrated only for the exact surface tested; one opaque modification value is not relabelled as two immutable identities.
-- **Agency / non-domination:** actor identity, recency, scheduler position, founder status, logical-id equivalence, array/storage order, or Git permission cannot select provenance or modification endpoints.
-- **Continuity:** a replacement occupant can reconstruct the created output's exact work base now, and Decision 011 requires the same reconstructability for both sides of a modification.
-- **Wisdom before speed:** open one missing identity precondition while keeping lineage, closure, acceptance, integration, epochs, and replay closed.
+- **Truth:** Decision 011 pair identity is integrated only for the surface actually tested; exact result compatibility is opened as a separate fact rather than inferred from identity/provenance.
+- **Agency / non-domination:** logical-id equivalence, recency, order, artifact version, `supersedes_ref`, actor identity, scheduler position, founder status, or Git permission cannot choose evidence or compatibility standing.
+- **Continuity:** a replacement occupant can reconstruct both exact modification endpoints today; Decision 012 requires the exact result's lane/evidence relation to become equally reconstructable from durable state.
+- **Wisdom before speed:** extend only the existing narrow single-required-state compatibility surface and keep lineage, closure, acceptance, integration, epochs, and replay closed.
 
 ## Still unresolved
 
-Multiple `required_states` semantics, evidence method/source quality and closure, conflicting/invalidation evidence policy, artifact `source_refs[]` and `dependency_refs[]` exactness/closure, modified-artifact logical lineage and `supersedes_ref` semantics beyond Decision 011's pair identity, occupancy/claim global currentness/supersession/authorization, multiple-packet conflict semantics, broader historical schema reconstruction, durable closure, claim closure, successor revision publication, integration receipts/runtime, epochs/barriers, replay, cross-language reproduction, stronger filesystem durability/concurrency evidence, and hostile same-process code isolation remain explicit obligations.
+Multiple `required_states` semantics, evidence method/source quality and closure, conflicting/invalidation evidence policy, `artifact.source_refs[]` and `dependency_refs[]` exactness/closure, modified-artifact logical lineage and `supersedes_ref` semantics, mixed created+modified packet composition through the older created-output resolver, occupancy/claim global currentness/supersession/authorization, multiple-packet conflict semantics, broader historical schema reconstruction, durable closure, claim closure, successor revision publication, integration receipts/runtime, epochs/barriers, replay, cross-language reproduction, stronger filesystem durability/concurrency evidence, and hostile same-process code isolation remain explicit obligations.
