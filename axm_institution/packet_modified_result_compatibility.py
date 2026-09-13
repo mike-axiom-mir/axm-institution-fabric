@@ -19,7 +19,7 @@ from .packet_output_compatibility import (
     _require_mapping,
 )
 from .packet_output_identity import ExactPacketRelation, _load_exact_relation
-from .store import FilesystemObjectStore
+from .store import FilesystemObjectStore, ObjectStoreError
 
 
 class ModifiedResultCompatibilityError(CreatedOutputCompatibilityError):
@@ -90,9 +90,7 @@ def _packet_evidence_records(
                     field=f"$.evidence_refs[{index}]",
                 )
             )
-        except Exception as exc:
-            if isinstance(exc, ModifiedResultCompatibilityError):
-                raise
+        except ObjectStoreError as exc:
             raise ModifiedResultEvidenceReferenceError(
                 f"modified-result compatibility could not exact-load $.evidence_refs[{index}]: {exc}"
             ) from exc
