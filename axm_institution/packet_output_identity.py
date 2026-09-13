@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping
 
-from .identity import IdentityError, parse_immutable_ref
+from .identity import IdentityError, canonical_bytes, parse_immutable_ref, parse_json_strict
 from .store import FilesystemObjectStore, ObjectStoreError
 
 
@@ -19,117 +19,140 @@ class ModifiedArtifactIdentityUnresolvedError(ReturnPacketOutputIdentityError):
     """The current packet contract cannot ground modified-artifact identity safely."""
 
 
-class _FrozenList(tuple[Any, ...]):
-    """Tuple-backed immutable JSON array accepted by the existing Stage 2 boundary.
+class _FrozenList(bytes):
+    """Immutable JSON-array view whose ordinary stdlib JSON transport fails closed.
 
-    The object is *not* a ``list`` or a ``list`` subclass, so callers cannot bypass
-    immutability with ``list.__setitem__`` or another builtin list mutator.  The
-    ``__class__`` compatibility view is intentionally narrow: Stage 2 already uses
-    ``isinstance(value, list)`` to recognize its JSON-native array language.  Reporting
-    that compatibility view lets the existing canonicalizer and schema validator read
-    this immutable operational snapshot without changing or broadening Stage 2 itself.
+    The exact value is stored only as Stage 2 canonical UTF-8 bytes. The object is not a
+    ``list`` or ``tuple`` subclass, so builtin sequence mutators cannot operate on it and
+    Python's stdlib JSON encoder cannot silently reinterpret the storage container as an
+    array. The narrow ``__class__`` compatibility view preserves the repository's existing
+    Stage 2 ``isinstance(value, list)`` boundary for validation/canonical identity.
 
-    Storage is entirely tuple-backed and instances have no writable attributes.
+    Nested objects/arrays are reconstructed from the canonical bytes only as equally
+    immutable views, so callers never receive a mutable alias of the authoritative value.
     """
 
     __slots__ = ()
 
     def __new__(cls, values: Any = ()) -> _FrozenList:
-        return tuple.__new__(cls, values)
+        return bytes.__new__(cls, canonical_bytes(values))
 
     @property
     def __class__(self) -> type[list[Any]]:
         return list
 
+    def _plain(self) -> list[Any]:
+        value = parse_json_strict(memoryview(self).tobytes().decode("utf-8"))
+        if not isinstance(value, list):
+            raise TypeError("frozen JSON array payload did not decode as a list")
+        return value
+
+    def __iter__(self):
+        return (_freeze_json(item) for item in self._plain())
+
+    def __getitem__(self, index):
+        return _freeze_json(self._plain()[index])
+
+    def __len__(self) -> int:
+        return len(self._plain())
+
+    def __contains__(self, item: object) -> bool:
+        return item in self._plain()
+
     def __eq__(self, other: object) -> bool:
+        if isinstance(other, _FrozenList):
+            other = other._plain()
         if not isinstance(other, (list, tuple)):
             return False
-        return len(self) == len(other) and all(
-            left == right for left, right in zip(tuple.__iter__(self), other)
-        )
+        return self._plain() == list(other)
 
     __hash__ = None
 
 
-class _FrozenDict(tuple[tuple[str, Any], ...]):
-    """Tuple-backed immutable JSON object accepted by the existing Stage 2 boundary.
+class _FrozenDict(bytes):
+    """Immutable JSON-object view with explicit fail-closed ordinary JSON transport.
 
-    This is deliberately not a ``dict`` subclass.  Its content is an immutable tuple of
-    key/value pairs whose values are recursively frozen.  Builtin base-class mutators
-    such as ``dict.__setitem__`` therefore reject the object at the Python type boundary.
+    The object's only physical payload is the already-validated Stage 2 canonical byte
+    representation. It is not a ``dict``/``list``/``tuple`` subclass, so neither builtin
+    base-class mutators nor stdlib JSON's container dispatch can silently reinterpret or
+    rewrite the authoritative value. The existing Stage 2 JSON-object checks continue to
+    work through the bounded ``__class__ -> dict`` compatibility view.
 
-    As with ``_FrozenList``, ``__class__`` only preserves compatibility with Stage 2's
-    existing ``isinstance(value, dict)`` JSON-object checks; no identity/canonicalization
-    rule is changed and no new general Mapping/Sequence language is introduced.
+    Mapping reads parse the canonical bytes and recursively return immutable views. No
+    mutable store-loaded mapping, nested list, or nested mapping is exposed to callers.
     """
 
     __slots__ = ()
 
     def __new__(cls, mapping: Mapping[str, Any]) -> _FrozenDict:
-        return tuple.__new__(cls, tuple(mapping.items()))
+        return bytes.__new__(cls, canonical_bytes(mapping))
 
     @property
     def __class__(self) -> type[dict[str, Any]]:
         return dict
 
+    def _plain(self) -> dict[str, Any]:
+        value = parse_json_strict(memoryview(self).tobytes().decode("utf-8"))
+        if not isinstance(value, dict):
+            raise TypeError("frozen JSON object payload did not decode as a mapping")
+        return value
+
     def __iter__(self):
-        return (key for key, _value in tuple.__iter__(self))
+        return iter(self._plain())
 
     def __getitem__(self, key: str) -> Any:
-        for candidate, value in tuple.__iter__(self):
-            if candidate == key:
-                return value
-        raise KeyError(key)
+        return _freeze_json(self._plain()[key])
 
     def __contains__(self, key: object) -> bool:
-        return any(candidate == key for candidate, _value in tuple.__iter__(self))
+        return key in self._plain()
+
+    def __len__(self) -> int:
+        return len(self._plain())
 
     def keys(self) -> tuple[str, ...]:
-        return tuple(key for key, _value in tuple.__iter__(self))
+        return tuple(self._plain().keys())
 
     def items(self) -> tuple[tuple[str, Any], ...]:
-        return tuple(tuple.__iter__(self))
+        return tuple((key, _freeze_json(value)) for key, value in self._plain().items())
 
     def values(self) -> tuple[Any, ...]:
-        return tuple(value for _key, value in tuple.__iter__(self))
+        return tuple(_freeze_json(value) for value in self._plain().values())
 
     def get(self, key: str, default: Any = None) -> Any:
-        try:
-            return self[key]
-        except KeyError:
+        plain = self._plain()
+        if key not in plain:
             return default
+        return _freeze_json(plain[key])
 
     def __eq__(self, other: object) -> bool:
+        if isinstance(other, _FrozenDict):
+            other = other._plain()
         if not isinstance(other, dict):
             return False
-        try:
-            return len(self) == len(other) and all(
-                key in other and value == other[key] for key, value in self.items()
-            )
-        except (KeyError, TypeError):
-            return False
+        return self._plain() == other
 
     __hash__ = None
 
 
 def _freeze_json(value: Any) -> Any:
-    """Return a detached recursively immutable tuple-backed operational snapshot.
+    """Return a detached recursively immutable canonical-byte operational snapshot.
 
     Exact identity is first proved against durable bytes by
-    ``FilesystemObjectStore.load()``.  This second boundary prevents the authoritative
-    operational value from drifting away from that exact reference after verification.
+    ``FilesystemObjectStore.load()``. This second boundary converts each exposed JSON
+    object/array into a bytes-backed immutable view whose physical storage cannot be
+    changed through ordinary mutation or builtin dict/list mutators.
 
-    Objects and arrays are recursively copied into tuple-backed non-builtin containers.
-    They remain readable by the *existing* Stage 2 canonicalizer/schema validator through
-    their bounded ``__class__`` compatibility view, but builtin ``dict`` / ``list`` base
-    mutators cannot operate on them because their real runtime type is tuple-backed.
-    Scalars are already immutable.
+    The view remains readable by the existing Stage 2 canonicalizer/schema validator via
+    its narrow ``__class__`` compatibility surface. Ordinary Python stdlib JSON transport
+    rejects the non-container runtime type instead of silently serializing a different
+    semantic shape. A future explicit transport adapter may be added separately only when
+    it can prove an exact round-trip.
     """
 
     if isinstance(value, dict):
-        return _FrozenDict({key: _freeze_json(item) for key, item in value.items()})
+        return _FrozenDict(value)
     if isinstance(value, list):
-        return _FrozenList(_freeze_json(item) for item in value)
+        return _FrozenList(value)
     return value
 
 
@@ -146,10 +169,11 @@ class ResolvedReturnPacketOutputIdentity:
     """Identity-only result for packet-created artifacts and packet evidence records.
 
     This result proves only exact-instance selection through immutable refs and exact
-    object-store loading. Returned JSON values are recursively immutable tuple-backed
+    object-store loading. Returned JSON values are recursively immutable canonical-byte
     snapshots so their content cannot drift away from the paired exact refs through
-    ordinary mutation or builtin ``dict`` / ``list`` base-class mutators. It does not
-    prove artifact provenance closure, evidence subject/quality closure, lane
+    ordinary mutation or builtin ``dict`` / ``list`` base-class mutators, and ordinary
+    stdlib JSON transport fails closed instead of silently changing their semantic shape.
+    It does not prove artifact provenance closure, evidence subject/quality closure, lane
     compatibility, packet acceptance, claim closure, successor-state publication,
     integration, epochs, or replay.
     """
