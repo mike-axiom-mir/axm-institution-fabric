@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, Mapping
+from typing import Any, Mapping, NamedTuple
 
 from .identity import IdentityError, canonical_bytes, parse_immutable_ref, parse_json_strict
 from .store import FilesystemObjectStore, ObjectStoreError
@@ -156,16 +155,19 @@ def _freeze_json(value: Any) -> Any:
     return value
 
 
-@dataclass(frozen=True)
-class ExactPacketRelation:
-    """One exact immutable object selected directly by a packet relationship."""
+class ExactPacketRelation(NamedTuple):
+    """One exact immutable object selected directly by a packet relationship.
+
+    The tuple-backed relation keeps the exact ref/value pair physically non-reassignable
+    through the demonstrated ``object.__setattr__`` path (ADV-040-A/B). The JSON value
+    remains the existing canonical-byte-backed immutable operational view.
+    """
 
     reference: str
     value: Mapping[str, Any]
 
 
-@dataclass(frozen=True)
-class ResolvedReturnPacketOutputIdentity:
+class ResolvedReturnPacketOutputIdentity(NamedTuple):
     """Identity-only result for packet-created artifacts and packet evidence records.
 
     This result proves only exact-instance selection through immutable refs and exact
@@ -173,6 +175,8 @@ class ResolvedReturnPacketOutputIdentity:
     snapshots so their content cannot drift away from the paired exact refs through
     ordinary mutation or builtin ``dict`` / ``list`` base-class mutators, and ordinary
     stdlib JSON transport fails closed instead of silently changing their semantic shape.
+    The tuple-backed result also prevents the demonstrated ``object.__setattr__`` path
+    from replacing or dropping exact operational relations after verification (ADV-040-C).
     It does not prove artifact provenance closure, evidence subject/quality closure, lane
     compatibility, packet acceptance, claim closure, successor-state publication,
     integration, epochs, or replay.
