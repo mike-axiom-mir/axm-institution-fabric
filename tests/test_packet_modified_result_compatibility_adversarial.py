@@ -6,14 +6,14 @@ import unittest
 from axm_institution.packet_modified_result_compatibility import (
     preflight_modified_result_compatibility,
 )
-from test_packet_modified_result_compatibility import ModifiedResultCompatibilityTests
+import test_packet_modified_result_compatibility as base_tests
 
 
 class ModifiedResultCompatibilityAdversarialTests(unittest.TestCase):
     """Lane 03 ADV-045 continuity attacks for Decision 012 only."""
 
     def setUp(self) -> None:
-        self.fixture = ModifiedResultCompatibilityTests(
+        self.fixture = base_tests.ModifiedResultCompatibilityTests(
             methodName="test_exact_result_subject_evidence_satisfies_narrow_contract"
         )
         self.fixture.setUp()
