@@ -110,6 +110,37 @@ class HistoricalSourceRefCompatibilityTests(unittest.TestCase):
         errors = list(self.evidence_validator.iter_errors(evidence_instance("")))
         self.assertTrue(errors)
 
+    def test_artifact_source_refs_still_reject_duplicate_opaque_tokens(self):
+        for schema_version in ("0.1", "0.2", "0.3"):
+            with self.subTest(schema_version=schema_version):
+                instance = artifact_instance(schema_version, "NEXT_BUILD.md")
+                instance["provenance"]["source_refs"] = [
+                    "NEXT_BUILD.md",
+                    "NEXT_BUILD.md",
+                ]
+                errors = list(self.artifact_validator.iter_errors(instance))
+                self.assertTrue(errors)
+
+    def test_evidence_source_refs_still_reject_duplicate_opaque_tokens(self):
+        instance = evidence_instance("NEXT_BUILD.md")
+        instance["source_refs"] = ["NEXT_BUILD.md", "NEXT_BUILD.md"]
+        errors = list(self.evidence_validator.iter_errors(instance))
+        self.assertTrue(errors)
+
+    def test_strong_evidence_still_requires_at_least_one_opaque_source_token(self):
+        instance = evidence_instance("NEXT_BUILD.md")
+        instance["source_refs"] = []
+        errors = list(self.evidence_validator.iter_errors(instance))
+        self.assertTrue(errors)
+
+    def test_proposed_evidence_still_does_not_require_source_refs(self):
+        instance = evidence_instance("NEXT_BUILD.md")
+        instance["state"] = "proposed"
+        instance.pop("method")
+        instance.pop("source_refs")
+        errors = list(self.evidence_validator.iter_errors(instance))
+        self.assertEqual([], errors)
+
     def test_artifact_source_ref_schema_does_not_assign_identity_strength(self):
         source_item = self.artifact_schema["properties"]["provenance"]["properties"][
             "source_refs"
