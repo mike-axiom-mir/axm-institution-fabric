@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Mapping
 
 from .identity import canonical_bytes, parse_json_strict
 from .source_runtime_capability import (
@@ -220,7 +220,7 @@ def _fact(
 def observe_exact_source_live(
     *,
     containing_object_ref: str,
-    containing_value: dict[str, Any],
+    containing_value: Mapping[str, Any],
     declaration_key: str,
     store: FilesystemObjectStore,
 ) -> ExactSourceLiveObservationFact:
@@ -238,15 +238,6 @@ def observe_exact_source_live(
         declaration_key=declaration_key,
     )
 
-    if capability.runtime_capability == "unsupported_kind":
-        return _fact(
-            capability,
-            outcome="not_attempted_unsupported_kind",
-            availability="not_observed",
-            retrieval="not_attempted",
-            integrity="not_evaluated",
-        )
-
     if not isinstance(store, FilesystemObjectStore):
         raise SourceLiveObservationContextError(
             "Decision 023 supports only FilesystemObjectStore live observation"
@@ -254,6 +245,15 @@ def observe_exact_source_live(
     if store.schema_dir is not None:
         raise SourceLiveObservationContextError(
             "Decision 023 rejects caller-supplied/custom schema_dir before target-object I/O"
+        )
+
+    if capability.runtime_capability == "unsupported_kind":
+        return _fact(
+            capability,
+            outcome="not_attempted_unsupported_kind",
+            availability="not_observed",
+            retrieval="not_attempted",
+            integrity="not_evaluated",
         )
 
     try:
