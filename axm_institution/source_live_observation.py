@@ -343,10 +343,11 @@ def observe_exact_source_live(
     the base exact-store verifier must independently read and reproduce the exact immutable
     identity before `exact_observed` can be emitted. Its `_object_path` data descriptor
     applies that same bounded rule to object location: a caller-owned exact-instance path
-    shadow may run, but its return value cannot redirect the verification-critical read;
-    the supplied store's base exact path is used for the actual availability/identity
-    check. The temporary copy and guards are not retained and therefore do not create
-    historical snapshot, durable store-root identity, hostile-process isolation, or
+    shadow may run, but neither its return value nor any store-layer error it raises can
+    establish presence or absence; the supplied store's base exact path independently
+    determines the actual availability/identity check. Unexpected non-store exceptions
+    still fail closed. The temporary copy and guards are not retained and therefore do not
+    create historical snapshot, durable store-root identity, hostile-process isolation, or
     re-execution standing.
     """
 
@@ -435,7 +436,13 @@ def observe_exact_source_live(
 
                 def verified_object_path(reference: str) -> Path:
                     if caller_dispatch is not None:
-                        caller_dispatch(reference)
+                        try:
+                            caller_dispatch(reference)
+                        except ObjectStoreError:
+                            # Caller-owned path dispatch is exercised for continuity with
+                            # ADV-058-G, but its store-layer classification is not evidence
+                            # about the supplied store. The base path/read below decides.
+                            pass
                     return FilesystemObjectStore._object_path(self, reference)
 
                 return verified_object_path
