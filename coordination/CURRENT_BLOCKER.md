@@ -1,141 +1,153 @@
 # Current Stage 4 Sequencing Overlay
 
 Date: 2026-09-14
-Decision 022 production integration commit: **`ae2a4171dac0c6bb56b86ac11fc4b987924b4a94`**. This sequencing overlay follows that production integration.
 Current stage: **Stage 4 — claim / occupancy / return lifecycle**
-Current canonical source gate: **Decision 022 — Exact Source Runtime Capability Facts**
-Current bounded research gate: **Decision 021 — Source Observation Boundary / observation-context identity**
-Current disposition: **Decision 022 is canonical on its bounded no-target-I/O runtime-capability surface. Actual exact-source target observation remains held. Lane 01 must first finish the Decision 021 observation-context / re-execution research boundary; Lane 02 must not implement a target observer yet.**
+Current canonical source precursor: **Decision 022 — Exact Source Runtime Capability Facts**
+Current executable source gate: **Decision 023 — Exact Source Live Observation Facts**
+Current disposition: **Decision 021 observation-context research is sufficiently bounded to open one local/offline live-store observation slice. Decision 023 explicitly records mutable-context and non-reexecution standing; it does not create an immutable snapshot, retained-byte contract, generic resolver, trust rule, closure rule, Stage 5 integration, epoch, or replay-success semantics.**
 
-This file is the current sequencing pointer. Earlier overlays, failed and successful specialist runs, Decisions 020–022, and return packets remain historical evidence and are not invalidated or rewritten by this update. `coordination/CURRENT_WAVE.md` remains historical chronology and must not override newer repository state.
+This file is the current sequencing pointer. Earlier overlays, red and green specialist runs, Decisions 020–022, and return packets remain historical evidence and are not invalidated or rewritten. `coordination/CURRENT_WAVE.md` remains historical chronology and must not override newer repository state.
 
-## Canonical Decision 022 boundary
+## Preserved Decision 022 standing
 
-Decision 022 now provides a deterministic fact for one exact Decision 020 `exact_axm_object` declaration occurrence:
+Decision 022 production integration remains commit `ae2a4171dac0c6bb56b86ac11fc4b987924b4a94`.
+
+It provides one deterministic no-target-I/O runtime capability fact for an exact Decision 020 `exact_axm_object` occurrence:
 
 - exact containing-object identity;
-- exact declaration key;
-- exact authored target `object_ref`;
+- declaration key;
+- exact authored target ref;
 - parsed target kind;
-- `runtime_capability = supported | unsupported_kind` for the fixed bundled kernel schema context only.
+- `runtime_capability = supported | unsupported_kind` for the fixed bundled kernel schema context.
 
-The projection performs no target source-object lookup. `supported` establishes only that this bundled runtime has a valid interpretation contract for the target kind. It does not establish target existence, availability, retrieval, integrity, provenance causality, trust, relevance, completeness, closure, acceptance, integration, epoch completion, or replay correctness.
+Its preserved evidence chain remains green baseline → ADV-057-A red counterexample → bounded repair → independent unchanged-oracle green recheck. The repaired and independent candidates both completed **437/437 deterministic tests plus explicit compile**. Lane 02 Activation 047 later repeated **437/437 plus compile** as a verification-only contribution without opening target observation.
 
-Missing inferred bundled schema remains `unsupported_kind`. An inferred bundled schema that exists but is non-regular, unreadable, undecodable, unparsable, or invalid fails closed through `SourceRuntimeCapabilityContextError`; it is not relabelled as unsupported or source corruption.
+Runtime capability is still not target existence, availability, retrieval, integrity, provenance causality, trust, closure, acceptance, integration, epoch completion, or replay correctness.
 
-Custom/mutable schema directories remain outside Decision 022.
+## Lane 03 Activation 050 now integrated
 
-## Preserved evidence chain
+Lane 03 PR #108 was integrated as `b2ec5628dd4fd2102d5ac06743b743bb95d37725` before Decision 023 was opened.
 
-### Historical green baseline
+Its evidence-only continuity drill demonstrated that a specialist can detect a concurrent main advance, reread the new durable packet, re-anchor its branch, and preserve the target-observation hold without relying on private chat. It also confirmed that stale `CURRENT_WAVE.md`, newer packet timestamps, green CI, branch recency, actor identity, founder identity, or Git permission do not create semantic authority.
 
-Before the adversarial counterexample, Lane 02 had a directly observed green baseline for the bounded implementation: **431/431 deterministic tests passed** plus explicit compile. That result remains valid for its exact candidate but did not override later red evidence.
+No production/schema/fixture/test/workflow semantics changed in that integration.
 
-### Historical ADV-057-A red evidence
+## Decision 021 final research conclusion
 
-Lane 03 then demonstrated that an existing regular bundled schema containing invalid UTF-8 leaked raw `UnicodeDecodeError` instead of the dedicated Decision 022 capability-context failure. ADV-057-B through F passed while ADV-057-A errored; later full-suite and compile stages were correctly skipped. This red result remains historical truth for its exact pre-repair candidate.
+The remaining observation-context question compared:
 
-### Lane 02 bounded repair
+1. immutable/snapshot-like observation context;
+2. retained verified bytes for positive exact observations;
+3. explicit context-bound/non-reexecution standing for live observations.
 
-Lane 02 repaired only the demonstrated failure-normalization boundary. Exact repaired test-bearing head:
+The first executable slice selects **3** as the smallest truthful contract.
 
-`b4aeafc236d4abb426bbd0bd78ca4780675fabab`
+The current `FilesystemObjectStore` root is mutable runtime state. A path label therefore MUST NOT be treated as immutable observation-context identity. Instead, Decision 023 explicitly records:
 
-Fresh-main PR merge candidate tested:
+- `observation_method = filesystem_exact_load_v1`;
+- `context_standing = live_mutable_store`;
+- `reexecution_standing = not_established`.
 
-`a78ff60a4dd2721e24ab0eedd6b3f9e8f7ff896b`
+This keeps two claims separate:
 
-Run/job:
+- an immutable recorded observation fact may later be replayed as historical institutional input;
+- literal re-execution of the original live filesystem observation is not established.
 
-`34832341654` / `103938318383`
+Immutable snapshots/manifests and retained-byte evidence remain possible later strengthening mechanisms, not hidden assumptions of the first slice.
 
-Directly observed on Ubuntu 24.04.5 / Python 3.12.14 / jsonschema 4.26.0:
+## Decision 023 bounded implementation contract
 
-- preserved Decision 020 ADV-054/055: **6/6 passed**;
-- unchanged ADV-057-A through F: **6/6 passed**;
-- full deterministic discovery: **437/437 passed, 0 failures, 0 errors** in 383.638s;
-- explicit enumerated `py_compile`: **passed**;
-- complete native job: **success**.
+Decision 023 applies only to one exact typed `exact_axm_object` declaration occurrence in artifact v0.4 or evidence-record v0.2.
 
-The repair only extends the local Decision 022 bundled-capability wrapper so Unicode decode failures normalize through `SourceRuntimeCapabilityContextError`. It does not change shared schema-loader semantics or open source target I/O.
+The implementation MUST first preserve/derive the Decision 022 runtime capability for the same exact occurrence.
 
-### Lane 03 independent unchanged-oracle recheck
+### Unsupported runtime
 
-Lane 03 branched from the exact repaired head and preserved the ADV-057 oracle byte-for-byte (blob `d5a855e9883d1ed42df39379f3ab8b34126477be`). Exact independent test head:
+If the target kind is `unsupported_kind`:
 
-`9a881a433b1973a893b6d8501cd39b93c79de4b9`
+- perform **no target-object I/O**;
+- return explicit `not_attempted_unsupported_kind` / `not_observed` / `not_attempted` / `not_evaluated` standing.
 
-Exact PR merge candidate tested:
+### Supported runtime
 
-`4c709c088eaa1babcbcaad17ed4daf32120f22b4`
+If the target kind is supported, use only exact `FilesystemObjectStore.load_bytes(target_object_ref)`.
 
-Run/job:
+No logical-id, newest-version, recency, locator, search, network, package, adjacent-source, actor, CI, branch, or Git fallback is allowed.
 
-`34833589216` / `103942279133`
+The durable result must preserve exact occurrence identity and explicit technical dimensions:
 
-Directly observed on the same demonstrated runtime family:
+- `observation_outcome`;
+- `availability_observation`;
+- `retrieval_observation`;
+- `integrity_observation`.
 
-- Decision 020 ADV-054/055: **6/6 passed**;
-- unchanged ADV-057-A through F: **6/6 passed**;
-- full deterministic discovery: **437/437 passed, 0 failures, 0 errors** in 298.555s;
-- explicit enumerated `py_compile`: **passed**;
-- complete native job: **success**.
+The authorized outcome classes are:
 
-No production Python, schema, fixture, or ADV-057 oracle was changed by Lane 03 to obtain this result. Its branch-only workflow allowlist entry is not itself institutional semantics.
+- exact success → `exact_observed`, observed in this live context, verified bytes obtained, exact identity verified;
+- `ObjectNotFoundError` → `not_found_in_live_context`, bytes not obtained, integrity not evaluated;
+- `ObjectCorruptionError` → `corrupt_material_in_live_context`, availability indeterminate, unverified bytes obtained, exact identity failed;
+- other `ObjectStoreError` → `store_error_in_live_context`, availability indeterminate, bytes not obtained, integrity not evaluated;
+- unsupported kind → no observation attempted.
 
-### Canonical integration
+No absolute path, host, process, timestamp, actor, CI, branch, Git state, or exception text belongs in the canonical observation fact.
 
-Lane 01 squash-merged PR #101 as:
+## What Decision 023 does not prove
 
-`ae2a4171dac0c6bb56b86ac11fc4b987924b4a94`
+Even `exact_observed` does not establish:
 
-The four-root integration disposition is therefore:
+- provenance causality;
+- source relevance, trust, or quality;
+- completeness or closure;
+- packet acceptance/rejection;
+- claim closure;
+- Stage 5 integration;
+- epoch completion;
+- retained-byte availability;
+- future source availability;
+- literal observation re-execution;
+- replay correctness.
 
-- **Truth:** preserve the exact sequence green baseline → red counterexample → bounded repair → independent unchanged-oracle green recheck. No later green run erases the red history.
-- **Agency / non-domination:** Lane 02, Lane 03, Lane 01, founder identity, CI success, branch order, and Git permission are evidence/execution facts, not constitutional authority.
-- **Continuity:** exact declaration occurrence identity, bounded failure semantics, exact heads, merge candidates, runs, and specialist handoffs are durable outside private chat.
-- **Wisdom before speed:** integrate only the no-target-I/O capability fact and keep actual source observation held until its context/re-execution meaning is grounded.
-
-## Decision 021 research finding after Decision 022
-
-Inspection of the current `FilesystemObjectStore` establishes a useful boundary:
-
-1. `load_bytes(reference)` and `load(reference)` use exact `axmref:v1` identity and, on success, verify stored raw bytes against canonical schema validation and the requested immutable reference.
-2. The filesystem **store root is mutable runtime state**. A path label does not become immutable context identity merely because exact object names beneath it are content-addressed.
-3. `ObjectNotFoundError` therefore means only that the exact object was not present in the inspected store context at that observation. It cannot truthfully mean global nonexistence.
-4. `ObjectCorruptionError` means the bytes found at that exact path failed the exact identity contract in that inspected context. It is not a trust or acceptance verdict.
-5. A successful observation can later be replayed from retained verified bytes if those bytes are made part of a future explicit observation record, but the current kernel has **no durable immutable identity for the live store context itself**.
-6. A negative live-store observation cannot be honestly claimed re-executable later against the same state unless a later contract snapshots or otherwise immutably identifies that observation context.
-
-This is research only. No source observer, snapshot manifest, retained-byte object, resolver, or observation-result schema is authorized by this overlay.
+Negative/error results are equally bounded: not-found is context-local, corruption is not a trust verdict, store error leaves availability indeterminate, and unsupported kind is not absence.
 
 ## Active lane boundaries
 
-### Lane 01 — current owner
+### Lane 01 — integration owner
 
-Finish the Decision 021 research question around observation-context identity and replay/re-execution standing. The next durable research packet should compare at least:
+Decision 023 research/contract is now durable. Do not duplicate Lane 02 implementation work. Integrate only after exact implementation and adversarial evidence are sufficiently grounded against the four roots.
 
-- immutable/snapshot-like observation context;
-- retained verified bytes for positive exact observations;
-- explicit context-bound/non-reexecution standing for missing/corrupt live-store observations.
+### Lane 02 — current builder
 
-It must identify the smallest universal contract that does not make a mutable filesystem path, process identity, host, actor, recency, CI run, or Git state into source authority.
+Implement **Decision 023 only** on fresh canonical `main`.
 
-### Lane 02 — held
+Required evidence includes deterministic tests for:
 
-Do not implement target availability/retrieval observation until Lane 01 opens a later numbered implementation decision. Preserve Decision 022 and its regression suite unchanged.
+- exact success;
+- context-bound not-found;
+- corrupt exact-path material;
+- generic store failure remaining indeterminate;
+- unsupported kind performing no target I/O;
+- equal target refs preserving distinct declaration occurrences;
+- stale/mismatched container identity failing closed;
+- no logical/newest/locator/recency fallback;
+- canonical transport excluding ambient authority;
+- repeated identical classified inputs producing identical bytes;
+- same textual mutable store root truthfully producing a different later observation after contents change;
+- unchanged Decision 022 regressions.
 
-### Lane 03 — available for attack
+Run the complete deterministic suite and explicit compile.
 
-Preserve ADV-057 unchanged as regression evidence. Attack the next bounded observation decision only after Lane 01 opens it durably. Priority future attacks include mutable-context laundering, negative-observation globalisation, retained-byte provenance laundering, hidden locator fallback, occurrence collapse, and observation→trust/closure/acceptance authority.
+### Lane 03 — next attacker after Lane 02
+
+Attack the exact tested Decision 023 head for mutable-context laundering, negative-observation globalization, hidden fallback, occurrence collapse, stale rebinding, failure disappearance, ambient metadata leakage, unsupported-kind laundering, and observation→trust/closure/acceptance/reexecution authority.
+
+Do not broaden into source policy that Decision 023 does not authorize.
 
 ## Still explicitly unresolved
 
-- immutable/snapshot-like source observation context identity versus an explicit non-reexecution limitation;
-- exact target availability/existence observation;
-- source loading/retrieval semantics and retained bytes;
-- digest/integrity verification and retained integrity evidence;
-- locator/network/filesystem/package resolvers;
+- immutable/snapshot-like source observation context identity and snapshot completeness;
+- retained verified source bytes / retained-byte evidence objects;
+- content-address byte-provider and digest verification semantics;
+- locator/network/filesystem/package resolver contracts and resolver identity/configuration;
 - explicit locator/content/exact association;
 - historical-to-typed migration objects;
 - provenance-relation vocabulary;
@@ -152,11 +164,11 @@ Preserve ADV-057 unchanged as regression evidence. Attack the next bounded obser
 - successor state-revision publication;
 - Stage 5 integration receipts/runtime;
 - epochs/barriers and replay;
-- cross-language graph/reachability/frontier/source reproduction;
+- cross-language graph/reachability/frontier/source-observation reproduction;
 - exact self/mutual-cycle authorability through ordinary content-addressed publication;
 - stronger filesystem durability/concurrency evidence;
 - hostile same-process code isolation beyond the trusted deterministic runtime boundary.
 
 ## Stop rule for the next activation
 
-Do not open a target-observation implementation merely because Decision 022 is green and canonical. First make the observation context and re-execution claim explicit enough that a replacement occupant can distinguish recorded institutional replay from literal re-execution of a mutable live store.
+Do not interpret opening Decision 023 as permission to add snapshots, retained-byte objects, generic resolvers, content-address verification, source trust/closure, Stage 5, epochs, or replay. First prove the bounded live-store exact-source observation contract and preserve its explicit `reexecution_standing = not_established` limitation.
