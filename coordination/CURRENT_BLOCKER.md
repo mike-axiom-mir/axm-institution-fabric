@@ -1,7 +1,7 @@
 # Current Stage 4 Sequencing Overlay
 
 Date: 2026-09-14
-Current canonical main after Lane 01 integration: **`ae2a4171dac0c6bb56b86ac11fc4b987924b4a94`**
+Decision 022 production integration commit: **`ae2a4171dac0c6bb56b86ac11fc4b987924b4a94`**. This sequencing overlay follows that production integration.
 Current stage: **Stage 4 — claim / occupancy / return lifecycle**
 Current canonical source gate: **Decision 022 — Exact Source Runtime Capability Facts**
 Current bounded research gate: **Decision 021 — Source Observation Boundary / observation-context identity**
