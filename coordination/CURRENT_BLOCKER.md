@@ -4,7 +4,7 @@ Date: 2026-09-14
 Current stage: **Stage 4 — claim / occupancy / return lifecycle**
 Current canonical source precursor: **Decision 022 — Exact Source Runtime Capability Facts**
 Current executable source gate: **Decision 023 — Exact Source Live Observation Facts**
-Current disposition: **Decision 021 observation-context research is sufficiently bounded to open one local/offline live-store observation slice. Decision 023 explicitly records mutable-context and non-reexecution standing; it does not create an immutable snapshot, retained-byte contract, generic resolver, trust rule, closure rule, Stage 5 integration, epoch, or replay-success semantics.**
+Current disposition: **Lane 02 now has a green exact Decision 023 implementation baseline, but Decision 023 is not yet canonical. Integration is held pending the Decision 023 contract's required independent Lane 03 adversarial attack of that exact tested surface. Decision 023 still records mutable-context and non-reexecution standing and does not create an immutable snapshot, retained-byte contract, generic resolver, trust rule, closure rule, Stage 5 integration, epoch, or replay-success semantics.**
 
 This file is the current sequencing pointer. Earlier overlays, red and green specialist runs, Decisions 020–022, and return packets remain historical evidence and are not invalidated or rewritten. `coordination/CURRENT_WAVE.md` remains historical chronology and must not override newer repository state.
 
@@ -24,13 +24,15 @@ Its preserved evidence chain remains green baseline → ADV-057-A red counterexa
 
 Runtime capability is still not target existence, availability, retrieval, integrity, provenance causality, trust, closure, acceptance, integration, epoch completion, or replay correctness.
 
-## Lane 03 Activation 050 now integrated
+## Lane 03 continuity repairs now integrated
 
 Lane 03 PR #108 was integrated as `b2ec5628dd4fd2102d5ac06743b743bb95d37725` before Decision 023 was opened.
 
 Its evidence-only continuity drill demonstrated that a specialist can detect a concurrent main advance, reread the new durable packet, re-anchor its branch, and preserve the target-observation hold without relying on private chat. It also confirmed that stale `CURRENT_WAVE.md`, newer packet timestamps, green CI, branch recency, actor identity, founder identity, or Git permission do not create semantic authority.
 
-No production/schema/fixture/test/workflow semantics changed in that integration.
+Lane 03 PR #111 was later squash-integrated as `df0b7721a07a76ec8bdf14b04be1b870ba66733f`. It repairs a narrower replacement-occupant discovery gap by making both `coordination/CURRENT_WAVE.md` and this current sequencing pointer explicit mandatory reads in Lane 03's standing role while preserving the requirement to verify repository evidence rather than treating filenames or recency as authority.
+
+Neither Lane 03 integration changed production/schema/fixture/test/workflow/source-observation semantics.
 
 ## Decision 021 final research conclusion
 
@@ -95,6 +97,30 @@ A custom/non-bundled schema context is rejected before this target-result mappin
 
 No absolute path, host, process, timestamp, actor, CI, branch, Git state, or exception text belongs in the canonical observation fact.
 
+## Lane 02 Activation 048 implementation baseline — green but not yet canonical
+
+Open PR #112 supplies the first executable Decision 023 implementation.
+
+Exact Lane 02 head:
+
+`26bd68b53c7521f7f5667b3c924e226bd2c95441`
+
+Exact GitHub Actions PR merge candidate tested against then-canonical base `8aa200f52a6beb278fb0b6f874b57472646b5a0f`:
+
+`3ee7537fe8cf6e70f32c117219c6596f94ab9593`
+
+Directly inspected GitHub Actions run `34852346204`, job `104003161853`, recorded:
+
+- Decision 020 ADV-054/055 unchanged oracle: **6/6 passed**;
+- Decision 022 ADV-057 unchanged oracle: **6/6 passed**;
+- Decision 023 focused implementation suite: **14/14 passed**;
+- complete deterministic suite: **451/451 passed in 491.670s**;
+- explicit compile: **passed**.
+
+The focused Decision 023 suite covers exact success, typed evidence occurrence, context-local not-found, exact-path corruption, generic store error, unsupported-kind no-I/O, equal-target occurrence separation, stale container failure before target I/O, no newest-same-logical fallback, bounded canonical transport, deterministic repeated bytes, mutable same-root observations changing over time without contradiction, and custom-schema rejection before target I/O/outcome mapping.
+
+This evidence belongs to the exact tested candidate above. It does not by itself authorize canonical integration and is not silently re-labelled as testing later `main` ancestry.
+
 ## What Decision 023 does not prove
 
 Even `exact_observed` does not establish:
@@ -117,33 +143,25 @@ Negative/error results are equally bounded: not-found is context-local, corrupti
 
 ### Lane 01 — integration owner
 
-Decision 023 research/contract is now durable. Do not duplicate Lane 02 implementation work. Integrate only after exact implementation and adversarial evidence are sufficiently grounded against the four roots.
+Decision 023 implementation baseline is green but **integration is held**. Do not merge PR #112 until the exact tested implementation surface has received the required independent Lane 03 adversarial attack and any resulting red evidence/repair chain is explicit. Do not duplicate Lane 03's attack or Lane 02's repair lane.
 
-### Lane 02 — current builder
+### Lane 02 — builder / repair owner if needed
 
-Implement **Decision 023 only** on fresh canonical `main`.
+Preserve PR #112 and its exact tested evidence. Do not broaden the observer while Lane 03 attacks it. If Lane 03 demonstrates a counterexample, repair only the demonstrated Decision 023 failure surface, then rerun the unchanged relevant adversarial oracle, complete deterministic suite, and explicit compile.
 
-Required evidence includes deterministic tests for:
+### Lane 03 — current attacker
 
-- exact success;
-- context-bound not-found;
-- corrupt exact-path material;
-- generic store failure remaining indeterminate;
-- unsupported kind performing no target I/O;
-- equal target refs preserving distinct declaration occurrences;
-- stale/mismatched container identity failing closed;
-- no logical/newest/locator/recency fallback;
-- canonical transport excluding ambient authority;
-- repeated identical classified inputs producing identical bytes;
-- same textual mutable store root truthfully producing a different later observation after contents change;
-- caller-supplied/custom `schema_dir` rejected before target-object I/O so capability and target-validation contexts cannot diverge;
-- unchanged Decision 022 regressions.
+Attack exact Lane 02 Decision 023 head `26bd68b53c7521f7f5667b3c924e226bd2c95441` / recorded tested candidate `3ee7537fe8cf6e70f32c117219c6596f94ab9593` for:
 
-Run the complete deterministic suite and explicit compile.
-
-### Lane 03 — next attacker after Lane 02
-
-Attack the exact tested Decision 023 head for mutable-context laundering, negative-observation globalization, hidden fallback, occurrence collapse, stale rebinding, failure disappearance, ambient metadata leakage, unsupported-kind laundering, **bundled-capability/custom-schema-context mixing**, and observation→trust/closure/acceptance/reexecution authority.
+- mutable-context laundering and same textual root with changed contents;
+- negative-observation globalization;
+- corrupt/store-error outcome collapse or disappearance;
+- hidden logical/newest/locator/recency fallback;
+- occurrence collapse and stale occurrence rebinding;
+- ambient metadata leakage;
+- unsupported-kind laundering;
+- bundled-capability/custom-schema-context mixing;
+- observation → provenance/trust/closure/acceptance/literal-reexecution/replay-success authority.
 
 Do not broaden into source policy that Decision 023 does not authorize.
 
@@ -177,4 +195,4 @@ Do not broaden into source policy that Decision 023 does not authorize.
 
 ## Stop rule for the next activation
 
-Do not interpret opening Decision 023 as permission to add custom schema observation contexts, snapshots, retained-byte objects, generic resolvers, content-address verification, source trust/closure, Stage 5, epochs, or replay. First prove the bounded bundled-context live-store exact-source observation contract and preserve its explicit `reexecution_standing = not_established` limitation.
+Do not interpret Lane 02's green Decision 023 baseline as canonical authorization. First complete the independent Lane 03 attack of the exact tested implementation and preserve any counterexample, repair, and recheck chain explicitly. Do not add custom schema observation contexts, snapshots, retained-byte objects, generic resolvers, content-address verification, source trust/closure, Stage 5, epochs, or replay merely because the bounded observer is green.
