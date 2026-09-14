@@ -334,9 +334,13 @@ def observe_exact_source_live(
     store instance is temporarily given an invocation-local data-descriptor guard. Its
     `schema_dir` getter verifies that the instance dictionary still names the function-
     owned snapshot, so both ordinary assignment and direct `__dict__` rebinding fail
-    closed when validation tries to consume the interpretation context. The temporary
-    copy and guard are not retained and therefore do not create historical snapshot,
-    hostile-process isolation, or re-execution standing.
+    closed when validation tries to consume the interpretation context. Its `load_bytes`
+    data descriptor also prevents a caller-owned instance shadow from becoming proof of a
+    positive observation: a shadow may run and preserve its explicit error behavior, but
+    any shadowed success is followed by the base exact-store read and immutable identity
+    verification before `exact_observed` can be emitted. The temporary copy and guard are
+    not retained and therefore do not create historical snapshot, hostile-process
+    isolation, or re-execution standing.
     """
 
     if type(store) is not FilesystemObjectStore:
@@ -395,6 +399,17 @@ def observe_exact_source_live(
                         "Decision 023 store interpretation context changed during exact target load"
                     )
                 self.__dict__["schema_dir"] = snapshot_dir
+
+            @property
+            def load_bytes(self):
+                caller_dispatch = self.__dict__.get("load_bytes")
+
+                def verified_load(reference: str, schema_name: str | None = None) -> bytes:
+                    if caller_dispatch is not None:
+                        caller_dispatch(reference, schema_name)
+                    return FilesystemObjectStore.load_bytes(self, reference, schema_name)
+
+                return verified_load
 
         load_error: ObjectStoreError | None = None
         original_schema_dir = store.schema_dir
