@@ -341,9 +341,13 @@ def observe_exact_source_live(
     data descriptor applies the same rule one layer deeper: any caller-owned instance
     verifier shadow may run first, but its successful return is never sufficient evidence;
     the base exact-store verifier must independently read and reproduce the exact immutable
-    identity before `exact_observed` can be emitted. The temporary copy and guards are not
-    retained and therefore do not create historical snapshot, hostile-process isolation,
-    or re-execution standing.
+    identity before `exact_observed` can be emitted. Its `_object_path` data descriptor
+    applies that same bounded rule to object location: a caller-owned exact-instance path
+    shadow may run, but its return value cannot redirect the verification-critical read;
+    the supplied store's base exact path is used for the actual availability/identity
+    check. The temporary copy and guards are not retained and therefore do not create
+    historical snapshot, durable store-root identity, hostile-process isolation, or
+    re-execution standing.
     """
 
     if type(store) is not FilesystemObjectStore:
@@ -424,6 +428,17 @@ def observe_exact_source_live(
                     return FilesystemObjectStore._verify_existing(self, reference, schema_name)
 
                 return verified_existing
+
+            @property
+            def _object_path(self):
+                caller_dispatch = self.__dict__.get("_object_path")
+
+                def verified_object_path(reference: str) -> Path:
+                    if caller_dispatch is not None:
+                        caller_dispatch(reference)
+                    return FilesystemObjectStore._object_path(self, reference)
+
+                return verified_object_path
 
         load_error: ObjectStoreError | None = None
         original_schema_dir = store.schema_dir
