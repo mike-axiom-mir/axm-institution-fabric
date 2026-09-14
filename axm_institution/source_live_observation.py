@@ -1,11 +1,17 @@
 from __future__ import annotations
 
+import hashlib
+import stat
+import tempfile
+from pathlib import Path
 from typing import Any, Mapping
 
 from .identity import canonical_bytes, parse_json_strict
 from .source_runtime_capability import (
+    BUNDLED_SCHEMA_DIR,
     ExactSourceRuntimeCapabilityFact,
-    project_exact_source_runtime_capability,
+    SourceRuntimeCapabilityContextError,
+    _project_exact_source_runtime_capability_in_schema_context,
 )
 from .store import (
     FilesystemObjectStore,
@@ -217,6 +223,96 @@ def _fact(
     )
 
 
+def _capture_bundled_schema_context() -> tuple[dict[str, bytes], tuple[tuple[Any, ...], ...]]:
+    """Capture one bounded bundled-schema interpretation plus mutation-sensitive token."""
+
+    try:
+        paths = sorted(BUNDLED_SCHEMA_DIR.glob("*.schema.json"), key=lambda path: path.name)
+    except OSError as exc:
+        raise SourceLiveObservationContextError(
+            f"cannot enumerate bundled schema context: {exc}"
+        ) from exc
+    if not paths:
+        raise SourceLiveObservationContextError("bundled schema context is empty")
+
+    snapshot: dict[str, bytes] = {}
+    token: list[tuple[Any, ...]] = []
+    for path in paths:
+        try:
+            before = path.stat()
+            if not stat.S_ISREG(before.st_mode):
+                raise SourceLiveObservationContextError(
+                    f"bundled schema path is not a regular file: {path.name!r}"
+                )
+            raw = path.read_bytes()
+            after = path.stat()
+        except SourceLiveObservationContextError:
+            raise
+        except OSError as exc:
+            raise SourceLiveObservationContextError(
+                f"cannot capture bundled schema {path.name!r}: {exc}"
+            ) from exc
+
+        before_signature = (
+            before.st_dev,
+            before.st_ino,
+            before.st_size,
+            before.st_mtime_ns,
+            before.st_ctime_ns,
+        )
+        after_signature = (
+            after.st_dev,
+            after.st_ino,
+            after.st_size,
+            after.st_mtime_ns,
+            after.st_ctime_ns,
+        )
+        if before_signature != after_signature or len(raw) != after.st_size:
+            raise SourceLiveObservationContextError(
+                f"bundled schema changed while being captured: {path.name!r}"
+            )
+
+        snapshot[path.name] = raw
+        token.append(
+            (
+                path.name,
+                *after_signature,
+                hashlib.sha256(raw).hexdigest(),
+            )
+        )
+
+    try:
+        names_after = sorted(path.name for path in BUNDLED_SCHEMA_DIR.glob("*.schema.json"))
+    except OSError as exc:
+        raise SourceLiveObservationContextError(
+            f"cannot re-enumerate bundled schema context: {exc}"
+        ) from exc
+    if names_after != list(snapshot):
+        raise SourceLiveObservationContextError(
+            "bundled schema membership changed while the observation context was captured"
+        )
+
+    return snapshot, tuple(token)
+
+
+def _assert_bundled_schema_context_unchanged(expected_token: tuple[tuple[Any, ...], ...]) -> None:
+    _, observed_token = _capture_bundled_schema_context()
+    if observed_token != expected_token:
+        raise SourceLiveObservationContextError(
+            "bundled schema context changed during Decision 023 observation"
+        )
+
+
+def _write_schema_snapshot(snapshot: Mapping[str, bytes], target_dir: Path) -> None:
+    try:
+        for name, raw in snapshot.items():
+            (target_dir / name).write_bytes(raw)
+    except OSError as exc:
+        raise SourceLiveObservationContextError(
+            f"cannot materialize function-owned bundled schema snapshot: {exc}"
+        ) from exc
+
+
 def observe_exact_source_live(
     *,
     containing_object_ref: str,
@@ -230,13 +326,13 @@ def observe_exact_source_live(
     not identify the mutable store root, retain source bytes, establish literal
     re-execution, or grant provenance, trust, closure, acceptance, integration, epoch, or
     replay authority.
-    """
 
-    capability = project_exact_source_runtime_capability(
-        containing_object_ref=containing_object_ref,
-        containing_value=containing_value,
-        declaration_key=declaration_key,
-    )
+    The bundled schema set is copied into a function-owned temporary interpretation
+    context. Both capability classification and exact target validation use that same
+    copy. Ambient bundled-schema mutation during the invocation fails closed before a
+    normal observation fact is emitted; the temporary copy is not retained and therefore
+    does not create historical snapshot or re-execution standing.
+    """
 
     if not isinstance(store, FilesystemObjectStore):
         raise SourceLiveObservationContextError(
@@ -247,18 +343,57 @@ def observe_exact_source_live(
             "Decision 023 rejects caller-supplied/custom schema_dir before target-object I/O"
         )
 
-    if capability.runtime_capability == "unsupported_kind":
-        return _fact(
-            capability,
-            outcome="not_attempted_unsupported_kind",
-            availability="not_observed",
-            retrieval="not_attempted",
-            integrity="not_evaluated",
-        )
+    bundled_snapshot, bundled_token = _capture_bundled_schema_context()
 
-    try:
-        store.load_bytes(capability.target_object_ref)
-    except ObjectNotFoundError:
+    with tempfile.TemporaryDirectory(prefix="axm-decision023-schema-") as tmp:
+        snapshot_dir = Path(tmp)
+        _write_schema_snapshot(bundled_snapshot, snapshot_dir)
+
+        try:
+            capability = _project_exact_source_runtime_capability_in_schema_context(
+                containing_object_ref=containing_object_ref,
+                containing_value=containing_value,
+                declaration_key=declaration_key,
+                schema_dir=snapshot_dir,
+                context_label="Decision 023 invocation",
+            )
+        except SourceRuntimeCapabilityContextError as exc:
+            raise SourceLiveObservationContextError(
+                f"cannot establish Decision 023 bundled interpretation context: {exc}"
+            ) from exc
+
+        _assert_bundled_schema_context_unchanged(bundled_token)
+
+        if capability.runtime_capability == "unsupported_kind":
+            return _fact(
+                capability,
+                outcome="not_attempted_unsupported_kind",
+                availability="not_observed",
+                retrieval="not_attempted",
+                integrity="not_evaluated",
+            )
+
+        load_error: ObjectStoreError | None = None
+        original_schema_dir = store.schema_dir
+        schema_override_drifted = False
+        try:
+            store.schema_dir = snapshot_dir
+            try:
+                store.load_bytes(capability.target_object_ref)
+            except ObjectStoreError as exc:
+                load_error = exc
+            finally:
+                schema_override_drifted = store.schema_dir != snapshot_dir
+        finally:
+            store.schema_dir = original_schema_dir
+
+        _assert_bundled_schema_context_unchanged(bundled_token)
+        if schema_override_drifted:
+            raise SourceLiveObservationContextError(
+                "Decision 023 store interpretation context changed during exact target load"
+            )
+
+    if isinstance(load_error, ObjectNotFoundError):
         return _fact(
             capability,
             outcome="not_found_in_live_context",
@@ -266,7 +401,7 @@ def observe_exact_source_live(
             retrieval="not_obtained",
             integrity="not_evaluated",
         )
-    except ObjectCorruptionError:
+    if isinstance(load_error, ObjectCorruptionError):
         return _fact(
             capability,
             outcome="corrupt_material_in_live_context",
@@ -274,7 +409,7 @@ def observe_exact_source_live(
             retrieval="unverified_bytes_obtained",
             integrity="failed_exact_identity",
         )
-    except ObjectStoreError:
+    if load_error is not None:
         return _fact(
             capability,
             outcome="store_error_in_live_context",
