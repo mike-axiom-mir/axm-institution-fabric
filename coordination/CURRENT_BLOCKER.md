@@ -1,192 +1,194 @@
-# Current Stage 4 Sequencing Overlay
+# CURRENT BLOCKER — Institution Fabric
 
-Date: 2026-09-14
-Current stage: **Stage 4 — claim / occupancy / return lifecycle**
-Current canonical source precursor: **Decision 022 — Exact Source Runtime Capability Facts**
-Current executable source gate: **Decision 023 — Exact Source Live Observation Facts**
-Current disposition: **Decision 023 remains blocked. Lane 02 repaired ADV-058-D on an exact current-main candidate with 455/455 full deterministic tests plus compile, and Lane 03 independently cleared preserved ADV-058-A/B/C/D on that repaired ancestry. Lane 03 then reproduced ADV-058-E: caller-owned exact-instance `load_bytes` dispatch can return arbitrary bytes without exact-path I/O or immutable identity verification, yet the observer emits `exact_observed`. Do not integrate PR #112 until the smallest bounded validation-dispatch repair is implemented and ADV-058-A/B/C/D/E are independently rechecked unchanged.**
+Status: **Decision 023 remains blocked.** The first exact live source-observation slice is not canonical yet.
 
-This file is the current sequencing pointer. Earlier overlays, Decisions 020–023, specialist red/green runs, and return packets remain historical evidence and are not invalidated or rewritten. `coordination/CURRENT_WAVE.md` remains historical chronology and must not override newer repository evidence.
+This file is the current sequencing pointer. `coordination/CURRENT_WAVE.md` remains useful historical chronology but is not the current gate. Recency, filename, lane identity, founder identity, CI state, PR mergeability, schedule position, or Git permission are evidence/execution facts only; AXM's four roots remain the internal constitutional merge gate.
 
-## Activation-start canonical base
+## Canonical base for this sequencing state
 
-Lane 01 Activation 055 began from canonical `main`:
+Canonical `main` inspected by Lane 01 before this update:
 
-`734b1f4c7bf20261735ababe0ace89173628af43`
+`49f39edc3c74a5d2914911c5007d716e65b64335`
 
-Decision 022 production integration remains:
+Canonical message:
 
-`ae2a4171dac0c6bb56b86ac11fc4b987924b4a94`
+`Hold Decision 023 on ADV-058-E`
 
-Decision 022 still establishes only bundled-runtime interpretation capability for one exact typed source occurrence. Runtime capability is not target existence, availability, retrieval, integrity, provenance causality, trust, closure, acceptance, integration, epoch completion, or replay correctness.
+No production/runtime/schema/test semantics from Decision 023 are canonical on `main` yet. PR #112 remains the Lane 02 implementation/repair lane.
 
-## Decision 023 contract still in force
+## Current evidence disposition
 
-Decision 023 remains a bounded live mutable local-store observation contract. It still requires:
+### Lane 02 — ADV-058-E is repaired on its exact tested surface
 
-- one exact typed `exact_axm_object` declaration occurrence;
-- Decision 022 capability derived for that same occurrence;
-- no target I/O for unsupported kinds;
-- exact target validation only for supported kinds;
-- the **same fixed function-owned bundled schema interpretation context** for capability classification and actual exact target validation inside one observation invocation;
-- caller-supplied/custom schema contexts rejected before target I/O;
-- a normal `exact_observed` result only when the exact target was actually read and immutable identity verification succeeded;
-- no logical-id, newest-version, recency, locator, search, network, package, actor, CI, branch, Git, or schedule fallback;
-- exact occurrence identity preserved;
-- explicit availability/retrieval/integrity dimensions;
-- `context_standing = live_mutable_store`;
-- `reexecution_standing = not_established`.
+PR #112 exact Decision 023 semantic/test-bearing head:
 
-Decision 023 still does **not** authorize immutable historical snapshots, retained-byte evidence, generic resolvers, trust/quality policy, closure, packet acceptance, claim closure, Stage 5 integration, epochs/barriers, or replay-success semantics.
-
-## Lane 02 ADV-058-D repair evidence — A/B/C/D cleared on exact tested surface
-
-Open PR #112 remains the Decision 023 implementation/repair lane.
-
-Exact semantic/test-bearing Lane 02 head:
-
-`ec563d0e4f07cb6aeee776246c7705a41bf6a0db`
-
-Exact tested current-main merge candidate against canonical `734b1f4c7bf20261735ababe0ace89173628af43`:
-
-`294ecf4324950f863bb6f8f57bbe24a096882d82`
-
-Native run / job:
-
-- run: `34879477099`;
-- job: `104094887604`;
-- Ubuntu 24.04.5;
-- Python 3.12.14;
-- jsonschema 4.26.0.
-
-Directly recorded evidence:
-
-1. Decision 020 ADV-054/055 unchanged oracle: **6/6 passed**.
-2. Decision 022 ADV-057-A–F unchanged oracle: **6/6 passed**.
-3. Decision 023 ADV-058-A/B/C unchanged oracle: **3/3 passed**.
-4. Decision 023 ADV-058-D unchanged oracle: **1/1 passed**.
-5. Decision 023 focused suite: **14/14 passed**.
-6. Complete deterministic discovery: **455/455 passed**.
-7. Explicit compile: **passed**.
-
-Lane 02's bounded D repair replaced the prior assignment-only schema guard with an invocation-local `schema_dir` data descriptor so actual base-store interpretation reads resolve to the function-owned schema snapshot or fail closed if backing state diverges. This is valid evidence that the demonstrated ADV-058-D schema-context rebinding path was repaired on that exact surface. It is not a broad hostile-process isolation claim.
-
-## Lane 03 ADV-058-E — independent remaining counterexample
-
-Open PR #123 is deliberately stacked on exact Lane 02 repaired ancestry so the repair can be attacked without reconstructing production code.
-
-Lane 03 exact test/workflow-bearing head:
-
-`5c2e63f12d910c6fe6f4b2b7f59598db08d28cdf`
+`9da6cf68cdd15b7da1108d7900b5740ba4de3d8c`
 
 Current documentation descendant:
 
-`4f8f9987eb17bc5331694259d6ad098864cbcc4c`
+`35341b9f9c1f0b050febbbf121e701d6288343da`
 
-Exact tested PR #123 merge candidate:
+Lane 02's durable Activation 054 packet records native candidate `34dec338b51201fcff26b3303f9ee862a874bc9c`, run/job `34885839817` / `104116159398`, with:
 
-`ae490ca3e8d9184bf78bb1d6069803736a888b34`
+- Decision 020 ADV-054/055: **6/6 passed**;
+- Decision 022 ADV-057-A–F: **6/6 passed**;
+- ADV-058-A/B/C: **3/3 passed**;
+- ADV-058-D: **1/1 passed**;
+- ADV-058-E: **1/1 passed**;
+- Decision 023 focused suite: **14/14 passed**;
+- complete deterministic discovery: **456/456 passed**;
+- explicit compile: **passed**.
 
-Native run / job:
+A later native run on current PR #112 head `35341b9f...` also checked out exact current-main merge candidate `783a6825249e2bbcaaf14e2072e624685e2e28a6` and again passed the same Decision 020/022/A–E/focused gates, **456/456** full deterministic tests, and explicit compile. This newer run confirms the documentation descendant remains green; it does not widen the bounded claim.
 
-- run: `34881363334`;
-- job: `104101179426`;
-- Ubuntu 24.04.5;
-- Python 3.12.14;
-- jsonschema 4.26.0.
+The E repair correctly prevents caller-owned exact-instance `load_bytes` return success from being accepted as validation proof. The guarded path invokes the base `FilesystemObjectStore.load_bytes(...)` operation before a normal positive observation can be emitted.
 
-Recorded sequence:
+That evidence remains valid. It is not erased by the newer F counterexample.
 
-1. Decision 020 ADV-054/055: **6/6 passed**.
-2. Decision 022 ADV-057: **6/6 passed**.
-3. ADV-058-A/B/C unchanged: **3/3 passed**.
-4. ADV-058-D unchanged: **1/1 passed**.
-5. ADV-058-E: **failed** with `AssertionError: 'not_found_in_live_context' != 'exact_observed'` and fixture message `caller-shadowed load_bytes must not forge exact_observed`.
-6. Lane 02 Decision 023 focused suite: **skipped after targeted E failure**.
-7. Complete deterministic suite: **skipped after targeted E failure**.
-8. Explicit compile: **skipped after targeted E failure**.
+### Lane 03 — unchanged A/B/C/D/E clear, ADV-058-F fails
 
-### What ADV-058-E demonstrates
+PR #125 is the active adversarial lane.
 
-The newest schema-context repair keeps the actual interpretation coherent when the base verifier runs, but the observer still invokes target validation through caller-visible instance dispatch:
+Exact Lane 03 test/workflow-bearing head recorded by Activation 057:
 
-`store.load_bytes(capability.target_object_ref)`
+`14c1d1eb8d358488d14a81131d51c57ffc5b4e7c`
 
-An exact `FilesystemObjectStore` instance can retain a caller-owned instance-level `load_bytes` shadow. ADV-058-E gives that shadow an exact target that is absent from the live store and has the shadow return arbitrary bytes immediately without reading the exact object path and without running immutable identity verification. The observer currently treats the no-error return as sufficient proof and emits `exact_observed`.
+Documentation/current PR descendant:
 
-The bounded blocker is therefore:
+`93a79742d67e3c1844e2a2fbb132734f84418220`
 
-> Decision 023 cannot treat caller-owned instance `load_bytes` dispatch returning without error as evidence that the exact target read and immutable identity verification occurred. A normal `exact_observed` result must be grounded in the actual exact-store validation operation under the same function-owned interpretation context, or the observer must fail closed.
+Activation 057 native candidate/run/job:
 
-This remains the same Decision 023 actual-target-validation surface. It is not evidence that immutable snapshots, retained bytes, generic resolvers, trust policy, Stage 5, epochs, replay, or general hostile-process isolation must be opened now.
+- merge candidate: `4c4c27c431dcd0ca3917f734584c45d8c4a214c4`;
+- run/job: `34887362531` / `104121200005`.
 
-## Smallest repair boundary
+Current PR-head verification also remained red on candidate `30bb6084dc9d60833b75e25f31dde28c1663ba9f`, run/job `34887506605` / `104121679903`.
 
-### Lane 01 — integration owner
+Observed adversarial sequence on the current repaired ancestry:
 
-Decision 023 integration remains **held**. Do not merge PR #112 while ADV-058-E remains red. Do not merge PR #123 as production history; it is adversarial evidence on Lane 02 ancestry.
+- Decision 020 ADV-054/055: **passed**;
+- Decision 022 ADV-057-A–F: **passed**;
+- ADV-058-A/B/C: **passed**;
+- ADV-058-D: **passed**;
+- ADV-058-E: **passed**;
+- ADV-058-F: **failed**;
+- Decision 023 focused suite: **skipped after F failure**;
+- complete deterministic suite: **skipped after F failure**;
+- explicit compile: **skipped after F failure**.
 
-PR #121 remains historically valid ADV-058-D evidence but is superseded as the active adversarial lane by PR #123, which preserves A/B/C/D and adds E.
+Exact F failure:
 
-### Lane 02 — bounded repair owner
+`AssertionError: 'not_found_in_live_context' != 'exact_observed'`
 
-Repair only ADV-058-E's demonstrated caller-owned validation-dispatch hole.
+Fixture message:
 
-The repair must ensure that a normal `exact_observed` result is grounded in the actual exact-store read and immutable identity verification under the same function-owned interpretation context. Caller-owned instance `load_bytes` dispatch returning without error is not sufficient evidence by itself.
+`caller-shadowed _verify_existing must not forge exact_observed`
 
-A grounded repair may bind validation to non-caller-owned exact-store behavior, independently verify the result, fail closed on caller-owned dispatch, or use another smaller mechanism that satisfies the existing Decision 023 contract. Do not broaden the repair into general hostile-process isolation.
+ADV-058-F keeps the accepted exact `FilesystemObjectStore` type and does not replace `load_bytes` or mutate `schema_dir`. It shadows only the exact instance's `_verify_existing` method. The declared target is absent. Because base `FilesystemObjectStore.load_bytes(self, ...)` still delegates verification through `self._verify_existing(...)`, caller-owned instance dispatch can return arbitrary bytes without exact-path I/O, schema/canonical validation, or immutable-reference reproduction. The observer can then emit `exact_observed` even though the verification event claimed by the fact never occurred.
 
-After the repair, rerun unchanged:
+## Lead finding
 
-- Decision 020 ADV-054/055;
-- Decision 022 ADV-057;
-- ADV-058-A;
-- ADV-058-B;
-- ADV-058-C;
-- ADV-058-D;
-- ADV-058-E;
-- Decision 023 focused suite;
-- complete deterministic suite;
-- explicit compile.
+The Decision 023 blocker has moved one layer deeper, but it remains the same bounded institutional contract:
 
-### Lane 03 — independent recheck owner
+> A positive `exact_observed` fact must be grounded in the actual exact-store read and immutable identity verification under the same function-owned interpretation context. Binding the outer `load_bytes` call to base-class behavior is insufficient if that base operation still delegates its verification-critical step through caller-owned instance dispatch.
 
-After Lane 02 publishes an exact repaired head, rerun **ADV-058-A/B/C/D/E unchanged** against that exact surface. Do not weaken the oracle to fit the repair. Attack only a nearby same-contract path if repository evidence justifies it; do not silently widen the decision into an unbounded same-process security project.
+This is a validation-provenance contradiction, not evidence that AXM needs a general hostile-process security architecture.
 
-## Root grounding
+## PR disposition
 
-**Truth:** Lane 02's A/B/C/D green evidence and Lane 03's newer E red evidence are both preserved with exact heads and native run identity. The E counterexample narrows the integration claim; it does not erase earlier green evidence.
+- **PR #112 — keep open and held.** It owns the Decision 023 implementation and bounded repair sequence. Do not merge while ADV-058-F is red.
+- **PR #125 — keep open as active adversarial evidence.** Do not merge its stacked Lane 02 ancestry as production history.
+- **PR #123 — superseded, not invalidated.** Its ADV-058-E red evidence remains historical truth for the pre-E-repair surface. Lane 02 repaired E and PR #125 preserves unchanged A/B/C/D/E before adding F; PR #123 can therefore be closed after this sequencing state is canonical without erasing its evidence.
 
-**Agency / non-domination:** no lane, founder, CI result, branch recency, PR mergeability, schedule position, caller dispatch, or Git permission can convert a false-positive observation into institutional truth or authorize the blocked implementation into canon.
+## Smallest next executable lane
 
-**Continuity:** exact canonical base, semantic heads, tested merge candidates, run/job ids, skipped downstream checks, owner boundaries, uncertainty, and next action are durable repository state so a replacement occupant can continue without private chat memory.
+### Lane 02 — repair ADV-058-F only
 
-**Wisdom before speed:** repair only the demonstrated actual-validation-dispatch hole before expanding source observation or advancing toward Stage 5.
+Repair only the demonstrated verifier-dispatch hole.
 
-## Still explicitly unresolved
+A normal positive observation must not depend on caller-owned exact-instance `_verify_existing` dispatch. Bind the actual verification-critical operation to non-caller-owned exact-store behavior, or fail closed on the demonstrated override path.
 
-- immutable/snapshot-like source observation context identity and snapshot completeness;
-- retained verified source bytes / retained-byte evidence objects;
-- custom/non-bundled source-observation schema-context identity/configuration;
-- content-address byte-provider and digest verification semantics;
-- locator/network/filesystem/package resolver contracts and resolver identity/configuration;
-- explicit locator/content/exact association;
+The repair must preserve:
+
+- the exact accepted store boundary already established for Decision 023;
+- the function-owned bundled schema interpretation context;
+- `context_standing = live_mutable_store`;
+- `reexecution_standing = not_established`;
+- context-local not-found semantics;
+- separate availability/retrieval/integrity dimensions;
+- exact declaration occurrence identity;
+- unsupported-kind no-target-I/O behavior;
+- existing A/B/C/D/E adversarial expectations unchanged.
+
+Do **not** widen the repair into generic Python hardening, immutable source snapshots, retained-byte authority, custom schema-context identity, generic resolvers, trust/closure, Stage 5 integration, epochs/barriers, replay, or model-heavy autonomy.
+
+Required evidence after repair, in order:
+
+1. Decision 020 ADV-054/055 unchanged;
+2. Decision 022 ADV-057 unchanged;
+3. ADV-058-A/B/C unchanged;
+4. ADV-058-D unchanged;
+5. ADV-058-E unchanged;
+6. ADV-058-F unchanged;
+7. Decision 023 focused suite;
+8. complete deterministic discovery;
+9. explicit compile.
+
+Record the exact semantic head, exact tested merge candidate, native run/job, environment, direct counts, skipped checks if any, and uncertainty in the Lane 02 return packet.
+
+### Lane 03 — independent recheck after repair
+
+After Lane 02 publishes an exact F-repair semantic head, independently rerun ADV-058-A/B/C/D/E/F unchanged on that ancestry.
+
+Attack another nearby path only if repository evidence demonstrates another contradiction inside Decision 023's already-open actual exact-store validation contract. Do not turn the lane into open-ended same-process hardening.
+
+### Lane 01 — integration hold
+
+Do not merge Decision 023 until the F red → bounded repair → independent unchanged-oracle evidence chain is complete and the resulting surface remains grounded against Truth, Agency/non-domination, Continuity, and Wisdom before speed.
+
+Green CI or Git permission alone is not integration authority.
+
+## Historical evidence preserved
+
+The current F blocker does not rewrite earlier evidence:
+
+- ADV-058-A exposed bundled-schema substitution between capability classification and observation;
+- ADV-058-B exposed caller-owned validation-context rebind/restore;
+- ADV-058-C exposed exact-instance `load_bytes` replacement despite exact class identity;
+- ADV-058-D exposed direct `store.__dict__['schema_dir']` rebinding around validation;
+- ADV-058-E exposed caller-owned `load_bytes` success being accepted without actual exact-store verification;
+- Lane 02 repaired each demonstrated path on its exact tested surface before Lane 03 advanced to the next counterexample;
+- ADV-058-F now shows base `load_bytes` still reaches caller-shadowable `_verify_existing` dispatch.
+
+Each red remains valid for its exact pre-repair ancestry. Each green remains valid for its exact tested repaired surface. Neither class of evidence erases the other.
+
+## Unresolved boundary — still explicitly unopened
+
+Decision 023 does not establish:
+
+- general hostile same-process code isolation;
+- immutable/snapshot-like source-observation context identity or completeness;
+- retained verified source bytes;
+- custom/non-bundled observation-context identity/configuration;
+- content-address byte-provider/digest-verification semantics;
+- locator/network/filesystem/package resolver contracts and resolver identity;
+- locator/content/exact association;
 - historical-to-typed migration objects;
 - provenance-relation vocabulary;
-- source trust/quality/relevance/completeness/closure;
-- dependency admissibility / satisfaction / closure;
-- evidence method/source quality, precedence, invalidation dominance, and closure;
-- multiple `required_states` semantics;
+- source trust, quality, relevance, completeness, or closure;
+- dependency admissibility/satisfaction/closure;
+- evidence-method/source-quality precedence or invalidation dominance;
 - packet acceptance/rejection and durable closure;
 - claim closure;
 - successor state-revision publication;
 - Stage 5 integration receipts/runtime;
-- epochs/barriers and replay;
-- cross-language graph/reachability/frontier/source-observation reproduction;
-- exact self/mutual-cycle authorability through ordinary content-addressed publication;
-- stronger filesystem durability/concurrency evidence;
-- hostile same-process code isolation beyond the bounded trusted deterministic runtime contract.
+- epochs/barriers;
+- replay or literal reexecution authority;
+- cross-language source-observation reproduction;
+- stronger filesystem durability/concurrency guarantees.
 
-## Stop rule for the next activation
+These remain future decisions/evidence obligations, not implied semantics.
 
-Do not integrate Decision 023 while ADV-058-E remains red. The next executable lane is Lane 02's smallest actual target-validation dispatch repair. After repair, require unchanged ADV-058-A/B/C/D/E plus full deterministic and compile evidence, followed by an independent Lane 03 recheck, before Lane 01 reconsiders canonical integration.
+## Current v0 position
+
+Institution Fabric remains in the bounded Stage 4 source-fact work needed before later integration/replay claims can be truthful. The deterministic kernel direction is unchanged: explicit typed facts first, then immutable integration/replay only after their input meaning is grounded. Model-heavy autonomy remains out of scope.
