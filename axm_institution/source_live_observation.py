@@ -334,9 +334,10 @@ def observe_exact_source_live(
     does not create historical snapshot or re-execution standing.
     """
 
-    if not isinstance(store, FilesystemObjectStore):
+    if type(store) is not FilesystemObjectStore:
         raise SourceLiveObservationContextError(
-            "Decision 023 supports only FilesystemObjectStore live observation"
+            "Decision 023 requires the exact FilesystemObjectStore implementation; "
+            "subclass dispatch is outside this bounded observation contract"
         )
     if store.schema_dir is not None:
         raise SourceLiveObservationContextError(
