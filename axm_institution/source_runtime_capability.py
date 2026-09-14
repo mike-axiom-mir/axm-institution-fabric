@@ -133,6 +133,39 @@ class ExactSourceRuntimeCapabilityFact(bytes):
         return value
 
 
+def _runtime_capability_in_schema_context(
+    target_kind: str,
+    schema_dir: Path,
+    *,
+    context_label: str,
+) -> str:
+    """Classify one target kind against exactly one explicit schema directory."""
+
+    schema_name = f"{target_kind}.schema.json"
+    schema_path = schema_dir / schema_name
+    try:
+        metadata = schema_path.stat()
+    except FileNotFoundError:
+        return "unsupported_kind"
+    except OSError as exc:
+        raise SourceRuntimeCapabilityContextError(
+            f"cannot inspect {context_label} schema context for {target_kind!r}: {exc}"
+        ) from exc
+
+    if not stat.S_ISREG(metadata.st_mode):
+        raise SourceRuntimeCapabilityContextError(
+            f"{context_label} schema path for {target_kind!r} is not a regular file"
+        )
+
+    try:
+        _identity.load_schema(schema_name, schema_dir)
+    except (ContractValidationError, IdentityError, UnicodeError) as exc:
+        raise SourceRuntimeCapabilityContextError(
+            f"{context_label} schema context for {target_kind!r} is invalid: {exc}"
+        ) from exc
+    return "supported"
+
+
 def _bundled_runtime_capability(target_kind: str) -> str:
     """Classify only the fixed package-bundled schema context.
 
@@ -141,29 +174,11 @@ def _bundled_runtime_capability(target_kind: str) -> str:
     runtime configuration failure and must not be relabelled ``unsupported_kind``.
     """
 
-    schema_name = f"{target_kind}.schema.json"
-    schema_path = BUNDLED_SCHEMA_DIR / schema_name
-    try:
-        metadata = schema_path.stat()
-    except FileNotFoundError:
-        return "unsupported_kind"
-    except OSError as exc:
-        raise SourceRuntimeCapabilityContextError(
-            f"cannot inspect bundled schema context for {target_kind!r}: {exc}"
-        ) from exc
-
-    if not stat.S_ISREG(metadata.st_mode):
-        raise SourceRuntimeCapabilityContextError(
-            f"bundled schema path for {target_kind!r} is not a regular file"
-        )
-
-    try:
-        _identity.load_schema(schema_name, BUNDLED_SCHEMA_DIR)
-    except (ContractValidationError, IdentityError, UnicodeError) as exc:
-        raise SourceRuntimeCapabilityContextError(
-            f"bundled schema context for {target_kind!r} is invalid: {exc}"
-        ) from exc
-    return "supported"
+    return _runtime_capability_in_schema_context(
+        target_kind,
+        BUNDLED_SCHEMA_DIR,
+        context_label="bundled",
+    )
 
 
 def _exact_declaration_occurrence(
@@ -171,6 +186,7 @@ def _exact_declaration_occurrence(
     containing_object_ref: str,
     containing_value: Mapping[str, Any],
     declaration_key: str,
+    schema_dir: Path | None = None,
 ) -> tuple[str, str]:
     if not isinstance(containing_value, Mapping):
         raise SourceRuntimeCapabilityInputError("containing_value must be a mapping")
@@ -192,7 +208,7 @@ def _exact_declaration_occurrence(
     schema_name, required_version = contract
 
     try:
-        actual_ref = make_immutable_ref(schema_name, containing_value)
+        actual_ref = make_immutable_ref(schema_name, containing_value, schema_dir)
     except (ContractValidationError, IdentityError, ValueError) as exc:
         raise SourceRuntimeCapabilityInputError(
             f"containing value does not satisfy {schema_name}: {exc}"
@@ -240,6 +256,41 @@ def _exact_declaration_occurrence(
     return target_ref, parsed_target.kind
 
 
+def _project_exact_source_runtime_capability_in_schema_context(
+    *,
+    containing_object_ref: str,
+    containing_value: Mapping[str, Any],
+    declaration_key: str,
+    schema_dir: Path,
+    context_label: str,
+) -> ExactSourceRuntimeCapabilityFact:
+    """Internal Decision 022 projection against one explicit interpretation context.
+
+    Decision 023 uses this only with a function-owned frozen copy of the bundled schema
+    set so capability classification and target validation can share one interpretation.
+    It is intentionally not exported as caller-selectable Decision 022 authority.
+    """
+
+    target_ref, target_kind = _exact_declaration_occurrence(
+        containing_object_ref=containing_object_ref,
+        containing_value=containing_value,
+        declaration_key=declaration_key,
+        schema_dir=schema_dir,
+    )
+    runtime_capability = _runtime_capability_in_schema_context(
+        target_kind,
+        schema_dir,
+        context_label=context_label,
+    )
+    return ExactSourceRuntimeCapabilityFact(
+        containing_object_ref=containing_object_ref,
+        declaration_key=declaration_key,
+        target_object_ref=target_ref,
+        target_kind=target_kind,
+        runtime_capability=runtime_capability,
+    )
+
+
 def project_exact_source_runtime_capability(
     *,
     containing_object_ref: str,
@@ -254,16 +305,10 @@ def project_exact_source_runtime_capability(
     integration, epoch, or replay authority.
     """
 
-    target_ref, target_kind = _exact_declaration_occurrence(
+    return _project_exact_source_runtime_capability_in_schema_context(
         containing_object_ref=containing_object_ref,
         containing_value=containing_value,
         declaration_key=declaration_key,
-    )
-    runtime_capability = _bundled_runtime_capability(target_kind)
-    return ExactSourceRuntimeCapabilityFact(
-        containing_object_ref=containing_object_ref,
-        declaration_key=declaration_key,
-        target_object_ref=target_ref,
-        target_kind=target_kind,
-        runtime_capability=runtime_capability,
+        schema_dir=BUNDLED_SCHEMA_DIR,
+        context_label="bundled",
     )
