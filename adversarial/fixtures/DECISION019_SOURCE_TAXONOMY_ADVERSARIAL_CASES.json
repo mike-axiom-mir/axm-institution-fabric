@@ -1,0 +1,190 @@
+{
+  "fixture_version": "0.1",
+  "decision": "019",
+  "base_revision": "4ef3f2a51a7d3e64ae06bd21984e7e30481077a6",
+  "scope": "Research counterexamples for the proposed four-class source identity taxonomy only. This fixture does not define a source schema, resolver, loader, integrity executor, trust rule, closure rule, packet acceptance rule, integration behavior, epoch behavior, or replay behavior.",
+  "target_classes_under_review": [
+    "opaque_label",
+    "exact_axm_object",
+    "content_address",
+    "locator"
+  ],
+  "observed_repository_boundary": {
+    "historical_artifact_source_refs": "artifact schema v0.1/v0.2/v0.3 source_refs are unique non-empty opaque strings",
+    "historical_evidence_source_refs": "evidence-record schema v0.1 source_refs are unique non-empty opaque strings",
+    "historical_non_reinterpretation": "lexical shape must not upgrade historical source identity strength",
+    "proposal_separation": "declared identity, existence, retrievability, integrity, provenance relation, trust/relevance, completeness/closure, and acceptance remain separate facts"
+  },
+  "cases": [
+    {
+      "id": "ADV-053-A",
+      "title": "same historical token, different declaration occurrences",
+      "setup": {
+        "historical_object_one": {
+          "object_identity": "historical-object-A",
+          "source_refs": ["NEXT_BUILD.md"]
+        },
+        "historical_object_two": {
+          "object_identity": "historical-object-B",
+          "source_refs": ["NEXT_BUILD.md"]
+        }
+      },
+      "attack": "A future migration records only the token NEXT_BUILD.md and one newly grounded typed source identity, then treats that mapping as authority for both historical objects.",
+      "expected_truth": "The two historical declarations remain distinct occurrences even though the authored token text is equal. A migration must not collapse them by token equality.",
+      "forbidden_authority": [
+        "string equality",
+        "path resolution",
+        "newest mapping",
+        "array order",
+        "actor identity"
+      ],
+      "taxonomy_result": "survives if opaque_label identity continues to include its containing historical object; future migration representation must exact-identify the declaration occurrence rather than token text alone"
+    },
+    {
+      "id": "ADV-053-B",
+      "title": "composite pairing ambiguity",
+      "setup": {
+        "locators": ["repo://example/main/spec", "file:///mirror/spec"],
+        "content_addresses": ["sha256:A", "sha256:B"]
+      },
+      "attack": "A future source view stores two locator facts and two content-address facts, then pairs them by array position, lexical order, resolver order, or recency.",
+      "expected_truth": "No locator-to-content association exists unless it is explicitly represented. All four facts remain independent otherwise.",
+      "forbidden_authority": [
+        "array position",
+        "lexical order",
+        "resolver order",
+        "recency",
+        "repository host"
+      ],
+      "taxonomy_result": "the four target classes remain sufficient, but any future composite declaration needs explicit association semantics; association is not a fifth target identity class"
+    },
+    {
+      "id": "ADV-053-C",
+      "title": "same locator, different bytes over time",
+      "setup": {
+        "locator": "https://example.invalid/source",
+        "observation_one": "sha256:A",
+        "observation_two": "sha256:B"
+      },
+      "attack": "Locator equality is used to assert immutable source equality or to overwrite the earlier observed content identity.",
+      "expected_truth": "The locator remains one locator declaration while observations may disagree across time/context. Neither observation silently rewrites the other.",
+      "taxonomy_result": "survives; locator and content_address remain orthogonal"
+    },
+    {
+      "id": "ADV-053-D",
+      "title": "same bytes, different locators",
+      "setup": {
+        "locator_one": "https://mirror-a.invalid/source",
+        "locator_two": "https://mirror-b.invalid/source",
+        "content_address": "sha256:A"
+      },
+      "attack": "Different locator strings are used to infer different immutable content identity, or matching bytes are used to erase one locator declaration.",
+      "expected_truth": "Distinct locator declarations may point to identical bytes. Content equality does not erase locator/provenance distinctions.",
+      "taxonomy_result": "survives; declaration occurrences remain distinct even when a content target is shared"
+    },
+    {
+      "id": "ADV-053-E",
+      "title": "exact AXM syntax without exact target availability",
+      "setup": {
+        "typed_class": "exact_axm_object",
+        "declared_ref": "canonical-looking-exact-reference",
+        "store_state": "target absent"
+      },
+      "attack": "Canonical spelling alone is treated as target existence, integrity, currentness, or permission to substitute a same-logical-id object.",
+      "expected_truth": "Identity remains declared; retrievability is failed/unresolved. No logical-id, latest-version, storage-recency, or locator fallback is authorized.",
+      "taxonomy_result": "survives"
+    },
+    {
+      "id": "ADV-053-F",
+      "title": "content digest without bytes and with mismatching bytes",
+      "setup": {
+        "typed_class": "content_address",
+        "declared_digest": "sha256:A",
+        "candidate_states": ["bytes unavailable", "bytes available but hash to sha256:B"]
+      },
+      "attack": "Digest syntax or successful retrieval from a favored locator is treated as integrity success.",
+      "expected_truth": "Unavailable bytes leave integrity unresolved; mismatching bytes fail integrity. Resolver success cannot override either result.",
+      "taxonomy_result": "survives"
+    },
+    {
+      "id": "ADV-053-G",
+      "title": "integrity laundering into trust or relevance",
+      "setup": {
+        "typed_class": "content_address",
+        "integrity": "verified",
+        "source_quality": "unknown or contradicted"
+      },
+      "attack": "A valid digest match is treated as proof that the source is trustworthy, relevant, correct, sufficient, or acceptable.",
+      "expected_truth": "Integrity establishes byte identity only. Trust, relevance, correctness, sufficiency, and acceptance remain separate unresolved facts.",
+      "taxonomy_result": "survives"
+    },
+    {
+      "id": "ADV-053-H",
+      "title": "all declared sources resolve but closure remains unknown",
+      "setup": {
+        "declared_sources": ["source-one", "source-two"],
+        "retrieval": "both successful"
+      },
+      "attack": "Successful retrieval of every declared source is treated as proof that the declaration set is complete or that evidence/packet acceptance follows.",
+      "expected_truth": "Retrieval success says nothing about omitted sources, closure, evidence precedence, packet acceptance, or integration.",
+      "taxonomy_result": "survives"
+    },
+    {
+      "id": "ADV-053-I",
+      "title": "cross-field source laundering",
+      "setup": {
+        "neighboring_values": [
+          "content_ref that looks like a digest",
+          "dependency_ref that looks exact",
+          "evidence_ref that looks exact",
+          "subject_ref that looks exact",
+          "supersedes_ref that looks exact"
+        ]
+      },
+      "attack": "A neighboring field acquires source-provenance meaning because its spelling resembles one source identity class.",
+      "expected_truth": "Source authority exists only through an explicit source declaration/relation. Neighboring authored relations keep their own meaning.",
+      "taxonomy_result": "survives"
+    },
+    {
+      "id": "ADV-053-J",
+      "title": "conflicting parallel typed declarations",
+      "setup": {
+        "packet_or_lane_one": "declares content_address sha256:A for source role X",
+        "packet_or_lane_two": "declares content_address sha256:B for source role X"
+      },
+      "attack": "Newest packet, schedule order, higher-confidence occupant, branch ownership, green CI, resolver preference, or Git permission selects one declaration as institutional truth.",
+      "expected_truth": "Both declarations remain explicit conflicting facts until a later grounded policy resolves them. No actor or execution fact becomes source-selection authority.",
+      "taxonomy_result": "survives"
+    },
+    {
+      "id": "ADV-053-K",
+      "title": "exact AXM object and content address happen to cover equivalent bytes",
+      "setup": {
+        "exact_axm_object": "AXM object O",
+        "content_address": "digest over bytes that happen to match an agreed byte scope of O"
+      },
+      "attack": "Byte equivalence automatically collapses the two declaration classes or invents a provenance/causal relation between them.",
+      "expected_truth": "The target identity facts may be correlated only through an explicit relation/verification statement. Class identity and provenance relation remain separate.",
+      "taxonomy_result": "survives; no fifth class is required"
+    },
+    {
+      "id": "ADV-053-L",
+      "title": "offline replacement occupant reconstruction",
+      "setup": {
+        "network": "unavailable",
+        "original_filesystem": "unavailable",
+        "private_chat": "unavailable",
+        "repository_state": "contains historical object, typed declarations where present, and this adversarial fixture"
+      },
+      "attack": "The replacement occupant needs an undocumented parser, resolver preference, array pairing convention, or prior chat to decide source identity strength or declaration association.",
+      "expected_truth": "The occupant can recover each historical declaration at opaque strength and each future typed target by explicit class. Any association between declaration facts must be explicit; absent association stays unresolved.",
+      "taxonomy_result": "survives only if Decision 020 preserves explicit declaration-occurrence identity and never relies on implicit pairing conventions"
+    }
+  ],
+  "adversarial_disposition": {
+    "target_class_count": "no counterexample found that requires splitting or adding a fifth source target identity class",
+    "historical_non_reinterpretation": "holds under the cases above",
+    "repair_guard": "before a typed source-declaration contract is opened, preserve declaration occurrence identity and explicit association: equal tokens do not merge historical declarations, and separate locator/content/exact facts do not pair by position, recency, resolver order, actor identity, or infrastructure availability",
+    "implementation_authority": "none; this is research evidence only"
+  }
+}
