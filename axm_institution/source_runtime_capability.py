@@ -305,10 +305,16 @@ def project_exact_source_runtime_capability(
     integration, epoch, or replay authority.
     """
 
-    return _project_exact_source_runtime_capability_in_schema_context(
+    target_ref, target_kind = _exact_declaration_occurrence(
         containing_object_ref=containing_object_ref,
         containing_value=containing_value,
         declaration_key=declaration_key,
-        schema_dir=BUNDLED_SCHEMA_DIR,
-        context_label="bundled",
+    )
+    runtime_capability = _bundled_runtime_capability(target_kind)
+    return ExactSourceRuntimeCapabilityFact(
+        containing_object_ref=containing_object_ref,
+        declaration_key=declaration_key,
+        target_object_ref=target_ref,
+        target_kind=target_kind,
+        runtime_capability=runtime_capability,
     )
