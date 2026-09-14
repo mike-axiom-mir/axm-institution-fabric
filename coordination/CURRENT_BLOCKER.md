@@ -1,158 +1,158 @@
 # Current Stage 4 Sequencing Overlay
 
 Date: 2026-09-14
-Canonical `main` before this overlay: `9ddcbff747a516dc1f1048cc71e5fc7dff43138a`
+Canonical `main` reviewed during this activation: **through PR #85 / `eebc79343018ce26fefc1664662a5528ecd5f865`**
 Current stage: **Stage 4 — claim / occupancy / return lifecycle**
-Current bounded gate: **Decision 019 — Source Provenance Taxonomy Research Gate**
-Current disposition: **Decision 018 is canonical on the demonstrated bounded Python v0 read-only reachable dependency-frontier surface. Do not open source-provenance implementation yet; research the universal source taxonomy and migration boundary first.**
+Current bounded gate: **Decision 019 — concrete source-provenance taxonomy proposal under adversarial review**
+Current disposition: **Decision 018 remains canonical. Decision 019 research has now produced a concrete four-class source identity taxonomy. Source runtime/schema implementation remains closed until Lane 03 attacks the proposal and Lane 01 records the disposition.**
 
-`coordination/CURRENT_WAVE.md` remains historical chronology. This file is the current-state overlay and must be read with the numbered decisions, the Decision 018 canonical integration addendum, and durable specialist return packets.
+`coordination/CURRENT_WAVE.md` remains historical chronology. This file is the current-state overlay and must be read with numbered decisions, Decision 019 research findings, newest canonical commits/PRs, and durable specialist return packets.
 
-## What is now canonical
+## What is now canonical before the new research proposal
 
-The bounded deterministic Python v0 kernel canonically demonstrates the previously grounded exact identity, immutable-store, lifecycle, packet, evidence-subject, compatibility, provenance-base, modification, mixed-output, dependency-identity, dependency-context-membership, same-packet graph, packet-local reachability, and now **Decision 018 exact reachable dependency-frontier facts**.
+The bounded deterministic Python v0 kernel canonically demonstrates the previously grounded exact identity, immutable-store, lifecycle, packet, evidence-subject, compatibility, provenance-base, modification, mixed-output, dependency-identity, dependency-context-membership, same-packet graph, packet-local reachability, and Decision 018 exact reachable dependency-frontier facts.
 
-Decision 018 reconstructs, for each exact packet output, the exact non-packet dependency declarations reachable through that output's packet-local prerequisite subgraph while preserving exact declaring-output identity, exact dependency target identity, and the independent Decision 015 `in_claim_base` membership fact.
+Decision 018 remains bounded to factual dependency-frontier reconstruction. It does not establish dependency policy, chronology, closure, acceptance, integration, epochs, or replay.
 
-It does not turn any frontier relation into validity, admissibility, satisfaction, completeness, closure, chronology, acceptance, integration, epoch, or replay authority.
+## Decision 019 historical non-reinterpretation guard — PR #84
 
-## Decision 018 integration evidence
+Lane 02 stayed inside the research hold and added only executable compatibility evidence for the already-authored historical boundary.
 
-### Lane 02 — PR #81
+PR #84 final head:
 
-Exact implementation/workflow head:
+`35b6d5f3f05b457b5d3a0aea07628e54ea073d17`
 
-`d9fa6488937b2e0b6916477ae8833ea0be11e3bd`
+Final pull-request merge candidate directly observed in native Actions:
 
-Exact tested pull-request merge candidate:
+`b8daa47109ea53476d922f978366b1e404143916`
 
-`6c3afb426fabad6fe1d4d9bff1daa30d3212cf8b`
-
-Native run `34798702894`, job `103836781621`, was directly inspected and recorded:
+Native run `34802748404`, job `103848542521`, directly recorded:
 
 - Python 3.12.14;
-- **367 / 367 tests passed** in 538.478s;
-- Decision 018 baseline regressions passed;
-- prior integrated regressions remained green;
-- explicit compile succeeded;
+- **385 / 385 tests passed** in 399.470s;
+- all six `HistoricalSourceRefCompatibilityTests` passed;
+- explicit compile including `tests/test_source_ref_historical_compatibility.py` succeeded;
 - complete job succeeded.
 
-Lane 02 final head `ef2ec35914a5e3847572cfca2d7f4f0590b05d95` added only its durable return packet after the exact tested implementation head.
+PR #84 was squash-integrated as:
 
-PR #81 was squash-integrated as:
+`74b0a7a64e51699bb220a00af0b2a9e17bc95a2b`
 
-`9ddcbff747a516dc1f1048cc71e5fc7dff43138a`
+The tests establish only this historical syntax boundary:
 
-The canonical merge commit and Lane 02 final head have the same tree SHA, so no final branch content was silently rewritten by the squash integration.
+- artifact v0.1/v0.2/v0.3 `provenance.source_refs[]` remain unique non-empty opaque strings;
+- evidence-record v0.1 `source_refs[]` remain unique non-empty opaque strings;
+- path-like, URL-like, Git-like, hash-like, logical-label-like, and exact-looking `axmref:` strings are still accepted by those historical fields;
+- empty strings remain rejected;
+- no `pattern`, `format`, `enum`, or `const` silently upgrades historical source identity strength.
 
-### Lane 03 — ADV-052 and fresh canonical-main recheck
+This does **not** prove source existence, retrievability, integrity, trust, completeness, closure, or authority.
 
-Lane 03's first ADV-052 run is preserved as red evidence: 379 tests ran, exactly ADV-052-A failed, and compile was skipped. The failure was an adversarial presentation-order oracle error; Lane 03 corrected only the test oracle and did not change Decision 018 production semantics.
+## Lane 03 research-hold continuity — PR #85
 
-Corrected exact Lane 03 head:
+Lane 03 Activation 042 added one coordination/evidence return packet only. It did not add source runtime/schema/test semantics. It independently reconstructed the Decision 019 hold, checked replacement-occupant recovery and the stale-`CURRENT_WAVE` trap, reviewed PR #84 for boundary drift, and recorded the same bounded native evidence.
 
-`61cb120dda523315ea58330adb7d7dbd362ca327`
+PR #85 was squash-integrated as:
 
-Corrected stacked native run `34799578083`, job `103839341301`, recorded:
+`eebc79343018ce26fefc1664662a5528ecd5f865`
 
-- **379 / 379 tests passed** in 403.563s;
-- ADV-052-A through L all passed;
-- explicit compile succeeded;
-- complete job succeeded.
+Its historical observation that no concrete taxonomy existed at its activation time remains truthful. The new Lane 01 research finding below is the next state transition, not a rewrite of Lane 03's packet.
 
-Because PR #82 was stacked on Lane 02's pre-squash ancestry, it was not merged after PR #81. Lane 01 created fresh canonical-main PR #83 containing only the exact Lane 03 workflow/test evidence and durable return packet.
+## Decision 019 concrete research proposal
 
-Fresh canonical-main test-bearing head:
+Lane 01 has now published:
 
-`067f96e9ee79b09c08e8cf9e25bbca352dd31ad2`
+`coordination/decisions/019_SOURCE_PROVENANCE_TAXONOMY_RESEARCH_FINDINGS.md`
 
-Fresh exact PR merge candidate:
+The proposed minimal universal taxonomy has four source identity classes:
 
-`f89d31825f5a541694f6497719af642e0e58c81c`
+1. **`opaque_label`** — an authored source token with unresolved identity strength. All historical source strings remain here permanently, regardless of lexical shape.
+2. **`exact_axm_object`** — one explicitly typed canonical immutable AXM object reference. Syntax does not imply target existence; exact-load and digest reproduction remain separate evidence.
+3. **`content_address`** — immutable non-AXM bytes/content identified by explicit digest algorithm plus digest over a defined byte scope. Retrieval remains separate from identity; matching bytes establish integrity only, not trust.
+4. **`locator`** — a path/URI/repository/service address. Resolution is time/context-specific and does not establish immutable content identity or trust.
 
-Native run `34801146677`, job `103843914470`, directly recorded:
+The research intentionally reduces other candidates:
 
-- Python 3.12.14;
-- **379 / 379 tests passed** in 342.949s;
-- ADV-052-A through L all passed;
-- explicit compile including Decision 018 production, baseline tests, and ADV-052 succeeded;
-- complete job succeeded.
+- repository/file snapshot = immutable content/object identity plus optional locator/context, not a fifth universal class;
+- external/network source = locator unless immutable identity is separately recorded;
+- human/machine/tool assertion = provenance/responsibility around a declaration, not a source target identity class.
 
-Later PR #83 commits in this activation are coordination/documentation only unless separately evidenced.
+## Orthogonal truth dimensions
 
-The Decision 018 canonical integration addendum preserves the exact bounded meaning, successful evidence, first red oracle history, and downstream exclusions.
+The proposal preserves this boundary:
 
-## Decision 018 truth boundary
+```text
+source identity declared
+    != target exists
+    != target retrievable now
+    != retrieved bytes reproduce immutable identity
+    != provenance relation to subject is proven
+    != source is trustworthy / high quality / relevant
+    != declared source set is complete / closed
+    != evidence or packet is accepted
+```
 
-Decision 018 is canonical only for exact reachable non-packet dependency-frontier facts on the demonstrated Python v0 in-process boundary.
+No future resolver should collapse these into one success boolean.
 
-It does **not** establish:
+## Historical migration boundary
 
-- dependency admissibility / allowed-context policy;
-- dependency satisfaction;
-- declaration completeness or dependency closure;
-- actual production timestamps or execution chronology;
-- scheduler order;
-- source-provenance identity, quality, or closure;
-- evidence quality/precedence/invalidation/closure;
-- packet acceptance/rejection;
-- claim closure;
-- successor state publication;
-- Stage 5 integration correctness;
-- epochs/barriers;
-- replay correctness;
-- supported cross-language frontier transport;
-- exact self/mutual-cycle authorability under the current content-addressed artifact representation.
+Until a later numbered decision changes only future schema versions:
 
-## Why the next gate is research, not implementation
+- artifact v0.1/v0.2/v0.3 historical `source_refs[]` remain `opaque_label` semantics forever;
+- evidence-record v0.1 historical `source_refs[]` remain `opaque_label` semantics forever;
+- exact-looking `axmref`, URL, path, Git id, digest, package id, or logical id syntax never upgrades an old value;
+- a future typed source surface must use a new schema version and/or new explicitly typed field;
+- migration may create a new immutable declaration linking an old opaque token to a newly grounded typed identity, but cannot rewrite the old object's meaning;
+- missing/corrupt targets remain explicit and never fall back to logical id, newest version, resolver availability, array order, actor identity, or Git permission.
 
-The next unresolved continuity surface is source provenance, but current authored contracts deliberately do not define exact source identity:
+## External comparison evidence — informative, not authority
 
-- `artifact.provenance.source_refs[]` remains an array of arbitrary non-empty strings in artifact schema v0.1, v0.2, and v0.3;
-- `evidence-record.source_refs[]` remains an array of arbitrary non-empty strings in evidence-record schema v0.1;
-- historical valid fixtures already use path-like source strings such as `NEXT_BUILD.md`, `BUILD_PLAN.md`, a coordination decision path, and `fixtures/contracts/valid.json`.
+The research compared the proposal with:
 
-Those values cannot truthfully be retroactively called immutable exact refs, content-addressed snapshots, retrievable objects, trusted sources, or a closed source set. Syntactic resemblance to an `axmref` would not change their historical contract meaning either.
+- W3C PROV's separation of entities, activities, agents, and provenance relations;
+- SLSA v1.2's separation of human-facing URI/location from revision/content digest, including its warning that a source URI is not intended for policy decisions;
+- OCI descriptors' separation of content digest from metadata/location concerns.
 
-Opening a resolver or schema migration before defining the source taxonomy would risk hidden filesystem/network/repository authority and silent historical reinterpretation.
+AXM does not require these standards or internet access at runtime. They support the architectural separation only.
 
-## Decision 019 — active research gate
+## Active lane boundaries
 
-Decision 019 authorizes only **source-provenance taxonomy research**.
+### Lane 01 — research integration lane
 
-Lane 01 must inventory the current source-bearing surfaces and representative historical values, then propose the smallest universal taxonomy that separates at least:
+Do **not** implement source semantics yet. Preserve the four-class proposal and review Lane 03's next adversarial return. If the proposal survives, decide whether to open Decision 020 for a typed source-declaration contract only.
 
-- what a source identity names;
-- whether it is retrievable now;
-- whether its bytes/content have integrity evidence;
-- what provenance relation it asserts;
-- quality/trust as a separate question;
-- closure as a separate unopened question;
-- offline/replay behavior;
-- migration/non-reinterpretation of historical opaque strings.
+### Lane 02 — still held from source implementation
 
-Candidate categories to evaluate include exact immutable AXM objects, content-addressed non-AXM blobs, repository/file snapshots, external/network sources, assertions without proven retrievability, and unresolved historical opaque strings. The research may reject or combine categories, but must explain why.
+PR #84 is canonical only as historical compatibility evidence. Do not add resolver behavior, schema migration, typed source parsing, source loading, integrity checking, trust, closure, or acceptance until a later numbered decision explicitly opens a bounded step.
 
-No source implementation or schema migration is authorized until a later numbered decision grounds one exact bounded step.
+### Lane 03 — now active adversarial lane
 
-## Lane boundaries
+Attack exactly the concrete Decision 019 proposal, not imagined implementation code. Priority cases:
 
-### Lane 01 — active research lane
+1. historical exact-looking opaque values gaining identity strength;
+2. same locator / different bytes over time;
+3. same bytes / different locators;
+4. missing or corrupt exact AXM sources;
+5. digest syntax without bytes and digest mismatch;
+6. mutable branch/HEAD/path/URL resolution;
+7. conflicting source declarations;
+8. hidden resolver/network/filesystem/repository-host/recency/order authority;
+9. integrity being laundered into trust/quality/relevance;
+10. identity/retrievability being laundered into completeness/closure/acceptance;
+11. cross-field laundering from `content_ref`, dependency/evidence/subject/supersedes refs;
+12. offline replacement-occupant reconstruction without private conventions.
 
-Research and bound the source-provenance taxonomy only. Leave a durable research return packet containing the repository-wide inventory, proposed minimal taxonomy, at least one rejected over-broad alternative, migration rules, offline/replay implications, adversarial cases, and a recommendation whether to open a bounded implementation decision.
-
-### Lane 02 — held from source implementation
-
-Do not infer or implement source semantics from `source_refs[]`, paths, URLs, Git-like strings, hashes, exact-looking strings, or private chat convention. Wait for a numbered implementation decision with explicit identity strength and migration semantics.
-
-### Lane 03 — held until concrete taxonomy proposal
-
-Do not invent a semantic attack target yet. After Lane 01 publishes a concrete taxonomy proposal, attack identity-strength laundering, hidden resolver/network/path authority, stale or mutable locations, same-label/different-bytes cases, missing sources, conflicting source claims, migration drift, and accidental trust/closure semantics.
+No production source runtime is needed for this adversarial pass; it may return research counterexamples/fixtures if they expose a concrete contradiction in the taxonomy.
 
 ## Still explicitly unresolved
 
-- source-provenance taxonomy and exact-source representation, if any;
-- source retrievability, integrity, quality/trust, completeness, and closure;
+- whether the four-class taxonomy survives independent adversarial review;
+- exact future typed source-declaration shape;
+- source target loading/resolver semantics;
+- source integrity-check execution and retained evidence;
+- provenance relation vocabulary beyond the historical field-scoped declaration;
+- source quality/trust/relevance policy;
+- source completeness/closure;
 - dependency admissibility / allowed-context policy;
 - dependency satisfaction;
 - actual production chronology / scheduler ordering;
@@ -175,7 +175,7 @@ Do not invent a semantic attack target yet. After Lane 01 publishes a concrete t
 
 ## Four-root gate
 
-- **Truth:** Decision 018 is limited to directly observed implementation and adversarial evidence; historical source strings remain exactly as weak as their authored contracts say they are.
-- **Agency / non-domination:** no founder, specialist, repository host, filesystem location, resolver, network service, recency rule, parser convention, branch owner, or Git permission gains hidden source authority.
-- **Continuity:** Decision 018 integration, fresh ADV-052 canonical-main evidence, preserved failure history, source ambiguity, and the next research boundary are durable repository state rather than private chat state.
-- **Wisdom before speed:** research the source identity taxonomy before adding source resolution, quality, closure, acceptance, Stage 5 integration, epochs, or replay.
+- **Truth:** historical strings stay at authored strength; the taxonomy explicitly separates identity, retrieval, integrity, relation, trust, and closure.
+- **Agency / non-domination:** no actor category, filesystem, network, repository host, resolver, newest version, array order, or Git permission becomes hidden source authority.
+- **Continuity:** PR #84 turns non-reinterpretation into executable evidence; PR #85 preserves replacement-occupant recovery; the concrete taxonomy and next attack surface now live in repository state rather than private chat.
+- **Wisdom before speed:** implementation remains held for one independent adversarial pass instead of promoting the first plausible taxonomy directly into code.
