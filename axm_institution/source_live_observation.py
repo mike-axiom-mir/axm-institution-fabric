@@ -336,8 +336,9 @@ def observe_exact_source_live(
     owned snapshot, so both ordinary assignment and direct `__dict__` rebinding fail
     closed when validation tries to consume the interpretation context. Its `load_bytes`
     data descriptor prevents a caller-owned instance shadow from becoming proof of either
-    presence or absence: the shadow may run, but store-layer errors from it are not
-    observation evidence, and the base exact-store read still independently decides. Its
+    presence or absence: a caller-raised `ObjectNotFoundError` is not absence evidence, so
+    the base exact-store read still independently decides. Other caller-raised store-layer
+    failures retain the existing indeterminate store-error classification. Its
     `_verify_existing` data descriptor applies the same rule one layer deeper: any caller-
     owned instance verifier shadow may run first, but its successful return is never
     sufficient evidence; the base exact-store verifier must independently read and
@@ -416,10 +417,9 @@ def observe_exact_source_live(
                     if caller_dispatch is not None:
                         try:
                             caller_dispatch(reference, schema_name)
-                        except ObjectStoreError:
-                            # Caller-owned load dispatch remains observable, but its
-                            # store-layer classification is not evidence about this store.
-                            # The base exact-store read below independently decides.
+                        except ObjectNotFoundError:
+                            # A caller-owned not-found classification is not evidence that
+                            # the supplied store lacks the object. The base read decides.
                             pass
                     return FilesystemObjectStore.load_bytes(self, reference, schema_name)
 
