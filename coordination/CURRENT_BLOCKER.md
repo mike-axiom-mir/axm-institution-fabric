@@ -1,166 +1,135 @@
 # Current Stage 4 Sequencing Overlay
 
 Date: 2026-09-14
-Canonical `main` reviewed before this Lane 01 branch: **through PR #88 / `5bbf36deec54140ad2dcf06446b79a361b0ebb6d`**
+Canonical `main` reviewed before this Lane 01 branch: **through PR #89 / `4bcfa5fe82d2d50fb043dd3d9dd6efcf854b3c34`**
 Current stage: **Stage 4 — claim / occupancy / return lifecycle**
 Current bounded gate: **Decision 020 — Typed Source Declaration Contract**
-Current disposition: **Decision 019's four-class source target taxonomy survived the bounded Lane 03 adversarial pass. The next allowed implementation is only a versioned typed source-declaration contract. Resolver/loading, integrity execution, declaration association, migration mapping, trust, closure, packet acceptance, Stage 5 integration, epochs, and replay remain closed.**
+Current disposition: **HOLD. Lane 02's Decision 020 implementation has strong native baseline evidence, but Lane 03 ADV-054-A reproduced one narrow declaration-key true-end continuity failure. Do not integrate PR #90 until Lane 02 repairs only that boundary and Lane 03 reruns ADV-054 unchanged. Resolver/loading, integrity execution, declaration association, migration mapping, trust, closure, packet acceptance, Stage 5 integration, epochs, and replay remain closed.**
 
-`coordination/CURRENT_WAVE.md` is historical chronology. This file is the current-state overlay and must be read with numbered decisions, Decision 019 research findings, ADV-053, newest commits/PRs, and durable specialist return packets.
+`coordination/CURRENT_WAVE.md` is historical chronology. This file is the current-state overlay and must be read with Decision 020, Decision 019 research, newest commits/PRs/branches, and durable Lane 01/02/03 return packets.
 
 ## Canonical kernel boundary before Decision 020
 
-The deterministic Python v0 kernel canonically demonstrates the previously grounded exact identity, immutable store, exact revision membership, lifecycle relationship grounding, bounded occupancy/work-claim/return-packet admission, exact output/evidence identity, exact evidence subject binding, created/modified/mixed output compatibility facts, artifact provenance-base facts, two-sided modification identity, exact dependency identity/context membership, packet-local dependency graph/reachability, and Decision 018 reachable dependency-frontier facts.
+The deterministic Python v0 kernel canonically demonstrates the previously grounded exact identity, immutable store, exact revision membership, lifecycle relationship grounding, bounded occupancy/work-claim/return-packet admission, exact output/evidence identity, exact evidence subject binding, created/modified/mixed output compatibility facts, artifact provenance-base facts, two-sided modification identity, exact dependency identity/context membership, packet-local dependency graph/reachability, Decision 018 reachable dependency-frontier facts, and historical source-ref non-reinterpretation evidence.
 
-Decision 018 remains factual only. It does not establish dependency admissibility, chronology, closure, acceptance, integration, epochs, or replay.
+Decision 018 remains factual only. Decision 019 established the four source target classes while keeping historical source strings opaque. Neither decision establishes source resolution, trust, closure, acceptance, integration, epochs, or replay.
 
-## Decision 019 historical compatibility evidence
+## Decision 020 implementation evidence — PR #90
 
-Historical source-bearing contracts remain permanently non-reinterpreted:
+Lane 02 PR #90 implements only the versioned typed source-declaration contract on canonical base:
 
-- artifact v0.1/v0.2/v0.3 `provenance.source_refs[]` are unique non-empty opaque strings;
-- evidence-record v0.1 `source_refs[]` are unique non-empty opaque strings;
-- lexical form does not assign identity strength;
-- path-like, URL-like, Git-like, digest-like, logical-label-like, and exact-looking `axmref:` strings remain historical opaque values.
+`4bcfa5fe82d2d50fb043dd3d9dd6efcf854b3c34`
 
-PR #84 integrated the first executable non-reinterpretation guard as `74b0a7a64e51699bb220a00af0b2a9e17bc95a2b`; its directly inspected merge candidate recorded **385/385 tests passed** plus explicit compile success.
+Exact test-bearing implementation/workflow head:
 
-Lane 02 then added a non-overlapping cardinality/presence extension in PR #87. Its final branch head was `9877b1090408259bbf8a162ac264427a429a5306`. The final PR merge candidate `6104243706542f63eb98176b003e05e393d2fa0d` was directly inspected in native Actions run `34805824857`, job `103857398647`, Python 3.12.14:
+`d67fdbcd038b78bf02c8e0d6e1a925183f969f97`
 
-- **389 / 389 tests passed** in 544.628s;
-- duplicate historical source tokens remained rejected;
-- strong historical evidence still required at least one source token;
-- proposed historical evidence could still omit source refs/method under its authored v0.1 contract;
+Exact native PR merge candidate:
+
+`dc2c9460f2824be64c2b50d280b57e3c8ea91db2`
+
+Native Actions run `34809276128`, job `103867160232`, Python 3.12.14 directly recorded:
+
+- **410 / 410 tests passed** in 619.485s;
 - explicit compile succeeded;
 - complete job succeeded.
 
-PR #87 was squash-integrated as:
+Lane 02 final branch head `2ac36baedf1dbb4fe46375962c2f19f1adc8ce2e` adds only its durable Activation 041 return packet after the tested head.
 
-`cd9213e32c6b432e68cca5c9293c16e59233b101`
+The candidate adds:
 
-These tests prove historical contract behavior only. They do not prove source existence, retrievability, immutable identity, integrity, provenance relation, trust, completeness, closure, or acceptance.
+- one shared four-class typed source declaration contract;
+- artifact v0.4 typed `provenance.source_declarations`;
+- evidence-record v0.2 typed `source_declarations`;
+- declaration occurrence identity as exact containing object identity plus declaration key;
+- explicit `opaque_label`, `exact_axm_object`, `content_address`, and `locator` classes;
+- Stage 2 canonical immutable-ref parsing for `exact_axm_object` without target loading;
+- SHA-256/lowercase-64/`raw_bytes` as the only first content-address form;
+- locator context/value as authored facts only;
+- historical artifact v0.1/v0.2/v0.3 and evidence v0.1 source semantics unchanged;
+- no dual legacy/new source authority in typed versions.
 
-## Decision 019 taxonomy — adversarial disposition
+The 410/410 result remains valid evidence for that pre-ADV-054 tested surface. Green CI and mergeability are evidence/execution facts only; they are not canonical authority.
 
-Decision 019 research proposed four target identity classes:
+## ADV-054 hold — PR #91
 
-1. `opaque_label`
-2. `exact_axm_object`
-3. `content_address`
-4. `locator`
+Lane 03 PR #91 independently attacked the exact Decision 020 implementation surface and is intentionally stacked on Lane 02.
 
-The key separation remains:
+Exact adversarial test-bearing head:
+
+`a60b710269022618badfa94368e7bdcb43c26c43`
+
+Exact native PR merge candidate:
+
+`2d389292928dd85adda0f1926d7daf14058a550e`
+
+Native Actions run `34810251086`, job `103869985728`, Python 3.12.14 ran the focused ADV-054 suite first:
+
+- 5 adversarial test methods ran;
+- ADV-054-B/C/D/E passed;
+- **ADV-054-A failed** for both artifact v0.4 and evidence-record v0.2;
+- both failures were `ContractValidationError not raised`;
+- full repository suite and explicit compile were skipped after the focused failure;
+- therefore Lane 03 makes no new full-suite or compile claim.
+
+### Exact reproduced counterexample
+
+Decision 020 describes declaration ids with the stable spelling language:
 
 ```text
-source identity declared
-    != target exists
-    != target retrievable now
-    != retrieved bytes reproduce immutable identity
-    != provenance relation to subject is proven
-    != source is trustworthy / high quality / relevant
-    != declared source set is complete / closed
-    != evidence or packet is accepted
+^[a-z0-9][a-z0-9._-]*$
 ```
 
-Lane 03 Activation 043 / PR #88 attacked the concrete proposal with ADV-053-A through L. No counterexample required a fifth target identity class and historical non-reinterpretation survived.
+The current typed artifact/evidence schemas use that expression as JSON-Schema `propertyNames.pattern`. On the demonstrated Python/jsonschema path, `$` accepts a final LF, so this authored key is currently accepted:
 
-PR #88 was research/adversarial evidence only and changed:
+```text
+"source\n"
+```
 
-- `adversarial/fixtures/DECISION019_SOURCE_TAXONOMY_ADVERSARIAL_CASES.json`;
-- `coordination/returns/03/2026-09-14_ACTIVATION_043.md`.
+The repository already has canonical ADV-028 history showing the same `$` false-end producer/parser continuity class and previously repaired it with true-end semantics on identity-bearing boundaries.
 
-It changed no production runtime, authored schema, resolver, loader, integrity executor, trust/closure policy, acceptance, Stage 5 integration, epoch, or replay behavior. No runtime-test claim is made for PR #88.
+This is a narrow contract spelling failure. It does **not** reopen the four-class source taxonomy and is not evidence that resolver, integrity, association, migration, trust, closure, acceptance, or integration semantics should be added.
 
-PR #88 was squash-integrated as:
+### ADV-054 findings that held
 
-`5bbf36deec54140ad2dcf06446b79a361b0ebb6d`
-
-### ADV-053 continuity guard
-
-The taxonomy survives only with this contract-shape guard carried forward:
-
-- distinct source declaration occurrences must remain explicitly distinguishable even when authored target text is equal;
-- a migration cannot map historical declarations by token text alone because separate historical objects may reuse the same token;
-- locator/content/exact facts remain independent unless an explicit relation associates them;
-- association may never be inferred from array position, map/lexical order, recency, resolver order, target equality, actor identity, schedule position, CI state, branch ownership, or Git permission;
-- exact identity does not imply target availability;
-- digest declaration does not imply bytes were obtained or verified;
-- integrity does not imply trust/relevance;
-- successful resolution of all declared sources does not imply completeness/closure;
-- neighboring `content_ref`, dependency/evidence/subject/supersedes refs do not gain source meaning by lexical resemblance.
-
-## Decision 020 — now opened
-
-`coordination/decisions/020_TYPED_SOURCE_DECLARATION_CONTRACT.md` opens only a **versioned typed source declaration contract**.
-
-The contract deliberately stops before resolution or source policy.
-
-### Required contract shape
-
-For new typed source-bearing schema versions:
-
-- use `source_declarations` as a map keyed by stable declaration ids matching `^[a-z0-9][a-z0-9._-]*$`;
-- declaration occurrence identity is exact containing object identity plus declaration key;
-- key order is deterministic presentation only and carries no priority;
-- one declaration occurrence carries exactly one explicit target class;
-- no locator/content/exact association is implied merely because multiple declarations coexist;
-- historical `source_refs[]` never become typed declarations and must not coexist as a competing authority in the new typed versions.
-
-The first bounded class payloads are:
-
-- `opaque_label`: non-empty authored token only;
-- `exact_axm_object`: one canonical immutable AXM ref validated through the shared Stage 2 parser, without exact-loading it;
-- `content_address`: only `sha256` + lowercase 64-hex digest + `raw_bytes` scope in this first version;
-- `locator`: non-empty authored `locator_context` + non-empty locator value, with no resolver semantics.
-
-A valid declaration proves only that a typed source target identity fact was authored. It does not prove existence, retrievability, integrity, causal/provenance relation beyond the containing field, trust, relevance, completeness, closure, or acceptance.
+- duplicate raw JSON declaration keys fail closed through strict parsing;
+- ordinary JSON materialization/copy preserves tested declaration key-to-target meaning;
+- the same declaration key reused across different exact containing objects remains occurrence-local;
+- neighboring exact-looking `content_ref` values do not manufacture source declaration authority.
 
 ## Active lane boundaries
 
-### Lane 01 — sequencing/integration
+### Lane 01 — sequencing / integration
 
-Decision 020 is now the only opened source-provenance implementation gate. Do not broaden it into a resolver, integrity executor, association relation, migration mapper, trust policy, closure policy, packet acceptance, successor revision publication, Stage 5 integration, epochs, or replay.
+Hold Decision 020 integration while ADV-054-A is reproducible. Do not duplicate Lane 02's implementation repair and do not merge either stacked PR merely because it is mergeable.
 
-Integrate Lane 02 only after exact native evidence and then require Lane 03 attack of that exact tested surface before advancing further.
+After Lane 02 publishes a repaired exact head and native evidence, require Lane 03 to rerun ADV-054-A through E unchanged on that repaired surface before reconsidering integration.
 
-### Lane 02 — active implementation lane
+Do not open the next source decision while the current typed declaration contract has a known identity-spelling continuity counterexample.
 
-Implement only Decision 020:
+### Lane 02 — only active implementation repair
 
-1. preserve historical artifact v0.1/v0.2/v0.3 and evidence-record v0.1 source semantics unchanged;
-2. add the smallest new typed source-bearing schema versions and one shared declaration contract;
-3. represent declaration occurrences as an id-keyed map, not order-significant array;
-4. support exactly the four explicit classes;
-5. use the shared Stage 2 reference parser for `exact_axm_object`;
-6. bound content addressing to SHA-256 raw bytes in the first contract;
-7. keep locator context/value declarative only;
-8. prohibit dual legacy/new source authority in typed versions;
-9. add valid/invalid fixtures and deterministic regression tests;
-10. keep all prior regressions green;
-11. stop before target loading/resolution, digest verification, declaration association, migration mapping, trust/relevance, completeness/closure, acceptance, Stage 5 integration, epochs, or replay.
+Repair **only** the declaration-key true-end boundary so artifact v0.4 and evidence-record v0.2 reject final-LF keys such as `"source\n"` under the repository's already-grounded stable-id convention.
 
-If artifact and evidence schema changes are split, they must still consume one shared declaration contract rather than creating two drifting class definitions.
+Preserve all other Decision 020 behavior:
 
-### Lane 03 — wait for exact Decision 020 tested head
+1. historical source semantics unchanged;
+2. same four explicit source classes;
+3. same exact containing object + declaration key occurrence identity;
+4. no target loading/resolution;
+5. no digest verification;
+6. no declaration association;
+7. no migration mapping;
+8. no trust/relevance/closure/acceptance semantics;
+9. no Stage 5 integration, epochs, or replay.
 
-Attack the exact Lane 02 implementation for:
+Run ADV-054 unchanged, the full deterministic suite, and explicit compile on the repaired exact head. Preserve any failing attempts rather than rewriting them away.
 
-- duplicate/same declaration-key ambiguity;
-- same key reused across different exact containing objects;
-- equal tokens across distinct occurrences collapsing identity;
-- lexical promotion of `opaque_label`;
-- permissive fallback parsing of exact AXM refs;
-- mixed-class payloads;
-- digest algorithm/scope ambiguity;
-- locator spelling gaining resolver/trust authority;
-- key/canonical order becoming precedence;
-- implicit locator/content pairing;
-- historical source-string reinterpretation;
-- source presence laundering into integrity/trust/closure/acceptance;
-- materialization/transport changing declaration-key-to-target meaning;
-- cross-field source laundering.
+### Lane 03 — wait for repaired Lane 02 head
 
-Do not attack resolver policy as if Decision 020 implemented a resolver.
+Do not change production schemas/runtime. Re-run ADV-054-A through E unchanged against the exact repaired Lane 02 head, then run the full repository suite and explicit compile.
+
+If all pass, clear only the declaration-key true-end hold. Do not infer source resolver/integrity/trust/closure/acceptance semantics from that success.
 
 ## Still explicitly unresolved
 
@@ -191,7 +160,7 @@ Do not attack resolver policy as if Decision 020 implemented a resolver.
 
 ## Four-root gate
 
-- **Truth:** historical strings keep authored strength; typed declaration validity remains separate from retrieval, integrity, trust, closure, and acceptance.
-- **Agency / non-domination:** no actor, resolver, infrastructure, order, recency, CI status, founder/specialist role, or Git permission becomes source-selection authority.
-- **Continuity:** ADV-053's declaration-occurrence/association guard is now explicit in Decision 020 and repository state, so replacement occupants do not need private pairing conventions.
-- **Wisdom before speed:** the institution opens only the typed declaration contract before any loader, resolver, integrity execution, association, trust, closure, or Stage 5 integration behavior.
+- **Truth:** preserve Lane 02's real 410/410 baseline and Lane 03's real focused failure together; do not convert either into a broader claim than its tested surface supports.
+- **Agency / non-domination:** no founder, specialist, CI state, branch, schedule position, or Git permission becomes declaration or merge authority.
+- **Continuity:** declaration occurrence identity must not depend on runtime-specific knowledge that `$` accepts a final LF; the known counterexample is now durable current-state evidence.
+- **Wisdom before speed:** repair the smallest already-known identity-spelling boundary before integrating Decision 020 or opening resolver/integrity/association/trust/closure work.
