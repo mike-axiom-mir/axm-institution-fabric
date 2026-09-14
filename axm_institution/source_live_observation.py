@@ -330,8 +330,11 @@ def observe_exact_source_live(
     The bundled schema set is copied into a function-owned temporary interpretation
     context. Both capability classification and exact target validation use that same
     copy. Ambient bundled-schema mutation during the invocation fails closed before a
-    normal observation fact is emitted; the temporary copy is not retained and therefore
-    does not create historical snapshot or re-execution standing.
+    normal observation fact is emitted. During the exact target load, the accepted exact
+    store instance is temporarily given an invocation-local class guard that rejects any
+    attempt to rebind ``schema_dir`` away from the function-owned snapshot. The temporary
+    copy and guard are not retained and therefore do not create historical snapshot,
+    hostile-process isolation, or re-execution standing.
     """
 
     if type(store) is not FilesystemObjectStore:
@@ -374,11 +377,21 @@ def observe_exact_source_live(
                 integrity="not_evaluated",
             )
 
+        class _InvocationSchemaGuard(FilesystemObjectStore):
+            def __setattr__(self, name: str, value: Any) -> None:
+                if name == "schema_dir" and value != snapshot_dir:
+                    raise SourceLiveObservationContextError(
+                        "Decision 023 store interpretation context changed during exact target load"
+                    )
+                super().__setattr__(name, value)
+
         load_error: ObjectStoreError | None = None
         original_schema_dir = store.schema_dir
+        original_store_class = store.__class__
         schema_override_drifted = False
         try:
             store.schema_dir = snapshot_dir
+            store.__class__ = _InvocationSchemaGuard
             try:
                 store.load_bytes(capability.target_object_ref)
             except ObjectStoreError as exc:
@@ -386,6 +399,7 @@ def observe_exact_source_live(
             finally:
                 schema_override_drifted = store.schema_dir != snapshot_dir
         finally:
+            store.__class__ = original_store_class
             store.schema_dir = original_schema_dir
 
         _assert_bundled_schema_context_unchanged(bundled_token)
