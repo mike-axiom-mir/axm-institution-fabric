@@ -34,6 +34,7 @@ on:
       - "lane-03/activation-036-dependency-context-membership"
       - "lane-03/activation-040-packet-local-reachability"
       - "lane-03/activation-041-reachable-dependency-frontier"
+      - "lane-03/activation-046-decision020-adv055-recheck"
       - "lane-01/activation-21-integrate-adv034"
     paths:
       - "axm_institution/**"
