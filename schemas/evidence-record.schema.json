@@ -2,29 +2,68 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://axm.local/schemas/institution/evidence-record.schema.json",
   "title": "AXM Institution Fabric Evidence Record",
-  "description": "A first-class truth-state record. Strong evidence states require reconstructable method and source support; evidence must not collapse into a generic done flag.",
+  "description": "A first-class truth-state record. Historical v0.1 uses opaque source_refs; v0.2 uses Decision 020 typed source_declarations. Strong evidence states require reconstructable method and source presence, without promoting source declaration into integrity, trust, closure, or acceptance.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "id", "subject_ref", "state", "claim"],
   "properties": {
-    "schema_version": {"const": "0.1"},
+    "schema_version": {"enum": ["0.1", "0.2"]},
     "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
     "subject_ref": {"type": "string", "minLength": 1},
     "state": {"type": "string", "enum": ["proposed", "implemented", "compiled", "automated_tested", "runtime_tested", "visually_inspected", "playtested", "measured", "inferred", "blocked", "not_tested", "superseded", "invalidated"]},
     "claim": {"type": "string", "minLength": 1},
     "method": {"type": "string", "minLength": 1},
     "source_refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true, "default": []},
+    "source_declarations": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[a-z0-9][a-z0-9._-]*(?![\\s\\S])"},
+      "additionalProperties": {"type": "object"}
+    },
     "notes": {"type": "array", "items": {"type": "string"}, "default": []}
   },
   "allOf": [
     {
       "if": {
-        "properties": {"state": {"enum": ["compiled", "automated_tested", "runtime_tested", "visually_inspected", "playtested", "measured"]}},
-        "required": ["state"]
+        "properties": {"schema_version": {"const": "0.1"}},
+        "required": ["schema_version"]
+      },
+      "then": {
+        "not": {"required": ["source_declarations"]}
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema_version": {"const": "0.1"},
+          "state": {"enum": ["compiled", "automated_tested", "runtime_tested", "visually_inspected", "playtested", "measured"]}
+        },
+        "required": ["schema_version", "state"]
       },
       "then": {
         "required": ["method", "source_refs"],
         "properties": {"source_refs": {"minItems": 1}}
+      }
+    },
+    {
+      "if": {
+        "properties": {"schema_version": {"const": "0.2"}},
+        "required": ["schema_version"]
+      },
+      "then": {
+        "not": {"required": ["source_refs"]}
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema_version": {"const": "0.2"},
+          "state": {"enum": ["compiled", "automated_tested", "runtime_tested", "visually_inspected", "playtested", "measured"]}
+        },
+        "required": ["schema_version", "state"]
+      },
+      "then": {
+        "required": ["method", "source_declarations"],
+        "properties": {"source_declarations": {"minProperties": 1}}
       }
     }
   ]

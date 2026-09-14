@@ -1,0 +1,104 @@
+{
+  "valid_declarations": {
+    "opaque": {
+      "source_class": "opaque_label",
+      "token": "axmref:v1:artifact:looks.exact:v=1:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "exact": {
+      "source_class": "exact_axm_object",
+      "object_ref": "axmref:v1:artifact:artifact.source:v=1:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "content": {
+      "source_class": "content_address",
+      "algorithm": "sha256",
+      "digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byte_scope": "raw_bytes"
+    },
+    "locator": {
+      "source_class": "locator",
+      "locator_context": "repository-relative",
+      "locator": "NEXT_BUILD.md"
+    }
+  },
+  "invalid_declarations": [
+    {
+      "case": "unknown source class",
+      "declaration": {
+        "source_class": "repository_snapshot",
+        "token": "snapshot"
+      }
+    },
+    {
+      "case": "mixed locator and content payload",
+      "declaration": {
+        "source_class": "locator",
+        "locator_context": "repository-relative",
+        "locator": "NEXT_BUILD.md",
+        "algorithm": "sha256",
+        "digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byte_scope": "raw_bytes"
+      }
+    },
+    {
+      "case": "unsupported digest algorithm",
+      "declaration": {
+        "source_class": "content_address",
+        "algorithm": "sha512",
+        "digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byte_scope": "raw_bytes"
+      }
+    },
+    {
+      "case": "uppercase digest",
+      "declaration": {
+        "source_class": "content_address",
+        "algorithm": "sha256",
+        "digest": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+        "byte_scope": "raw_bytes"
+      }
+    },
+    {
+      "case": "short digest",
+      "declaration": {
+        "source_class": "content_address",
+        "algorithm": "sha256",
+        "digest": "bbbb",
+        "byte_scope": "raw_bytes"
+      }
+    },
+    {
+      "case": "unsupported byte scope",
+      "declaration": {
+        "source_class": "content_address",
+        "algorithm": "sha256",
+        "digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "byte_scope": "canonical_json"
+      }
+    },
+    {
+      "case": "empty locator context",
+      "declaration": {
+        "source_class": "locator",
+        "locator_context": "",
+        "locator": "NEXT_BUILD.md"
+      }
+    },
+    {
+      "case": "locator cannot carry integrity field",
+      "declaration": {
+        "source_class": "locator",
+        "locator_context": "repository-relative",
+        "locator": "NEXT_BUILD.md",
+        "integrity_verified": true
+      }
+    },
+    {
+      "case": "opaque label cannot carry exact target field",
+      "declaration": {
+        "source_class": "opaque_label",
+        "token": "artifact.source",
+        "object_ref": "axmref:v1:artifact:artifact.source:v=1:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    }
+  ]
+}

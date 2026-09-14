@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://axm.local/schemas/institution/source-declaration.schema.json",
+  "title": "AXM Institution Fabric Typed Source Declaration",
+  "description": "Decision 020 shared declaration-value contract. A valid declaration records one explicitly typed source target identity fact only; it does not establish existence, retrieval, integrity, trust, completeness, closure, or acceptance.",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_class", "token"],
+      "properties": {
+        "source_class": {"const": "opaque_label"},
+        "token": {"type": "string", "minLength": 1}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_class", "object_ref"],
+      "properties": {
+        "source_class": {"const": "exact_axm_object"},
+        "object_ref": {"type": "string", "minLength": 1}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_class", "algorithm", "digest", "byte_scope"],
+      "properties": {
+        "source_class": {"const": "content_address"},
+        "algorithm": {"const": "sha256"},
+        "digest": {"type": "string", "pattern": "^[0-9a-f]{64}(?![\\s\\S])"},
+        "byte_scope": {"const": "raw_bytes"}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_class", "locator_context", "locator"],
+      "properties": {
+        "source_class": {"const": "locator"},
+        "locator_context": {"type": "string", "minLength": 1},
+        "locator": {"type": "string", "minLength": 1}
+      }
+    }
+  ]
+}
