@@ -1,0 +1,121 @@
+{
+  "fixture_id": "decision021-source-observation-adversarial-cases-v0.1",
+  "decision": "021_SOURCE_OBSERVATION_BOUNDARY_RESEARCH",
+  "base_revision": "ddb9a0611b17e42384fe2f4a5b9d458dd8483dd7",
+  "status": "research_fixture_only_no_runtime_contract_authorized",
+  "scope": "Pressure-test the proposed exact_axm_object observation boundary without implementing a resolver, loader, integrity policy, association rule, trust policy, closure rule, acceptance behavior, Stage 5 integration, epochs, or replay.",
+  "repository_evidence": {
+    "declaration_occurrence_identity": "Decision 020: exact containing object identity + declaration key",
+    "store_exact_load": "FilesystemObjectStore.load/load_bytes parse the exact immutable ref, read only its content-addressed path, strict-parse, validate, reproduce canonical bytes, and reproduce the exact requested ref.",
+    "store_failure_classes": [
+      "ObjectNotFoundError",
+      "ObjectCorruptionError",
+      "ObjectReferenceMismatchError",
+      "ObjectStoreError"
+    ],
+    "important_store_ordering_fact": "_verify_existing reads the exact object path before schema validation, so an absent path for an unsupported kind can surface ObjectNotFoundError before runtime schema support is tested."
+  },
+  "cases": [
+    {
+      "id": "ADV-056-A",
+      "title": "Same exact declaration, different bounded store contexts",
+      "setup": "One exact containing object occurrence declares exact_axm_object ref X. Context S1 contains and exact-loads X; context S2 does not contain X.",
+      "attack": "Represent the observation as a context-free boolean exists=true/false or one mutable current status.",
+      "required_preservation": "Keep declaration occurrence, exact authored ref, and the exact inspected context/input identity in each observation. S1 and S2 may truthfully yield different context-bound facts without either becoming global source truth.",
+      "failure_if": "A later occupant cannot tell where the observation was made or newest/context order silently wins."
+    },
+    {
+      "id": "ADV-056-B",
+      "title": "Unsupported runtime kind must not collapse into target absence",
+      "setup": "A Decision 020-valid exact_axm_object declaration names canonical kind future-source-kind.unregistered; the current runtime has no schema for that kind and the exact content-addressed path is absent.",
+      "attack": "Call the current store load path and classify ObjectNotFoundError as proof that the source target is simply missing.",
+      "required_preservation": "Runtime/schema capability support and target-presence observation are separate facts. A result shape must not infer global absence from an exact-path miss when the observation runtime cannot fully interpret the declared kind.",
+      "failure_if": "Declaration validity, runtime capability, and target availability collapse into one status."
+    },
+    {
+      "id": "ADV-056-C",
+      "title": "Corrupt local bytes are not a trust verdict",
+      "setup": "The exact requested object path exists, but stored bytes fail UTF-8, strict JSON, schema validation, canonical-byte reproduction, or exact-ref reproduction and the store raises ObjectCorruptionError.",
+      "attack": "Translate corruption into untrusted=false/invalid_source or erase the declared target identity.",
+      "required_preservation": "Record the exact declaration occurrence/ref, exact inspected context, and corruption observation separately from provenance causality, trust, relevance, completeness, closure, or acceptance.",
+      "failure_if": "A local storage-integrity failure becomes a semantic judgment about the source."
+    },
+    {
+      "id": "ADV-056-D",
+      "title": "Unreadable store state must not masquerade as not found",
+      "setup": "The exact object path cannot be read because of an OSError distinct from FileNotFoundError; the store raises ObjectStoreError.",
+      "attack": "Map all load failures to unavailable or absent.",
+      "required_preservation": "Keep unreadable/observation-error distinct from observed-not-present and observed-corrupt so replacement occupants retain uncertainty rather than false absence.",
+      "failure_if": "Operational observation failure is silently converted into target nonexistence."
+    },
+    {
+      "id": "ADV-056-E",
+      "title": "One load call computes several facts but must not collapse them",
+      "setup": "An exact AXM ref successfully loads through FilesystemObjectStore.load, which necessarily reads bytes and verifies canonical bytes and exact requested identity.",
+      "attack": "Expose only success=true or resolved=true and later let consumers reinterpret that as any stronger source fact.",
+      "required_preservation": "If one implementation computes existence-in-context, retrieval, and exact-object identity reproduction together, the result must still expose those truth dimensions explicitly and must not imply causal provenance, trust/relevance, closure, acceptance, integration, epoch completion, or replay success.",
+      "failure_if": "A generic success bit becomes hidden semantic authority."
+    },
+    {
+      "id": "ADV-056-F",
+      "title": "Object-ref cache must not erase declaration occurrence identity",
+      "setup": "Two distinct declaration occurrences, possibly in different exact containing objects, both author the same exact object_ref X.",
+      "attack": "Cache/project observations keyed only by object_ref and return one occurrence-less result.",
+      "required_preservation": "Operational deduplication may reuse exact-load work, but durable observation facts must remain attributable to each exact containing-object + declaration-key occurrence or through an explicit many-to-one relation.",
+      "failure_if": "A replacement occupant can no longer reconstruct which authored declaration was actually observed."
+    },
+    {
+      "id": "ADV-056-G",
+      "title": "Same declaration key on a later containing-object version is a new occurrence",
+      "setup": "Exact artifact A1 has declaration key source -> ref X and is observed. Later exact artifact A2 uses the same logical artifact id and same declaration key source -> ref Y.",
+      "attack": "Reuse the A1 observation by logical artifact id + declaration key, recency, supersession, or cache locality.",
+      "required_preservation": "Observation identity must bind the exact containing object, not logical id or newest version. A1/source and A2/source are distinct occurrences even when key text is equal.",
+      "failure_if": "Stale observation evidence is silently rebound to a different authored source."
+    },
+    {
+      "id": "ADV-056-H",
+      "title": "Failed observations must remain explicit rather than disappear",
+      "setup": "A projection targets three exact_axm_object declaration occurrences: one loads, one exact path is absent, and one exact path is corrupt.",
+      "attack": "Return only successful observations or silently drop exceptions.",
+      "required_preservation": "Every targeted declaration occurrence must have an explicit result or explicit projection-level failure accounting. Missing/corrupt/unreadable/unsupported states cannot vanish from the durable handoff.",
+      "failure_if": "A replacement occupant cannot distinguish unobserved from observed-and-failed."
+    },
+    {
+      "id": "ADV-056-I",
+      "title": "Mutable filesystem path is insufficient replay context by itself",
+      "setup": "Two observations use the same textual store root at different times. External state or later publication makes ref X absent during O1 and present during O2.",
+      "attack": "Record only store_root=/same/path as observation context and call the result replayable.",
+      "required_preservation": "The research must name an observation input/context identity strong enough to distinguish O1 from O2, or explicitly record that the observation is context-bound and not replayable from the path label alone.",
+      "failure_if": "Later occupants reproduce a different store state while believing they replayed the original observation."
+    },
+    {
+      "id": "ADV-056-J",
+      "title": "Parallel contradictory observations do not create newest-wins truth",
+      "setup": "Two lanes observe the same declaration occurrence against explicitly different bounded contexts; one records exact-load success and the other records not-present or unreadable.",
+      "attack": "Resolve the conflict by schedule order, PR recency, actor identity, branch ownership, CI result, or last-write-wins.",
+      "required_preservation": "Keep both context-bound observations and their context identities. Any later policy that selects or reconciles them requires an explicit decision beyond the observation layer.",
+      "failure_if": "Coordination metadata becomes hidden source authority."
+    },
+    {
+      "id": "ADV-056-K",
+      "title": "Neighboring typed declarations remain unassociated",
+      "setup": "One containing object has an exact_axm_object declaration X, content_address declaration C, and locator declaration L with suggestively similar keys or values.",
+      "attack": "Treat a successful exact load of X as evidence that C is verified or L resolved to X because the declarations are adjacent, similarly named, equal-looking, or in one container.",
+      "required_preservation": "Observe only the explicitly targeted exact_axm_object occurrence in the first slice. C and L remain independent/unobserved unless a later explicit association contract exists.",
+      "failure_if": "Observation manufactures locator/content/exact association not authored by Decision 020."
+    },
+    {
+      "id": "ADV-056-L",
+      "title": "Observation output must not become acceptance authority",
+      "setup": "An exact source observation succeeds completely for the bounded local store context.",
+      "attack": "Use observation success to mark the source trusted, provenance-established, complete, closed, packet-acceptable, claim-closable, integratable, epoch-complete, or replay-correct.",
+      "required_preservation": "Observation facts stop at the researched observation boundary. Evaluation, closure, acceptance, integration, epochs, and replay remain separate future contracts.",
+      "failure_if": "A deterministic observation result silently crosses lifecycle/governance boundaries."
+    }
+  ],
+  "research_conclusion": {
+    "blocker": "No implementation blocker is asserted because Decision 021 is not yet an implementation contract.",
+    "minimum_guard_before_opening_implementation": "A future Decision 021/022 result shape should preserve exact declaration occurrence identity, exact authored target ref, explicit bounded observation context/input identity, explicit per-occurrence result including failed observations, runtime capability standing separate from target availability, and no implicit trust/closure/acceptance semantics.",
+    "new_continuity_pressure": "A store root/path label alone is not necessarily sufficient observation context for replay, and object_ref-only caching must not collapse declaration occurrences."
+  }
+}
