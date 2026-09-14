@@ -43,6 +43,13 @@ from .lifecycle import (
     open_work_claim,
     submit_return_packet,
 )
+from .source_runtime_capability import (
+    ExactSourceRuntimeCapabilityFact,
+    SourceRuntimeCapabilityContextError,
+    SourceRuntimeCapabilityError,
+    SourceRuntimeCapabilityInputError,
+    project_exact_source_runtime_capability,
+)
 
 __all__ = [
     "STRONG_EVIDENCE_STATES",
@@ -82,4 +89,9 @@ __all__ = [
     "admit_occupancy",
     "open_work_claim",
     "submit_return_packet",
+    "ExactSourceRuntimeCapabilityFact",
+    "SourceRuntimeCapabilityContextError",
+    "SourceRuntimeCapabilityError",
+    "SourceRuntimeCapabilityInputError",
+    "project_exact_source_runtime_capability",
 ]
