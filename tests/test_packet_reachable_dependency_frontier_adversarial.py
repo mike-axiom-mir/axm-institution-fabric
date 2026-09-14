@@ -96,7 +96,11 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
             modified_results=modified,
         )
         output_refs = tuple(output.artifact.reference for output in outputs)
-        witness = tuple(sorted(output_refs)) if topological_witness is None else tuple(topological_witness)
+        witness = (
+            tuple(sorted(output_refs))
+            if topological_witness is None
+            else tuple(topological_witness)
+        )
         graph = ResolvedPacketSamePacketDependencyGraph(
             packet_ref=packet_ref,
             claim_ref=CLAIM_REF,
@@ -105,7 +109,10 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
             lane_ref=LANE_REF,
             dependency_context=dependency_context,
             nodes=tuple(
-                ExactPacketOutputNode(output_ref=output.artifact.reference, category=output.category)
+                ExactPacketOutputNode(
+                    output_ref=output.artifact.reference,
+                    category=output.category,
+                )
                 for output in sorted(outputs, key=lambda item: item.artifact.reference)
             ),
             edges=(),
@@ -151,9 +158,8 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
         )
 
     def test_adv052_a_reverse_dependent_traversal_cannot_pull_downstream_frontier(self) -> None:
-        root, middle, final, middle_dep, final_dep = (
-            ref("a"), ref("b"), ref("c"), ref("d"), ref("e")
-        )
+        root, middle, final = ref("a"), ref("b"), ref("c")
+        middle_dep, final_dep = ref("d"), ref("e")
         outputs = (
             self._output(root),
             self._output(
@@ -179,12 +185,11 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
                 )
             )
         )
-
         self.assertEqual(self._triples(result[root]), ())
         self.assertEqual(self._triples(result[middle]), ((middle, middle_dep, True),))
         self.assertEqual(
             self._triples(result[final]),
-            ((final, final_dep, False), (middle, middle_dep, True)),
+            tuple(sorted(((middle, middle_dep, True), (final, final_dep, False)))),
         )
 
     def test_adv052_b_multi_hop_scope_keeps_every_reachable_declarer(self) -> None:
@@ -215,7 +220,6 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
                 )
             )
         )
-
         self.assertEqual(
             self._triples(result[final]),
             tuple(
@@ -262,31 +266,25 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
                 )
             )
         )
-
         final_refs = tuple(item[1] for item in self._triples(result[final]))
         self.assertIn(root_dep, final_refs)
         self.assertIn(left_dep, final_refs)
         self.assertNotIn(sibling_dep, final_refs)
 
     def test_adv052_d_same_packet_targets_stay_outside_frontier_without_family_precedence(self) -> None:
-        created, modified, consumer_created, consumer_modified = (
-            ref("a"), ref("b"), ref("c"), ref("d")
-        )
+        created, modified = ref("a"), ref("b")
+        consumer_created, consumer_modified = ref("c"), ref("d")
         outputs = (
             self._output(created, category="created"),
             self._output(modified, category="modified_result"),
             self._output(
                 consumer_created,
-                (
-                    self._dependency(modified, in_packet_modified_result=True),
-                ),
+                (self._dependency(modified, in_packet_modified_result=True),),
                 category="created",
             ),
             self._output(
                 consumer_modified,
-                (
-                    self._dependency(created, in_packet_created=True),
-                ),
+                (self._dependency(created, in_packet_created=True),),
                 category="modified_result",
             ),
         )
@@ -301,7 +299,6 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
                 )
             )
         )
-
         self.assertEqual(result[consumer_created].frontier_relations, ())
         self.assertEqual(result[consumer_modified].frontier_relations, ())
 
@@ -332,7 +329,6 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
                 )
             )
         )
-
         self.assertEqual(
             self._triples(result[final]),
             ((root, shared, True), (middle, shared, True), (final, shared, True)),
@@ -353,7 +349,6 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
                 )
             )
         )[0]
-
         self.assertEqual(
             self._triples(result),
             ((output, base_dep, True), (output, outside_dep, False)),
@@ -397,7 +392,6 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
                 )
             )
         )[0]
-
         self.assertEqual(result.frontier_relations[0].dependency_ref, exact_dep)
         self.assertNotEqual(result.frontier_relations[0].dependency_ref, decoy)
 
@@ -427,7 +421,6 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
             reachability_order=(required, final),
             topological_witness=(required, final),
         )
-
         self.assertEqual(_derive_frontiers(first), _derive_frontiers(second))
 
     def test_adv052_i_later_parallel_packet_projection_cannot_rebind_first_frontier(self) -> None:
@@ -441,7 +434,6 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
             (self._output(second_output, (self._dependency(second_dep),)),),
             packet_ref="axmref:v1:return-packet:" + ("7" * 64),
         )
-
         with patch(
             "axm_institution.packet_reachable_dependency_frontier."
             "preflight_packet_local_dependency_reachability",
@@ -453,7 +445,6 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
             second = preflight_reachable_dependency_frontier(
                 object(), second_reachability.packet_ref
             )
-
         self.assertEqual(first.packet_ref, first_reachability.packet_ref)
         self.assertEqual(second.packet_ref, second_reachability.packet_ref)
         self.assertEqual(self._triples(first.outputs[0]), ((first_output, first_dep, False),))
@@ -464,7 +455,6 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
         declaring, dependency, decoy = ref("a"), ref("b"), ref("c")
         relation = ExactReachableDependencyFrontierRelation(declaring, dependency, True)
         output = ExactPacketOutputDependencyFrontier(declaring, (relation,))
-
         physical = parse_json_strict(memoryview(relation).tobytes().decode("utf-8"))
         self.assertEqual(
             physical,
@@ -474,13 +464,11 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
                 "in_claim_base": True,
             },
         )
-        detached = relation._asdict()
-        transported = json.loads(json.dumps(detached))
+        transported = json.loads(json.dumps(relation._asdict()))
         transported["dependency_ref"] = decoy
         transported["in_claim_base"] = False
         self.assertEqual(relation.dependency_ref, dependency)
         self.assertTrue(relation.in_claim_base)
-
         for copier in (copy.copy, copy.deepcopy):
             try:
                 copied = copier(relation)
@@ -489,7 +477,6 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
             self.assertIs(type(copied), type(relation))
             self.assertEqual(bytes(copied), bytes(relation))
             self.assertEqual(copied._asdict(), relation._asdict())
-
         with self.assertRaises(TypeError):
             json.dumps(relation)
         with self.assertRaises(TypeError):
@@ -506,7 +493,6 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
             return_value=reachability,
         ):
             result = preflight_reachable_dependency_frontier(object(), PACKET_REF)
-
         forbidden = (
             "valid",
             "allowed",
@@ -528,7 +514,6 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
         for target in targets:
             for name in forbidden:
                 self.assertFalse(hasattr(target, name), name)
-
         try:
             encoded = json.dumps(result, ensure_ascii=False, separators=(",", ":"))
         except (TypeError, ValueError):
@@ -551,7 +536,6 @@ class PacketReachableDependencyFrontierAdversarialTests(unittest.TestCase):
             ),
             reachability_order=(duplicate,),
         )
-
         with self.assertRaises(ReachableDependencyFrontierConsistencyError):
             _derive_frontiers(reachability)
 
