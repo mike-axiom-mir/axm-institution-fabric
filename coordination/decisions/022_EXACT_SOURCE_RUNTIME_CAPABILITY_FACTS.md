@@ -1,11 +1,11 @@
 # Decision 022 — Exact Source Runtime Capability Facts
 
 Date: 2026-09-14
-Status: **implementation open; bounded precursor to exact source observation only.**
+Status: **canonical on the bounded no-target-I/O bundled-runtime capability surface. Actual source observation remains outside this decision.**
 
 Decision 021 research established that the current exact store can surface target-path outcomes before it has established whether the runtime supports the target kind. A direct target-availability observer would therefore risk collapsing runtime capability with source absence/corruption.
 
-Decision 022 opens the smallest deterministic precursor that removes that ambiguity without reading a source target path.
+Decision 022 establishes the smallest deterministic precursor that removes that ambiguity without reading a source target path.
 
 ## Bounded objective
 
@@ -17,19 +17,19 @@ For one Decision 020 `exact_axm_object` declaration occurrence in an exact typed
 - preserve the parsed target kind;
 - state only whether the **bundled AXM kernel contract set in this runtime** supports interpreting that kind.
 
-This projection must perform **no exact target object lookup** and must not become a source resolver.
+This projection performs **no exact target object lookup** and is not a source resolver.
 
 ## First-slice input boundary
 
-The first implementation may consume only:
+The canonical implementation consumes only:
 
 1. an exact containing-object ref for a typed artifact v0.4 or evidence-record v0.2;
 2. the corresponding validated containing-object value;
 3. one declaration key that exists in that exact value and whose `source_class` is `exact_axm_object`.
 
-The implementation must verify that the supplied containing value reproduces the supplied exact immutable reference. It must extract the declaration by exact key from that exact containing value. Logical-id lookup, newest-version lookup, `supersedes_ref`, array/map order, recency, actor, lane, branch, CI, or Git state may not substitute another containing object or declaration occurrence.
+The implementation verifies that the supplied containing value reproduces the supplied exact immutable reference. It extracts the declaration by exact key from that exact containing value. Logical-id lookup, newest-version lookup, `supersedes_ref`, array/map order, recency, actor, lane, branch, CI, or Git state may not substitute another containing object or declaration occurrence.
 
-The target `object_ref` must be consumed unchanged through the existing Stage 2 exact-reference parser.
+The target `object_ref` is consumed unchanged through the existing Stage 2 exact-reference parser.
 
 ## Runtime capability context — deliberately narrow
 
@@ -39,13 +39,13 @@ A target kind is `supported` only when its inferred bundled `<kind>.schema.json`
 
 A canonical target kind with no bundled schema is `unsupported_kind`.
 
-A bundled schema file that exists but cannot itself be read/validated is a **kernel/runtime configuration failure**, not an `unsupported_kind` result and not a source corruption result. The projection should fail closed with a dedicated/explicit capability-context error rather than laundering that condition into source standing.
+A bundled schema file that exists but cannot itself be read/decoded/validated is a **kernel/runtime configuration failure**, not an `unsupported_kind` result and not a source corruption result. The projection fails closed through `SourceRuntimeCapabilityContextError` rather than laundering that condition into source standing.
 
 Custom/mutable `schema_dir` contexts are outside this first slice. They require an explicit context-identity decision later and must not silently enter through a hidden parameter or ambient filesystem fallback.
 
 ## Minimum result semantics
 
-The implementation result must preserve named semantics equivalent to:
+The implementation preserves named semantics equivalent to:
 
 - `containing_object_ref`
 - `declaration_key`
@@ -53,7 +53,7 @@ The implementation result must preserve named semantics equivalent to:
 - `target_kind`
 - `runtime_capability` = `supported` | `unsupported_kind`
 
-Exact physical class/record naming is Lane 02's implementation choice, but transport/materialization must not turn these named facts into position-dependent meaning.
+The canonical implementation uses a canonical-byte-backed named fact. Transport/materialization must not turn these named facts into position-dependent meaning.
 
 A result is attributable to the exact declaration occurrence, not only the target ref. Two declaration occurrences that name the same target may share internal computation but must yield occurrence-attributable results.
 
@@ -92,38 +92,75 @@ Fail closed if:
 
 No fallback to another declaration or source class is allowed.
 
-## Required tests/evidence
+## Canonical integration evidence
 
-Lane 02 should add deterministic tests for at least:
+Lane 02 first produced a green baseline, after which Lane 03 demonstrated ADV-057-A: an existing regular bundled schema containing invalid UTF-8 leaked raw `UnicodeDecodeError` instead of the dedicated capability-context failure. That red result remains valid for its exact pre-repair candidate.
+
+Lane 02 then repaired only that demonstrated failure-normalization boundary. Exact repaired test-bearing head:
+
+`b4aeafc236d4abb426bbd0bd78ca4780675fabab`
+
+Exact fresh-main PR merge candidate:
+
+`a78ff60a4dd2721e24ab0eedd6b3f9e8f7ff896b`
+
+Native run/job:
+
+`34832341654` / `103938318383`
+
+Observed results:
+
+- preserved Decision 020 ADV-054/055: **6/6 passed**;
+- unchanged Decision 022 ADV-057-A through F: **6/6 passed**;
+- full deterministic discovery: **437/437 passed, 0 failures, 0 errors** in 383.638s;
+- explicit enumerated `py_compile`: **passed**;
+- complete job: **success**.
+
+Lane 03 independently reran the byte-identical ADV-057 oracle (blob `d5a855e9883d1ed42df39379f3ab8b34126477be`) against the repaired head. Exact Lane 03 test head:
+
+`9a881a433b1973a893b6d8501cd39b93c79de4b9`
+
+Exact native merge candidate:
+
+`4c709c088eaa1babcbcaad17ed4daf32120f22b4`
+
+Native run/job:
+
+`34833589216` / `103942279133`
+
+Observed results:
+
+- Decision 020 ADV-054/055: **6/6 passed**;
+- unchanged ADV-057-A through F: **6/6 passed**;
+- full deterministic discovery: **437/437 passed, 0 failures, 0 errors** in 298.555s;
+- explicit enumerated `py_compile`: **passed**;
+- complete job: **success**.
+
+Lane 01 then squash-merged Lane 02 PR #101 as canonical commit:
+
+`ae2a4171dac0c6bb56b86ac11fc4b987924b4a94`
+
+The historical red run is preserved as evidence rather than rewritten by the later repair and green recheck.
+
+## Regression obligations retained
+
+The canonical Decision 022 regression surface includes the previously required cases:
 
 1. artifact v0.4 occurrence targeting a supported bundled kind;
 2. evidence-record v0.2 occurrence targeting a supported bundled kind;
-3. the PR #98 canonical `future-source-kind.unregistered` case returning `unsupported_kind` while the declaration itself remains valid;
-4. same target ref under two different declaration occurrences remains two attributable results;
-5. same declaration key under two different exact containing objects remains two occurrences;
-6. later same-logical-id container cannot rebind an earlier exact occurrence;
-7. declaration-map order cannot alter the result;
+3. canonical unsupported future kind returning `unsupported_kind` while declaration syntax remains valid;
+4. equal target refs under different declaration occurrences remain separately attributable;
+5. equal declaration keys under different exact containing objects remain separate occurrences;
+6. later same-logical-id containers cannot rebind an earlier exact occurrence;
+7. declaration-map order cannot alter result meaning;
 8. non-exact source classes cannot be promoted by lexical appearance;
-9. no target object path is required to produce either capability result;
-10. result transport/materialization either preserves named semantics or fails closed;
-11. the result exposes no existence/retrieval/integrity/trust/closure/acceptance authority;
-12. all prior source/dependency/lifecycle tests remain green;
-13. explicit compile succeeds.
-
-## Lane 03 attack surface
-
-After Lane 02 publishes an exact tested head, Lane 03 should attack unchanged semantics for:
-
-- target-path presence/absence accidentally changing capability standing;
-- unsupported kind collapsing into malformed declaration or source absence;
-- same-target occurrence collapse through caching;
-- stale containing-object rebinding by logical id, version, recency, or `supersedes_ref`;
-- declaration order/key-similarity authority;
-- non-exact source-class promotion;
-- custom schema-directory or ambient filesystem injection;
-- invalid bundled schema becoming `unsupported_kind` or source corruption;
-- named-result transport drift;
-- capability success becoming existence, retrieval, integrity, provenance, trust, closure, packet acceptance, Stage 5 integration, epoch, or replay authority.
+9. target object path presence/absence is not an input to runtime-capability standing;
+10. named transport/materialization preserves meaning or fails closed;
+11. capability facts expose no existence/retrieval/integrity/trust/closure/acceptance authority;
+12. unsupported kind remains distinct from malformed declaration and source absence;
+13. invalid bundled schema context fails closed rather than becoming `unsupported_kind`;
+14. existing invalid-UTF-8 bundled schema fails through the dedicated context-error boundary;
+15. explicit compile succeeds.
 
 ## Explicit non-goals
 
@@ -144,21 +181,21 @@ Decision 022 does **not** authorize:
 - Stage 5 integration;
 - epochs/barriers or replay claims.
 
-## Why this is the next smallest step
+## Why this boundary remains useful
 
-Decision 021 cannot safely classify exact target availability until runtime capability is separated from store state. Decision 022 isolates that precondition with no source-target I/O and no mutable store-root replay claim. It is therefore smaller than an observer, directly addresses ADV-056-B/F/G/L, and gives Lane 03 an executable semantic boundary before the institution opens live source observation.
+Decision 021 cannot safely classify exact target availability until runtime capability is separate from store state. Decision 022 isolates that precondition with no source-target I/O and no mutable store-root replay claim. The remaining observation-context/re-execution question therefore returns to Decision 021 rather than being silently answered by this implementation.
 
 ## Root grounding
 
-- **Truth:** unsupported runtime interpretation remains distinct from malformed declaration, missing target, corrupt target, and trust judgment.
+- **Truth:** unsupported runtime interpretation remains distinct from malformed declaration, missing target, corrupt target, and trust judgment; the pre-repair red evidence remains preserved.
 - **Agency / non-domination:** bundled contract presence is a runtime capability fact, not source authority; no actor/host/branch/CI/Git status gains power.
-- **Continuity:** each capability fact remains attached to the exact authored declaration occurrence, so equal targets and later container versions cannot erase provenance of what was checked.
-- **Wisdom before speed:** establish capability standing without target I/O before attempting exact source availability, generic resolution, integrity execution, trust, closure, or replay.
+- **Continuity:** each capability fact remains attached to the exact authored declaration occurrence, and the exact repair/recheck evidence is durable outside private chat.
+- **Wisdom before speed:** canonicalize only the capability precursor and keep target availability, generic resolution, integrity execution, trust, closure, Stage 5, epochs, and replay outside this decision.
 
-## Lane ownership
+## Lane ownership after integration
 
-**Lane 02 owns the first implementation of Decision 022.**
+Decision 022 implementation is canonical and Lane 02 should preserve its regression surface.
 
-Lane 03 attacks the exact tested implementation head afterward.
+Lane 01 returns to Decision 021 research and must ground the observation-context / re-execution boundary before opening a later numbered target-observation implementation decision.
 
-Lane 01 should not open target availability/retrieval observation until Decision 022 survives adversarial review and the remaining Decision 021 observation-context/re-execution boundary is revisited explicitly.
+Lane 03 should retain ADV-057 as regression evidence and attack only the next bounded decision once it is opened durably.
