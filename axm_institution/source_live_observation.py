@@ -331,8 +331,10 @@ def observe_exact_source_live(
     context. Both capability classification and exact target validation use that same
     copy. Ambient bundled-schema mutation during the invocation fails closed before a
     normal observation fact is emitted. During the exact target load, the accepted exact
-    store instance is temporarily given an invocation-local class guard that rejects any
-    attempt to rebind ``schema_dir`` away from the function-owned snapshot. The temporary
+    store instance is temporarily given an invocation-local data-descriptor guard. Its
+    `schema_dir` getter verifies that the instance dictionary still names the function-
+    owned snapshot, so both ordinary assignment and direct `__dict__` rebinding fail
+    closed when validation tries to consume the interpretation context. The temporary
     copy and guard are not retained and therefore do not create historical snapshot,
     hostile-process isolation, or re-execution standing.
     """
@@ -378,12 +380,21 @@ def observe_exact_source_live(
             )
 
         class _InvocationSchemaGuard(FilesystemObjectStore):
-            def __setattr__(self, name: str, value: Any) -> None:
-                if name == "schema_dir" and value != snapshot_dir:
+            @property
+            def schema_dir(self) -> Path:
+                if self.__dict__.get("schema_dir") != snapshot_dir:
                     raise SourceLiveObservationContextError(
                         "Decision 023 store interpretation context changed during exact target load"
                     )
-                super().__setattr__(name, value)
+                return snapshot_dir
+
+            @schema_dir.setter
+            def schema_dir(self, value: Path | None) -> None:
+                if value != snapshot_dir:
+                    raise SourceLiveObservationContextError(
+                        "Decision 023 store interpretation context changed during exact target load"
+                    )
+                self.__dict__["schema_dir"] = snapshot_dir
 
         load_error: ObjectStoreError | None = None
         original_schema_dir = store.schema_dir
