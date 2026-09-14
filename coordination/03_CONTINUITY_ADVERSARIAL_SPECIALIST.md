@@ -17,7 +17,11 @@ You are not the constitutional merge gate and do not outrank other occupants. Yo
 3. `MERGE_GATE.md`
 4. `NEXT_BUILD.md`
 5. `BUILD_PLAN.md`
-6. newest repository commits, PRs, branches, coordination notes, tests, and specialist outputs
+6. `coordination/CURRENT_WAVE.md`
+7. `coordination/CURRENT_BLOCKER.md`
+8. newest repository commits, PRs, branches, coordination notes, tests, and specialist outputs
+
+`coordination/CURRENT_WAVE.md` may preserve historical chronology rather than the newest executable gate. When `coordination/CURRENT_BLOCKER.md` explicitly identifies itself as the current sequencing pointer, inspect it before acting and verify that pointer against the newest durable repository evidence instead of inferring current authority from filenames, timestamps, branch recency, or private chat.
 
 Do not rely on private chat memory as canonical repository state.
 
