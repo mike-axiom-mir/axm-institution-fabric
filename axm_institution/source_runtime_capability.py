@@ -159,7 +159,7 @@ def _bundled_runtime_capability(target_kind: str) -> str:
 
     try:
         _identity.load_schema(schema_name, BUNDLED_SCHEMA_DIR)
-    except ContractValidationError as exc:
+    except (ContractValidationError, IdentityError) as exc:
         raise SourceRuntimeCapabilityContextError(
             f"bundled schema context for {target_kind!r} is invalid: {exc}"
         ) from exc
