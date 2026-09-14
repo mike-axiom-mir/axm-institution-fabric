@@ -1,175 +1,195 @@
 # Current Stage 4 Sequencing Overlay
 
 Date: 2026-09-14
-Canonical `main` before this overlay: `8c5246dd0ea9842bb4dc195035cc46c3699dd3e5`
+Canonical `main` before this overlay: `340ef608693b9706e71f86c8d8c3f4cb2e13f525`
 Current stage: **Stage 4 — claim / occupancy / return lifecycle**
-Current bounded gate: **Decision 016 — Exact Same-Packet Dependency Graph Facts**
-Current disposition: **HOLD on ADV-049-J proof-to-use graph-edge transport continuity; do not integrate Decision 016 yet.**
+Current bounded gate: **Decision 017 — Exact Packet-Local Dependency Reachability Facts**
+Current disposition: **Decision 016 is canonical. The ADV-049-J transport hold is cleared only for the demonstrated Python in-process / fail-closed ordinary-JSON boundary. Open the next read-only graph-fact step; do not open dependency policy, closure, acceptance, integration, epochs, or replay.**
 
-`coordination/CURRENT_WAVE.md` remains historical chronology. This file is the current-state overlay and must be read with the numbered decisions, open PR evidence, and durable specialist return packets.
+`coordination/CURRENT_WAVE.md` remains historical chronology. This file is the current-state overlay and must be read with the numbered decisions and durable specialist return packets.
 
-## What remains canonical before Decision 016
+## What is now canonical
 
-The bounded Python v0 kernel canonically demonstrates:
+The bounded Python v0 kernel canonically demonstrates the previously grounded exact identity, immutable-store, lifecycle, packet, evidence-subject, compatibility, provenance, modification, mixed-output, dependency-identity, and dependency-context-membership surfaces, plus **Decision 016 exact same-packet dependency graph facts**.
 
-- strict canonical identity and immutable references;
-- exact revision membership and exact lifecycle bases;
-- occupancy admission, work-claim admission, and return-packet admission from exact historical state;
-- exact packet created-artifact and evidence identity;
-- exact evidence-subject chronology and bounded output/evidence compatibility;
-- exact created-artifact work-base provenance;
-- exact two-sided modified-artifact prior/result identity and modified-result compatibility;
-- one exact mixed created+modified packet compatibility projection from one exact historical context;
-- Decision 014 exact output dependency target identity for artifact v0.3 across created and modified-result outputs;
-- Decision 015 exact dependency-context membership facts: exact claim-base membership, exact packet-created membership, exact packet-modified-result membership, and explicit outside-all-context standing;
-- historical artifact v0.1/v0.2 dependency strings remain unresolved rather than silently acquiring v0.3 meaning;
-- ADV-035 through ADV-048 regression pressure preserving proof-to-use identity, historical selection, fail-closed transport/materialization, provenance, output/evidence isolation, modification identity, mixed projection, dependency target identity, and dependency context membership.
+Decision 016 now provides one read-only graph projection whose authority is limited to already-grounded Decision 015 facts:
 
-Decision 016 is **not canonical yet**. Its production candidate and adversarial evidence remain in open PR state.
+- exact created and modified-result packet output refs are graph nodes;
+- an exact same-packet dependency creates only the directed fact `required_output_ref -> dependent_output_ref`;
+- claim-base-only and external/unclassified dependencies remain visible in the nested Decision 015 context and do not become packet-local edges;
+- created/modified-result family labels do not become precedence;
+- exact self-edge and SCC/cycle facts are preserved;
+- acyclic graphs may expose one exact-ref-lexically-tiebroken topological witness;
+- that witness is not historical execution chronology, scheduler authority, required production order, dependency validity, packet acceptance, or integration authority.
 
-## Decision 016 candidate — Lane 02 PR #72
+The graph leaf family now uses canonical-byte-backed immutable named representations for:
 
-Lane 02 implemented only the read-only same-packet dependency graph projection on canonical base `8c5246dd0ea9842bb4dc195035cc46c3699dd3e5`.
+- `ExactPacketOutputNode`;
+- `ExactSamePacketDependencyEdge`;
+- `ExactStronglyConnectedComponent`.
 
-Exact tested implementation/workflow head:
+Unsupported ordinary Python stdlib JSON transport fails closed instead of silently converting those named records into positional arrays.
 
-`c9512e9218243436c005286fa2c9e527d12b0319`
+## Decision 016 integration evidence
 
-Native run `34789371372`, job `103810632006` recorded:
+### Historical failure remains part of the truth record
+
+Before repair, Lane 03 ADV-049 reproduced the same narrow failure twice:
+
+- **321 tests ran / 320 passed / exactly ADV-049-J failed**;
+- ADV-049-A through I and all prior tests remained green;
+- `ExactSamePacketDependencyEdge` could serialize through stdlib JSON as `[required_output_ref, dependent_output_ref]`, losing named direction semantics.
+
+Those failures are not invalidated by the repair. PR #73 was closed as **superseded historical adversarial evidence**, not merged and not relabelled successful.
+
+### Lane 02 repair — PR #72
+
+Exact repaired implementation/test/workflow head:
+
+`0d8a79142d87eb6a060cb167cb086f194d1ed2d2`
+
+Native run `34792255883`, job `103818527871`, directly recorded:
 
 - Python 3.12.14;
-- **311 / 311 tests passed**;
-- all ten Decision 016 baseline regressions green;
-- ADV-035 through ADV-048 green in the same run;
+- **324 / 324 tests passed**;
+- unchanged ADV-049-A through J all passed;
+- three coherent node/edge/SCC transport regressions passed;
+- all ten Decision 016 baseline regressions passed;
+- prior regression surface remained green;
 - explicit `py_compile` success;
+- complete job conclusion success.
+
+Lane 02 final head `e4358c6fdcbc74879a6074c9b8b3e1e10fcaa414` adds only its durable return packet beyond the tested head.
+
+PR #72 was integrated by a merge commit, preserving its branch ancestry and evidence history:
+
+`82713b5c2f65a3ad827c43f26aaf4f4e05f4df9d`
+
+### Lane 03 independent repair re-attack — PR #76
+
+Lane 03 changed no production runtime or schema semantics. ADV-050 added five repair-specific regressions covering:
+
+- named direction in the physical canonical edge payload;
+- nested ordinary JSON transport;
+- named detached `_asdict()` materialization;
+- copy/deepcopy reject-or-preserve behavior;
+- aggregate graph transport not silently becoming a positional protocol.
+
+Exact tested Lane 03 head:
+
+`becb799c4d2845f891abdf9fed1d927fa98c90fa`
+
+Native run `34792949677`, job `103820507263`, recorded:
+
+- full deterministic unittest discovery: success;
+- explicit compile including ADV-050: success;
 - complete job conclusion: success.
 
-The candidate correctly demonstrates, in-process, the bounded graph surface:
+The connector-visible specialist record deliberately does not promote `329` from source accounting into a directly observed stdout count.
 
-- exact packet output refs as nodes;
-- exact `required_output_ref -> dependent_output_ref` relations only for same-packet exact dependency targets grounded by Decision 015;
-- base-only/external dependency facts preserved but not promoted into packet-local edges;
-- no output-family precedence;
-- deterministic SCC/self-edge/cycle facts;
-- one deterministic exact-ref-lexically-tiebroken topological witness only for an acyclic graph;
-- no dependency-validity, chronology, closure, acceptance, integration, epoch, or replay authority.
+After Decision 016 became canonical, PR #76 was retargeted to canonical `main`; its resulting diff contained only workflow compile coverage, ADV-050 tests, and the Lane 03 durable return packet. It was integrated as:
 
-Lane 02 final PR #72 head `7d694a3277859a5b7d3e4d951463cef767bff02c` adds only its durable return packet beyond the exact tested implementation head.
+`340ef608693b9706e71f86c8d8c3f4cb2e13f525`
 
-## Independent hold — Lane 03 ADV-049 on PR #73
+## Decision 016 truth boundary
 
-Lane 03 attacked Decision 016 without changing production runtime or schema semantics.
+Decision 016 is canonical only for the demonstrated read-only graph facts and Python proof-to-use boundary.
 
-Exact tested adversarial head:
+It does **not** establish:
 
-`bf13044775aff1df353bf250f3ba3b551e827d47`
+- supported cross-language graph transport;
+- dependency admissibility or allowed-context policy;
+- dependency satisfaction;
+- historical production timestamps or actual execution chronology;
+- transitive dependency closure or declaration completeness;
+- whether same-packet dependencies are permitted;
+- whether cycles or self-dependencies are permitted;
+- packet acceptance/rejection;
+- claim closure;
+- successor state publication;
+- Stage 5 integration correctness;
+- epoch/barrier semantics;
+- replay correctness.
 
-Its first native full-suite run `34790055632`, job `103812485635`, recorded:
+## Explicit cycle-authorability uncertainty
 
-- **321 tests ran / 320 passed / exactly 1 failed**;
-- ADV-049-A through ADV-049-I passed;
-- all pre-existing tests passed;
-- exact failure: **ADV-049-J only**;
-- compile skipped because unittest failed first.
+Artifact v0.3 exact refs hash canonical artifact bytes that include `dependency_refs[]`. An artifact that directly names its own final exact ref appears to require a cryptographic fixed point; mutual exact cycles appear to require mutually recursive fixed points.
 
-The final documentation-only Lane 03 branch head `97d59b6290e59e4e0459e27f5eca04a87b633da3` then received a second native full-suite run `34790552573`, job `103813838567`, which again recorded:
+Decision 016 proves deterministic preservation/detection of already-grounded cyclic topology at the graph-kernel level. Current evidence does **not** prove that the normal content-addressed object-store authoring path can create exact self/mutual cycles end-to-end.
 
-- **321 tests ran / 320 passed / exactly 1 failed**;
-- exact failure: **ADV-049-J only**;
-- ADV-049-A through I and all pre-existing tests remained green;
-- compile skipped because unittest failed first;
-- complete workflow conclusion: failure.
+Do not silently turn that representation uncertainty into either "cycles are impossible" or a validity policy.
 
-This second run confirms that the durable return-packet commit did not change the blocker.
+## Next bounded gap — exact packet-local dependency reachability
 
-## ADV-049-J — exact blocker
+Decision 016 exposes exact direct edges, SCC/cycle facts, and an acyclic witness, but later consumers would still need to derive transitive packet-local prerequisite facts themselves. If different occupants or runtimes derive those facts differently, continuity can drift before dependency closure or integration policy even begins.
 
-`ExactSamePacketDependencyEdge` is currently a tuple-backed `NamedTuple` with named in-process fields:
+The next bounded step is therefore **Decision 017 — Exact Packet-Local Dependency Reachability Facts**.
 
-```text
-required_output_ref
-dependent_output_ref
-```
+It is still graph fact before dependency policy.
 
-Python stdlib JSON accepts that authoritative edge and serializes it as an unlabeled positional array:
+For each exact packet-output node, derive only the packet-local strict reachability facts already implied by Decision 016:
 
 ```text
-[required_output_ref, dependent_output_ref]
+exact output node
+    -> exact direct required packet-output refs
+    -> exact transitive required packet-output refs
 ```
 
-That is not durable named institutional meaning. A replacement consumer receiving the ordinary transported value must know the originating Python tuple field order out-of-band to recover which exact ref is the required output and which is the dependent output.
+A transitive prerequisite is an exact packet-output node reachable by one or more Decision 016 `required -> dependent` edges in the reverse prerequisite direction from the dependent node. Presentation must be deterministic and exact-ref lexical only.
 
-The failure is therefore **proof-to-use transport meaning loss**, not durable-store corruption, not graph-selection failure, and not a contradiction of ADV-049-A through I.
+For cyclic topology, strict reachability may include the starting node only when a non-empty path returns to it. That is a graph fact, not cycle validity or permission.
 
-The repository already has a relevant precedent in the earlier proof-to-use transport repairs: unsupported ordinary transport may fail closed, or an explicit supported representation may preserve exact named semantics; it must not silently change the semantic shape of an authoritative operational record.
-
-## Integration disposition
-
-**PR #72 remains held and must not be merged yet.**
-
-**PR #73 remains adversarial evidence and must not be merged as a failing regression branch before the production repair is integrated/reapplied appropriately.**
-
-Do not open Decision 017 or any later dependency policy while this Decision 016 proof-to-use blocker is unresolved.
-
-No evidence currently justifies widening the hold beyond transport continuity. ADV-049-A through I strongly support the rest of the bounded Decision 016 graph semantics.
-
-## Smallest repair boundary — Lane 02
-
-Lane 02 should repair only Decision 016 graph-leaf proof-to-use representation while preserving all currently green graph semantics.
-
-An acceptable repair must:
-
-1. preserve Decision 015 as the sole packet/dependency membership authority;
-2. preserve exact node and edge selection;
-3. preserve edge direction `required_output_ref -> dependent_output_ref`;
-4. preserve family neutrality, SCC/self-edge/cycle facts, and lexical topological witness behavior;
-5. expose no dependency-validity, chronology, closure, acceptance, integration, epoch, or replay authority;
-6. make unsupported ordinary JSON transport fail closed **or** preserve named graph-leaf semantics exactly;
-7. avoid a one-off edge-only patch if equivalent graph-leaf types share the same tuple-positionalization mechanism; repair should be coherent across the Decision 016 graph leaf family where the representation is equivalent;
-8. keep the explicit self/mutual-cycle authorability uncertainty unresolved unless new durable evidence actually resolves it.
-
-The existing canonical-byte-backed fail-closed transport pattern in `packet_output_identity.py` is relevant implementation precedent, but it is not automatically mandated as the only valid repair.
-
-## Required repair evidence
-
-After Lane 02 leaves a repaired exact head:
-
-- rerun ADV-049-A through ADV-049-J unchanged;
-- rerun all Decision 016 baseline tests;
-- rerun the complete repository unittest discovery suite;
-- require explicit `py_compile` success;
-- record the exact repaired head and native workflow evidence;
-- preserve any first failing repair attempt rather than rewriting it away.
-
-Then Lane 03 should independently re-attack the repaired exact head and clear only the transport hold that the evidence actually resolves.
-
-## Explicit representation uncertainty — cycles
-
-Lane 02 also preserved a separate uncertainty that is **not** the current merge blocker: artifact v0.3 exact refs hash canonical artifact bytes that include `dependency_refs[]`. Authoring a self-dependency that names the artifact's own final exact ref appears to require a cryptographic fixed point; mutual exact cycles appear to require mutually recursive fixed points.
-
-Decision 016 must still preserve/detect cyclic topology if an already-grounded upstream relation supplies it, but no current evidence proves that the normal content-addressed object-store write path can author exact self/mutual cycles end-to-end. Do not silently turn that representation uncertainty into either "cycles are impossible" or "cycles are allowed/invalid" policy.
+Claim-base-only and external/unclassified dependencies remain outside packet-local reachability; they stay visible only through the nested Decision 015/016 context.
 
 ## Lane boundaries
 
 ### Lane 02 — active implementation lane
 
-Repair only ADV-049-J / equivalent Decision 016 graph-leaf transport continuity. Keep PR #72's graph selection/topology semantics intact and stop before dependency admissibility, actual chronology, closure/completeness, packet acceptance, claim closure, successor publication, Stage 5 integration, epochs, or replay.
+Implement only Decision 017's read-only exact packet-local prerequisite reachability projection by consuming Decision 016 unchanged.
+
+Required behavior:
+
+1. Decision 016 remains the sole packet-local node/edge authority;
+2. expose deterministic exact direct prerequisite refs per exact output;
+3. expose deterministic exact strict transitive prerequisite refs per exact output;
+4. preserve cycle/self-reachability as graph facts without assigning validity;
+5. do not promote claim-base-only/external dependencies into packet-local reachability;
+6. do not infer logical-id/version/`supersedes_ref`/recency/array-order/family/actor/scheduler/Git authority;
+7. do not label the topological witness historical chronology;
+8. add no `valid`, `allowed`, `satisfied`, `closed`, `complete`, `accepted`, `rejected`, `integrated`, epoch, or replay meaning;
+9. keep ADV-035 through ADV-050 green;
+10. stop before dependency admissibility, closure/completeness, source/evidence closure, packet acceptance, successor publication, Stage 5 integration, epochs, or replay.
+
+If new named operational leaf records are introduced, preserve the already-grounded proof-to-use transport rule: unsupported ordinary transport must fail closed or preserve named semantics exactly.
 
 ### Lane 03 — adversarial lane
 
-Do not duplicate Lane 02's repair. Wait for a repaired exact head, then rerun ADV-049 unchanged and attack the coherent graph-leaf repair. Preserve the existing hold meanwhile.
+Wait for Lane 02's exact tested Decision 017 head, then attack only that new reachability projection for:
+
+- edge-direction inversion;
+- missing multi-hop prerequisites;
+- base-only/external dependency promotion;
+- same-logical/version/`supersedes_ref` substitution;
+- array/storage/recency order affecting reachability;
+- created/modified-result family precedence;
+- parallel-packet rebinding;
+- self/cycle reachability being dropped or fabricated;
+- lexical presentation order becoming semantic authority;
+- topological witness being misused as chronology;
+- materialization/transport losing exact named meaning;
+- accidental validity, closure, acceptance, integration, epoch, or replay claims.
 
 ### Lane 01 — integration lane
 
-Do not implement the same repair in parallel. Keep the hold visible on canonical coordination state, review the repaired exact head and independent adversarial evidence, and integrate only when the four-root gate is grounded.
+Do not duplicate Decision 017 implementation. Preserve this sequencing boundary, review Lane 02 evidence plus Lane 03 attack, and integrate only the exact facts sufficiently grounded under the four roots.
 
 ## Still explicitly unresolved
 
-- Decision 016 graph-leaf transport continuity until ADV-049-J is repaired;
+- supported cross-language graph transport and any durable graph serialization protocol;
+- exact cycle authorability through normal content-addressed artifact publication;
 - dependency admissibility / allowed-context policy;
-- actual dependency chronology and same-packet producer/consumer execution ordering;
-- transitive dependency closure and declaration completeness;
-- whether cycles/self-dependencies are acceptable;
+- actual production chronology / scheduler ordering;
+- transitive dependency **closure/completeness policy** even after factual reachability exists;
 - exact source provenance / `provenance.source_refs[]` taxonomy and closure;
 - evidence method/source quality, precedence, invalidation dominance, and closure;
 - multiple `required_states` semantics;
@@ -181,13 +201,13 @@ Do not implement the same repair in parallel. Keep the hold visible on canonical
 - successor state-revision publication;
 - Stage 5 integration receipts/runtime;
 - epochs/barriers and replay;
-- cross-language reproduction and supported serialized compatibility transport;
+- cross-language reproduction generally;
 - stronger filesystem durability/concurrency evidence;
 - hostile same-process code isolation beyond Decision 009's trusted deterministic runtime boundary.
 
 ## Four-root gate
 
-- **Truth:** keep the 311/311 in-process Decision 016 success and the two independent 320/321 ADV-049 failure reproductions visible at the same time; do not relabel either away.
-- **Agency / non-domination:** no founder, specialist, schedule position, branch ownership, Git permission, version, recency, or tuple convention becomes semantic authority.
-- **Continuity:** the current hold, exact failing oracle, repair boundary, and unresolved cycle representation question are now reconstructable from repository state without private chat memory.
-- **Wisdom before speed:** repair the narrow proof-to-use representation failure before integrating Decision 016 or opening dependency policy, closure, Stage 5 integration, epochs, or replay.
+- **Truth:** preserve the two pre-repair ADV-049 failures, the repaired 324/324 result, and the independent ADV-050 success together; Decision 016 is not widened into policy or chronology.
+- **Agency / non-domination:** no founder, specialist, schedule position, branch ownership, Git permission, version, recency, array order, family, or lexical tie-break becomes semantic authority.
+- **Continuity:** Decision 016's graph meaning, transport repair, historical failure, independent re-attack, remaining cycle uncertainty, and the next lane are reconstructable from canonical repository state without private chat memory.
+- **Wisdom before speed:** derive exact reachability facts before inventing dependency admissibility, closure, packet acceptance, Stage 5 integration, epochs, or replay.
