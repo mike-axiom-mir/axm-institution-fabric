@@ -168,6 +168,59 @@ class SourceLiveObservationAdversarialTests(unittest.TestCase):
 
             self.assertIsNone(store.schema_dir)
 
+    def test_adv_058_c_exact_store_instance_method_rebind_and_restore_fails_closed(self):
+        """Exact class identity must not hide caller replacement of the validation call.
+
+        ADV-058-B is closed by rejecting subclasses, but ``FilesystemObjectStore`` has
+        ordinary per-instance attributes. A caller can therefore replace ``load_bytes``
+        on an exact-type store instance, temporarily rebind ``schema_dir`` only while the
+        class implementation validates the target, then restore the observer-owned
+        snapshot directory before return. The public exact-type check and the after-call
+        attribute check both still succeed.
+
+        Decision 023 requires the actual target-validation operation to consume the same
+        function-owned interpretation context as capability classification, or fail
+        closed. This test stays on that same-invocation boundary and opens no wider
+        hostile-process, trust, snapshot, closure, or replay semantics.
+        """
+
+        with tempfile.TemporaryDirectory() as tmp, tempfile.TemporaryDirectory() as schema_tmp:
+            store = FilesystemObjectStore(tmp)
+            self.assertIs(type(store), FilesystemObjectStore)
+            target = target_artifact()
+            target_ref = store.store(target, "artifact.schema.json").reference
+            container = typed_artifact({"source": exact_declaration(target_ref)})
+            container_ref = artifact_ref(container)
+
+            alternate_schema_dir = Path(schema_tmp)
+            (alternate_schema_dir / "artifact.schema.json").write_bytes(
+                b'{"$schema":"https://json-schema.org/draft/2020-12/schema",'
+                b'"type":"object"}'
+            )
+            substitution_happened = False
+
+            def rebound_load_bytes(reference: str, schema_name: str | None = None) -> bytes:
+                nonlocal substitution_happened
+                substitution_happened = True
+                observer_schema_dir = store.schema_dir
+                store.schema_dir = alternate_schema_dir
+                try:
+                    return FilesystemObjectStore.load_bytes(store, reference, schema_name)
+                finally:
+                    store.schema_dir = observer_schema_dir
+
+            with mock.patch.object(store, "load_bytes", side_effect=rebound_load_bytes):
+                with self.assertRaises(SourceLiveObservationError):
+                    observe_exact_source_live(
+                        containing_object_ref=container_ref,
+                        containing_value=container,
+                        declaration_key="source",
+                        store=store,
+                    )
+
+            self.assertTrue(substitution_happened)
+            self.assertIsNone(store.schema_dir)
+
 
 if __name__ == "__main__":
     unittest.main()
