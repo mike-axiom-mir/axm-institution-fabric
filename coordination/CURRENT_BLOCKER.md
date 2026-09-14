@@ -70,7 +70,9 @@ If the target kind is `unsupported_kind`:
 
 ### Supported runtime
 
-If the target kind is supported, use only exact `FilesystemObjectStore.load_bytes(target_object_ref)`.
+If the target kind is supported, use only exact `FilesystemObjectStore.load_bytes(target_object_ref)` under the **same fixed bundled kernel schema interpretation context used by Decision 022**.
+
+A `FilesystemObjectStore` configured with a caller-supplied/custom `schema_dir` is outside Decision 023 and MUST fail closed before target-object I/O. The first observation slice may not classify capability using bundled schemas and then validate the target under caller-selected schemas. This guard preserves interpretation coherence; it does not turn the live bundled schema directory into immutable historical context.
 
 No logical-id, newest-version, recency, locator, search, network, package, adjacent-source, actor, CI, branch, or Git fallback is allowed.
 
@@ -88,6 +90,8 @@ The authorized outcome classes are:
 - `ObjectCorruptionError` → `corrupt_material_in_live_context`, availability indeterminate, unverified bytes obtained, exact identity failed;
 - other `ObjectStoreError` → `store_error_in_live_context`, availability indeterminate, bytes not obtained, integrity not evaluated;
 - unsupported kind → no observation attempted.
+
+A custom/non-bundled schema context is rejected before this target-result mapping. It is not target absence, target corruption, or a target-store error.
 
 No absolute path, host, process, timestamp, actor, CI, branch, Git state, or exception text belongs in the canonical observation fact.
 
@@ -107,7 +111,7 @@ Even `exact_observed` does not establish:
 - literal observation re-execution;
 - replay correctness.
 
-Negative/error results are equally bounded: not-found is context-local, corruption is not a trust verdict, store error leaves availability indeterminate, and unsupported kind is not absence.
+Negative/error results are equally bounded: not-found is context-local, corruption is not a trust verdict, store error leaves availability indeterminate, unsupported kind is not absence, and a rejected custom schema context is only outside this slice's interpretation authority.
 
 ## Active lane boundaries
 
@@ -132,13 +136,14 @@ Required evidence includes deterministic tests for:
 - canonical transport excluding ambient authority;
 - repeated identical classified inputs producing identical bytes;
 - same textual mutable store root truthfully producing a different later observation after contents change;
+- caller-supplied/custom `schema_dir` rejected before target-object I/O so capability and target-validation contexts cannot diverge;
 - unchanged Decision 022 regressions.
 
 Run the complete deterministic suite and explicit compile.
 
 ### Lane 03 — next attacker after Lane 02
 
-Attack the exact tested Decision 023 head for mutable-context laundering, negative-observation globalization, hidden fallback, occurrence collapse, stale rebinding, failure disappearance, ambient metadata leakage, unsupported-kind laundering, and observation→trust/closure/acceptance/reexecution authority.
+Attack the exact tested Decision 023 head for mutable-context laundering, negative-observation globalization, hidden fallback, occurrence collapse, stale rebinding, failure disappearance, ambient metadata leakage, unsupported-kind laundering, **bundled-capability/custom-schema-context mixing**, and observation→trust/closure/acceptance/reexecution authority.
 
 Do not broaden into source policy that Decision 023 does not authorize.
 
@@ -146,6 +151,7 @@ Do not broaden into source policy that Decision 023 does not authorize.
 
 - immutable/snapshot-like source observation context identity and snapshot completeness;
 - retained verified source bytes / retained-byte evidence objects;
+- custom/non-bundled source-observation schema-context identity/configuration;
 - content-address byte-provider and digest verification semantics;
 - locator/network/filesystem/package resolver contracts and resolver identity/configuration;
 - explicit locator/content/exact association;
@@ -171,4 +177,4 @@ Do not broaden into source policy that Decision 023 does not authorize.
 
 ## Stop rule for the next activation
 
-Do not interpret opening Decision 023 as permission to add snapshots, retained-byte objects, generic resolvers, content-address verification, source trust/closure, Stage 5, epochs, or replay. First prove the bounded live-store exact-source observation contract and preserve its explicit `reexecution_standing = not_established` limitation.
+Do not interpret opening Decision 023 as permission to add custom schema observation contexts, snapshots, retained-byte objects, generic resolvers, content-address verification, source trust/closure, Stage 5, epochs, or replay. First prove the bounded bundled-context live-store exact-source observation contract and preserve its explicit `reexecution_standing = not_established` limitation.
