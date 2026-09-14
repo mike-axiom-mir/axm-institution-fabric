@@ -1,10 +1,10 @@
 # Decision 016 — Exact Same-Packet Dependency Graph Facts
 
-Status: **accepted as the next bounded Stage 4 preflight after Decision 015 and ADV-048, subject to implementation and adversarial evidence before integration.**
+Status: **canonical as of 2026-09-14 after Lane 02 repair and independent Lane 03 re-attack. Historical pre-repair failure evidence remains valid and preserved.**
 
-Decision 015 now reconstructs, for every exact Decision 014 dependency target, whether that exact target is present in the exact historical claim base and/or one of the exact outputs of the same return packet. ADV-048 independently preserves those facts against later revisions, same-logical/version/`supersedes_ref` decoys, presentation order, output-family laundering, metadata authority leakage, missing/corrupt historical state, parallel packet rebinding, materialization drift, and accidental acceptance authority.
+Decision 015 reconstructs, for every exact Decision 014 dependency target, whether that exact target is present in the exact historical claim base and/or one of the exact outputs of the same return packet. ADV-048 independently preserves those facts against later revisions, same-logical/version/`supersedes_ref` decoys, presentation order, output-family laundering, metadata authority leakage, missing/corrupt historical state, parallel packet rebinding, materialization drift, and accidental acceptance authority.
 
-The next missing fact is narrower than dependency validity: **what exact dependency graph exists among the outputs of this one exact packet?**
+The missing fact addressed here is narrower than dependency validity: **what exact dependency graph exists among the outputs of this one exact packet?**
 
 ## Problem
 
@@ -24,7 +24,7 @@ At the same time, exact same-packet dependency relations already contain useful 
 
 ## Decision
 
-Open one **read-only exact same-packet dependency graph projection** that consumes Decision 015 rather than rebuilding packet, output, dependency, or membership selection.
+Provide one **read-only exact same-packet dependency graph projection** that consumes Decision 015 rather than rebuilding packet, output, dependency, or membership selection.
 
 For one exact packet:
 
@@ -90,44 +90,61 @@ It does **not** establish:
 
 This is **graph fact before chronology or policy**.
 
-## Lane 02 — smallest implementation
+## Canonical implementation boundary
 
-Implement only a read-only Decision 016 projection that:
+The integrated runtime consumes `preflight_dependency_context_membership(...)` as the sole authority for exact packet context and dependency membership, constructs exact packet-output nodes and packet-local edges, preserves nested Decision 015 facts, records deterministic SCC/self-edge/cycle facts, and exposes a lexical-tie-broken topological witness only for acyclic graphs.
 
-1. consumes `preflight_dependency_context_membership(...)` as the sole authority for the exact packet context and dependency membership facts;
-2. constructs one exact node per packet created/modified-result output ref;
-3. constructs an exact edge only when a dependency target is exactly one of those packet outputs;
-4. preserves the underlying Decision 015 result so base-only/external dependency facts are not erased;
-5. records self-edges and deterministic SCC/cycle facts without assigning validity;
-6. if acyclic, computes one deterministic topological witness with exact-ref lexical tie-breaking and labels it explicitly as a witness rather than chronology;
-7. if cyclic, exposes no fake topological witness;
-8. exposes no `dependencies_valid`, `dependencies_closed`, `accepted`, `rejected`, `complete`, `closed`, packet-level `satisfied`, or execution-time field;
-9. keeps ADV-035 through ADV-048 green;
-10. stops before dependency admissibility, same-packet chronology policy, closure/completeness, source closure, evidence precedence, lineage policy, packet acceptance, claim closure, successor publication, Stage 5 integration, epochs, or replay.
+The equivalent named graph leaf family is canonical-byte-backed and immutable:
 
-No schema migration is required for this step because it derives graph facts from already exact immutable relations and adds no new artifact-authored or packet-authored claim.
+- `ExactPacketOutputNode`;
+- `ExactSamePacketDependencyEdge`;
+- `ExactStronglyConnectedComponent`.
 
-## Lane 03 — adversarial surface
+Unsupported Python stdlib JSON transport fails closed instead of silently converting those named records into positional arrays. `_asdict()` is a detached named materialization path, not an authority rewrite.
 
-Attack the exact Lane 02 head for at least:
+The aggregate graph remains a read-only in-process projection; this decision does not claim a supported cross-language graph protocol.
 
-- packet/output/dependency array order changing node, edge, SCC, cycle, or witness facts;
-- same-logical-id / higher-version / `supersedes_ref` decoys becoming graph nodes or edges;
-- claim-base-only or external dependencies being promoted into same-packet edges;
-- created/modified-result family facts being collapsed into hidden precedence;
-- exact self-dependencies being silently dropped or automatically rejected;
-- two-node and larger cycles being hidden, broken by presentation order, or assigned a fake topological witness;
-- an acyclic graph's witness violating an exact dependency edge;
-- later/parallel packet outputs rebinding an earlier packet's graph;
-- source/evidence metadata changing graph structure;
-- detached materialization or unsupported transport changing exact graph facts;
-- any accidental execution-chronology, validity, closure, acceptance, integration, epoch, or replay authority appearing.
+## Integration evidence and preserved failure history
 
-Do not expand the attack into deciding whether same-packet edges, self-dependencies, or cycles are permitted. That policy remains closed until a later durable decision.
+The original in-process Decision 016 candidate passed its bounded graph tests but Lane 03 ADV-049 found one proof-to-use transport failure: tuple-backed `ExactSamePacketDependencyEdge` could become an unlabeled `[required, dependent]` JSON array. Two native Lane 03 runs each recorded **321 tests / 320 passed / exactly ADV-049-J failed**, with ADV-049-A through I and all prior tests green.
+
+Lane 02 repaired the equivalent graph leaf family coherently. Exact repaired tested head:
+
+`0d8a79142d87eb6a060cb167cb086f194d1ed2d2`
+
+Native run `34792255883`, job `103818527871`, directly recorded:
+
+- **324 / 324 tests passed**;
+- ADV-049-A through J all passed;
+- three coherent node/edge/SCC transport regressions passed;
+- all Decision 016 baseline regressions passed;
+- explicit `py_compile` success.
+
+Lane 03 then independently re-attacked the repair with ADV-050 at exact tested head:
+
+`becb799c4d2845f891abdf9fed1d927fa98c90fa`
+
+Native run `34792949677`, job `103820507263`, recorded full deterministic unittest discovery success, explicit compile success, and complete job success. ADV-050 covers physical named edge payload, nested transport, detached materialization, copy/deepcopy handling, and the aggregate positional-transport trap.
+
+Decision 016 production/history was integrated through PR #72 as merge commit:
+
+`82713b5c2f65a3ad827c43f26aaf4f4e05f4df9d`
+
+ADV-050 evidence was integrated through PR #76 as:
+
+`340ef608693b9706e71f86c8d8c3f4cb2e13f525`
+
+Historical failing PR #73 was closed as **superseded, not invalidated**. Its failure evidence remains part of the truth record.
+
+## Preserved representation uncertainty
+
+Artifact v0.3 exact refs hash canonical artifact bytes that include `dependency_refs[]`. Authoring a direct exact self-dependency appears to require a cryptographic fixed point; mutual exact cycles appear to require mutually recursive fixed points.
+
+Decision 016 preserves/detects already-grounded cyclic topology at the deterministic graph-kernel layer. Current evidence does **not** prove that the normal content-addressed object-store publication path can author exact self/mutual cycles end-to-end. Do not silently convert that uncertainty into validity policy or an impossibility claim.
 
 ## Root grounding
 
-- **Truth:** represent exact dependency topology as topology, not as invented execution history or acceptance.
-- **Agency / non-domination:** no founder, specialist, scheduler, Git, recency, version, array-order, or logical-id authority determines graph facts.
-- **Continuity:** a replacement occupant can reconstruct the packet-local dependency topology, including cycles, solely from durable exact state.
+- **Truth:** represent exact dependency topology as topology, preserve both pre-repair failures and repaired/adversarial success, and do not invent execution history or acceptance.
+- **Agency / non-domination:** no founder, specialist, scheduler, Git, recency, version, array-order, logical-id, or tuple convention determines graph facts.
+- **Continuity:** a replacement occupant can reconstruct packet-local topology and named edge meaning solely from durable exact state and repository evidence.
 - **Wisdom before speed:** expose graph facts before choosing dependency admissibility, chronology, closure, acceptance, integration, epochs, or replay.
