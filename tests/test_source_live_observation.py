@@ -324,17 +324,17 @@ class SourceLiveObservationTests(unittest.TestCase):
                 with self.assertRaisesRegex(SourceLiveObservationContextError, "custom schema_dir"):
                     self.observe_artifact(container, "source", store)
 
-    def test_custom_schema_dir_does_not_override_unsupported_no_io_result(self):
+    def test_custom_schema_dir_rejected_before_unsupported_outcome_mapping(self):
         with tempfile.TemporaryDirectory() as tmp, tempfile.TemporaryDirectory() as schemas:
             store = FilesystemObjectStore(tmp, schema_dir=Path(schemas))
             container = typed_artifact({"future": exact_declaration(UNSUPPORTED_TARGET)})
             with mock.patch.object(
                 store,
                 "load_bytes",
-                side_effect=AssertionError("unsupported target must not be read"),
+                side_effect=AssertionError("custom schema context must fail before target I/O"),
             ):
-                fact = self.observe_artifact(container, "future", store)
-        self.assertEqual("not_attempted_unsupported_kind", fact.observation_outcome)
+                with self.assertRaisesRegex(SourceLiveObservationContextError, "custom schema_dir"):
+                    self.observe_artifact(container, "future", store)
 
 
 if __name__ == "__main__":
