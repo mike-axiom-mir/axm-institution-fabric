@@ -18,9 +18,12 @@ Decision 023 applies only to one Decision 020 `exact_axm_object` declaration occ
 The projection MUST first derive the Decision 022 runtime capability for that same exact occurrence.
 
 - If `runtime_capability = unsupported_kind`, target-object I/O MUST NOT be attempted.
-- If `runtime_capability = supported`, the projection MAY use only `FilesystemObjectStore.load_bytes(target_object_ref)` with the ordinary inferred schema for that exact ref.
+- If `runtime_capability = supported`, the observation MUST keep the same fixed bundled kernel schema interpretation context used by Decision 022, then MAY use only `FilesystemObjectStore.load_bytes(target_object_ref)` with the ordinary inferred schema for that exact ref.
+- A `FilesystemObjectStore` configured with a caller-supplied/custom `schema_dir` is outside this first executable slice and MUST fail closed **before target-object I/O**. Decision 023 does not authorize mixing bundled capability classification with caller-selected target-validation schemas.
 - No logical-id, newest-version, recency, locator, search, network, package, adjacent-declaration, branch, actor, CI, or Git fallback is permitted.
 - `opaque_label`, `content_address`, and `locator` declarations remain outside this executable slice.
+
+The bundled-schema guard is an interpretation-coherence boundary, not a claim that the bundled schema directory is immutable historical context. The bundled schema files are still live runtime material unless a later snapshot/context decision says otherwise.
 
 ## Durable occurrence identity
 
@@ -100,15 +103,18 @@ The first implementation MUST map existing store results exactly as follows:
 
 For the current store implementation, `ObjectCorruptionError` is raised only after bytes have been read from the exact path; `unverified_bytes_obtained` therefore describes that bounded implementation fact. Decision 023 does not require returning or retaining those bytes.
 
+A custom/non-bundled schema context is rejected before this mapping is entered. It MUST NOT be relabelled as target absence, target corruption, or a generic target-store failure, because Decision 023 has not authorized observation under that interpretation context.
+
 ## What a positive observation proves
 
 `exact_observed` establishes only that, during this invocation against the caller-supplied live mutable store:
 
 1. the runtime supported the target kind under Decision 022;
-2. the exact target path was read;
-3. bytes were obtained;
-4. those bytes passed the current exact-store UTF-8/JSON/schema/canonical-byte/reference reproduction checks;
-5. the requested exact immutable target was therefore observed in that live context.
+2. the same fixed bundled schema interpretation context governed the exact target load;
+3. the exact target path was read;
+4. bytes were obtained;
+5. those bytes passed the current exact-store UTF-8/JSON/schema/canonical-byte/reference reproduction checks;
+6. the requested exact immutable target was therefore observed in that live context.
 
 It does **not** prove provenance causality, source relevance, trust, quality, completeness, closure, packet acceptance, claim closure, integration, epoch completion, future availability, retained-byte availability, literal re-execution, or replay correctness.
 
@@ -121,6 +127,8 @@ It does **not** prove provenance causality, source relevance, trust, quality, co
 `store_error_in_live_context` leaves target availability indeterminate. An unreadable or otherwise failing live store MUST NOT be relabelled as absence.
 
 `not_attempted_unsupported_kind` means the bundled runtime lacked the Decision 022 interpretation contract and target I/O was deliberately skipped. It is not absence or corruption.
+
+A rejected custom schema context means only that this Decision 023 slice does not have authority to make a live-source observation under that caller-selected interpretation context. It is not a statement about target existence, availability, integrity, or trust.
 
 ## Retained bytes and snapshot contexts
 
@@ -157,7 +165,8 @@ Lane 02 should implement only this decision and add deterministic tests demonstr
 9. canonical fact transport excludes path/host/process/time/actor/CI/Git authority;
 10. repeated identical classified inputs produce identical canonical fact bytes;
 11. changing the contents of the same textual store root may truthfully change a later live observation without implying contradiction, because literal re-execution is explicitly not established;
-12. Decision 022 regressions remain unchanged and green.
+12. Decision 022 regressions remain unchanged and green;
+13. a store configured with a custom `schema_dir` fails closed before target-object I/O, so bundled capability classification cannot be combined with caller-selected target-validation semantics.
 
 Explicit compile evidence is required after the full deterministic suite.
 
@@ -169,6 +178,7 @@ After Lane 02 provides an exact tested head, Lane 03 should attack:
 - same textual store root with changed contents;
 - negative observation globalization;
 - unsupported-kind → absence/corruption laundering;
+- bundled-capability/custom-schema-context mixing or schema-context substitution;
 - hidden logical-id/newest/locator fallback;
 - occurrence collapse for equal target refs;
 - stale container/declaration-key rebinding;
@@ -183,6 +193,7 @@ Decision 023 does not authorize:
 
 - immutable source-store snapshots or snapshot manifests;
 - retained source-byte objects;
+- caller-selected/custom schema interpretation contexts for source observation;
 - generic filesystem/network/URL/package resolvers;
 - `content_address` digest verification;
 - locator ↔ exact/content association;
@@ -199,13 +210,13 @@ Decision 023 does not authorize:
 
 ## Root grounding
 
-**Truth:** runtime capability, live-context availability, retrieval, integrity, re-execution standing, trust, closure, and acceptance remain separate facts.
+**Truth:** runtime capability, schema interpretation context, live-context availability, retrieval, integrity, re-execution standing, trust, closure, and acceptance remain separate facts.
 
-**Agency / non-domination:** no filesystem path, host, process, actor, founder, specialist, schedule, CI result, branch, recency, or Git permission becomes source authority.
+**Agency / non-domination:** no filesystem path, custom schema injection, host, process, actor, founder, specialist, schedule, CI result, branch, recency, or Git permission becomes source authority.
 
-**Continuity:** exact declaration occurrence and explicit failed/uncertain outcomes survive occupant replacement, while the absence of immutable live-context identity is recorded rather than hidden.
+**Continuity:** exact declaration occurrence and explicit failed/uncertain outcomes survive occupant replacement, while the absence of immutable live-context identity and custom-schema authority are recorded rather than hidden.
 
-**Wisdom before speed:** use the smallest honest context-bound observation slice now; defer snapshots, byte retention, generic resolution, trust, closure, integration, epochs, and replay until their own contracts are grounded.
+**Wisdom before speed:** use the smallest honest context-bound observation slice now; defer custom observation contexts, snapshots, byte retention, generic resolution, trust, closure, integration, epochs, and replay until their own contracts are grounded.
 
 ## Ownership
 
