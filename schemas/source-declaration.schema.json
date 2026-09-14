@@ -29,7 +29,7 @@
       "properties": {
         "source_class": {"const": "content_address"},
         "algorithm": {"const": "sha256"},
-        "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "digest": {"type": "string", "pattern": "^[0-9a-f]{64}(?![\\s\\S])"},
         "byte_scope": {"const": "raw_bytes"}
       }
     },

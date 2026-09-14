@@ -166,6 +166,18 @@ class TypedSourceDeclarationAdversarialTests(unittest.TestCase):
         self.assertNotIn("trusted", declarations["declared"])
         self.assertNotIn("accepted", declarations["declared"])
 
+    def test_adv055_a_trailing_lf_content_digest_must_fail_exact_64_hex_spelling(self):
+        """A content address is exactly 64 lowercase hex chars, not 64 hex plus final LF."""
+
+        bad_digest = "b" * 64 + "\n"
+        for schema_name, candidate in (
+            ("artifact.schema.json", typed_artifact({"source": content(bad_digest)})),
+            ("evidence-record.schema.json", typed_evidence({"source": content(bad_digest)})),
+        ):
+            with self.subTest(schema=schema_name):
+                with self.assertRaises(ContractValidationError):
+                    validate_instance(candidate, schema_name)
+
 
 if __name__ == "__main__":
     unittest.main()
