@@ -337,10 +337,13 @@ def observe_exact_source_live(
     closed when validation tries to consume the interpretation context. Its `load_bytes`
     data descriptor also prevents a caller-owned instance shadow from becoming proof of a
     positive observation: a shadow may run and preserve its explicit error behavior, but
-    any shadowed success is followed by the base exact-store read and immutable identity
-    verification before `exact_observed` can be emitted. The temporary copy and guard are
-    not retained and therefore do not create historical snapshot, hostile-process
-    isolation, or re-execution standing.
+    any shadowed success is followed by the base exact-store read. Its `_verify_existing`
+    data descriptor applies the same rule one layer deeper: any caller-owned instance
+    verifier shadow may run first, but its successful return is never sufficient evidence;
+    the base exact-store verifier must independently read and reproduce the exact immutable
+    identity before `exact_observed` can be emitted. The temporary copy and guards are not
+    retained and therefore do not create historical snapshot, hostile-process isolation,
+    or re-execution standing.
     """
 
     if type(store) is not FilesystemObjectStore:
@@ -410,6 +413,17 @@ def observe_exact_source_live(
                     return FilesystemObjectStore.load_bytes(self, reference, schema_name)
 
                 return verified_load
+
+            @property
+            def _verify_existing(self):
+                caller_dispatch = self.__dict__.get("_verify_existing")
+
+                def verified_existing(reference: str, schema_name: str):
+                    if caller_dispatch is not None:
+                        caller_dispatch(reference, schema_name)
+                    return FilesystemObjectStore._verify_existing(self, reference, schema_name)
+
+                return verified_existing
 
         load_error: ObjectStoreError | None = None
         original_schema_dir = store.schema_dir
