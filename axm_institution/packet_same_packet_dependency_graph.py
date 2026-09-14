@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import heapq
-from typing import NamedTuple
+from typing import Any, NamedTuple
 
+from .identity import canonical_bytes, parse_json_strict
 from .packet_dependency_context_membership import (
     ExactDependencyContextMembership,
     ResolvedOutputDependencyContext,
@@ -20,34 +21,135 @@ class SamePacketDependencyGraphConsistencyError(SamePacketDependencyGraphError):
     """Decision 015 packet-output membership facts cannot form one exact graph."""
 
 
-class ExactPacketOutputNode(NamedTuple):
-    """One exact packet output node with its non-authoritative output-family fact."""
+class _FrozenGraphLeaf(bytes):
+    """Canonical-byte-backed immutable graph leaf with fail-closed JSON transport.
 
-    output_ref: str
-    category: str
+    Decision 016 graph leaf records carry named institutional meaning. Tuple-backed
+    records are immutable in process, but Python's stdlib JSON encoder silently
+    serializes tuples/NamedTuples as positional arrays and therefore drops those field
+    names. This bytes-backed representation keeps the authoritative leaf physically
+    immutable while preserving attribute and ``_asdict()`` reads for callers. Because it
+    is not a tuple/list/dict container, unsupported ordinary JSON transport rejects the
+    leaf instead of changing its semantic shape.
+    """
+
+    __slots__ = ()
+    _fields: tuple[str, ...] = ()
+
+    @classmethod
+    def _from_mapping(cls, mapping: dict[str, Any]):
+        return bytes.__new__(cls, canonical_bytes(mapping))
+
+    def _plain(self) -> dict[str, Any]:
+        value = parse_json_strict(memoryview(self).tobytes().decode("utf-8"))
+        if not isinstance(value, dict):
+            raise TypeError("frozen Decision 016 graph leaf did not decode as a mapping")
+        return value
+
+    def _asdict(self) -> dict[str, Any]:
+        return {field: getattr(self, field) for field in self._fields}
+
+    def __repr__(self) -> str:
+        values = ", ".join(f"{field}={getattr(self, field)!r}" for field in self._fields)
+        return f"{type(self).__name__}({values})"
+
+    def __eq__(self, other: object) -> bool:
+        if type(self) is not type(other):
+            return False
+        return bytes.__eq__(self, other)
+
+    __hash__ = bytes.__hash__
 
 
-class ExactSamePacketDependencyEdge(NamedTuple):
+class ExactPacketOutputNode(_FrozenGraphLeaf):
+    """One exact packet output node with its non-authoritative output-family fact.
+
+    The record is canonical-byte-backed so unsupported ordinary JSON transport fails
+    closed instead of silently positionalizing the named fields.
+    """
+
+    _fields = ("output_ref", "category")
+
+    def __new__(cls, output_ref: str, category: str):
+        return cls._from_mapping({"output_ref": output_ref, "category": category})
+
+    @property
+    def output_ref(self) -> str:
+        value = self._plain()["output_ref"]
+        if not isinstance(value, str):
+            raise TypeError("frozen Decision 016 node output_ref is not a string")
+        return value
+
+    @property
+    def category(self) -> str:
+        value = self._plain()["category"]
+        if not isinstance(value, str):
+            raise TypeError("frozen Decision 016 node category is not a string")
+        return value
+
+
+class ExactSamePacketDependencyEdge(_FrozenGraphLeaf):
     """One exact declared packet-local dependency edge.
 
     The direction is ``required_output_ref -> dependent_output_ref``. The edge is a
     declaration fact only; it is not an execution timestamp, scheduler decision, or
-    acceptance result.
+    acceptance result. Its named direction is stored in canonical bytes so unsupported
+    ordinary JSON transport fails closed instead of converting it to an unlabeled array.
     """
 
-    required_output_ref: str
-    dependent_output_ref: str
+    _fields = ("required_output_ref", "dependent_output_ref")
+
+    def __new__(cls, required_output_ref: str, dependent_output_ref: str):
+        return cls._from_mapping(
+            {
+                "required_output_ref": required_output_ref,
+                "dependent_output_ref": dependent_output_ref,
+            }
+        )
+
+    @property
+    def required_output_ref(self) -> str:
+        value = self._plain()["required_output_ref"]
+        if not isinstance(value, str):
+            raise TypeError("frozen Decision 016 edge required_output_ref is not a string")
+        return value
+
+    @property
+    def dependent_output_ref(self) -> str:
+        value = self._plain()["dependent_output_ref"]
+        if not isinstance(value, str):
+            raise TypeError("frozen Decision 016 edge dependent_output_ref is not a string")
+        return value
 
 
-class ExactStronglyConnectedComponent(NamedTuple):
+class ExactStronglyConnectedComponent(_FrozenGraphLeaf):
     """One deterministic SCC over exact packet-output refs.
 
     ``has_cycle`` is a topology fact only. A singleton has a cycle exactly when its node
-    has an explicit self-edge.
+    has an explicit self-edge. The named leaf representation is canonical-byte-backed so
+    unsupported ordinary JSON transport fails closed rather than losing field meaning.
     """
 
-    member_refs: tuple[str, ...]
-    has_cycle: bool
+    _fields = ("member_refs", "has_cycle")
+
+    def __new__(cls, member_refs: tuple[str, ...], has_cycle: bool):
+        return cls._from_mapping(
+            {"member_refs": list(member_refs), "has_cycle": has_cycle}
+        )
+
+    @property
+    def member_refs(self) -> tuple[str, ...]:
+        value = self._plain()["member_refs"]
+        if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+            raise TypeError("frozen Decision 016 SCC member_refs is not a string array")
+        return tuple(value)
+
+    @property
+    def has_cycle(self) -> bool:
+        value = self._plain()["has_cycle"]
+        if not isinstance(value, bool):
+            raise TypeError("frozen Decision 016 SCC has_cycle is not boolean")
+        return value
 
 
 class ResolvedPacketSamePacketDependencyGraph(NamedTuple):
@@ -61,6 +163,11 @@ class ResolvedPacketSamePacketDependencyGraph(NamedTuple):
     exact-ref-lexically-tiebroken witness that satisfies the declared edge relation; it is
     not historical chronology, scheduler authority, required production order, or packet
     acceptance authority.
+
+    Decision 016 named graph leaves are canonical-byte-backed. Unsupported ordinary JSON
+    transport therefore rejects them rather than silently erasing node/edge/SCC field
+    names. The aggregate remains an in-process read-only projection, not a transport
+    contract or durable integration object.
     """
 
     packet_ref: str
@@ -279,6 +386,10 @@ def preflight_same_packet_dependency_graph(
     Exact self-edges and strongly connected components are preserved as topology facts.
     Cyclic graphs expose no topological witness. Acyclic graphs expose one exact-ref-
     lexically-tiebroken witness only; that witness is not execution history or policy.
+
+    Named graph leaves use canonical-byte-backed immutable representations. Unsupported
+    ordinary JSON transport rejects them rather than silently converting named records to
+    positional arrays. This is proof-to-use continuity, not a new serialized graph format.
 
     Base-only and external/unclassified dependencies remain available through the nested
     Decision 015 ``dependency_context`` and create no packet-local edge.
