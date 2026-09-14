@@ -1,148 +1,137 @@
 # Current Stage 4 Sequencing Overlay
 
 Date: 2026-09-14
-Current canonical base inspected by Lane 01: **`391cc0dcc77f2a16b04f93ea51d4082d114260cc`**
+Current canonical main after Lane 01 integration: **`ae2a4171dac0c6bb56b86ac11fc4b987924b4a94`**
 Current stage: **Stage 4 — claim / occupancy / return lifecycle**
-Current bounded gate: **Decision 022 — Exact Source Runtime Capability Facts**
-Current disposition: **HOLD on ADV-057-A. Lane 02's bounded Decision 022 implementation has a directly observed green baseline, but Lane 03 independently demonstrated one narrow failure-semantics counterexample for an existing regular bundled schema containing invalid UTF-8. Decision 022 must not be integrated until Lane 02 repairs only that context-error boundary and Lane 03 reruns the unchanged adversarial oracle successfully.**
+Current canonical source gate: **Decision 022 — Exact Source Runtime Capability Facts**
+Current bounded research gate: **Decision 021 — Source Observation Boundary / observation-context identity**
+Current disposition: **Decision 022 is canonical on its bounded no-target-I/O runtime-capability surface. Actual exact-source target observation remains held. Lane 01 must first finish the Decision 021 observation-context / re-execution research boundary; Lane 02 must not implement a target observer yet.**
 
-This file is the current sequencing pointer. Earlier detailed overlays, Decisions 020–022, specialist return packets, commits, and failed/successful CI evidence remain historical evidence and are **not invalidated or rewritten** by this shorter current overlay. `coordination/CURRENT_WAVE.md` remains historical chronology and must not override newer repository state.
+This file is the current sequencing pointer. Earlier overlays, failed and successful specialist runs, Decisions 020–022, and return packets remain historical evidence and are not invalidated or rewritten by this update. `coordination/CURRENT_WAVE.md` remains historical chronology and must not override newer repository state.
 
-## Preserved source-declaration boundary
+## Canonical Decision 022 boundary
 
-Decision 020 remains canonical with exactly four typed source declaration classes for new artifact/evidence versions:
+Decision 022 now provides a deterministic fact for one exact Decision 020 `exact_axm_object` declaration occurrence:
 
-- `opaque_label`;
-- `exact_axm_object`;
-- `content_address`;
-- `locator`.
+- exact containing-object identity;
+- exact declaration key;
+- exact authored target `object_ref`;
+- parsed target kind;
+- `runtime_capability = supported | unsupported_kind` for the fixed bundled kernel schema context only.
 
-Historical `source_refs[]` strings retain their authored opaque meaning. Declaration occurrence identity remains:
+The projection performs no target source-object lookup. `supported` establishes only that this bundled runtime has a valid interpretation contract for the target kind. It does not establish target existence, availability, retrieval, integrity, provenance causality, trust, relevance, completeness, closure, acceptance, integration, epoch completion, or replay correctness.
 
-`exact containing object identity + declaration key`.
+Missing inferred bundled schema remains `unsupported_kind`. An inferred bundled schema that exists but is non-regular, unreadable, undecodable, unparsable, or invalid fails closed through `SourceRuntimeCapabilityContextError`; it is not relabelled as unsupported or source corruption.
 
-A declaration establishes target identity syntax only at its class's bounded strength. It does not establish target existence, retrieval, integrity, causal provenance, trust, relevance, completeness, closure, acceptance, integration, epoch completion, or replay correctness.
+Custom/mutable schema directories remain outside Decision 022.
 
-Decision 021 remains a research hold on actual exact-target observation. Runtime capability, target availability/corruption, and mutable observation-context/re-execution standing remain separate facts.
+## Preserved evidence chain
 
-## Lane 02 PR #101 — baseline green, not integrated
+### Historical green baseline
 
-PR #101 (`Lane 02: exact source runtime capability facts`) implements Decision 022 only on canonical base `391cc0dcc77f2a16b04f93ea51d4082d114260cc`.
+Before the adversarial counterexample, Lane 02 had a directly observed green baseline for the bounded implementation: **431/431 deterministic tests passed** plus explicit compile. That result remains valid for its exact candidate but did not override later red evidence.
 
-Exact semantic/test head:
+### Historical ADV-057-A red evidence
 
-`4e4f2f3d93eb77c8745074654a9fb95dceb67814`
+Lane 03 then demonstrated that an existing regular bundled schema containing invalid UTF-8 leaked raw `UnicodeDecodeError` instead of the dedicated Decision 022 capability-context failure. ADV-057-B through F passed while ADV-057-A errored; later full-suite and compile stages were correctly skipped. This red result remains historical truth for its exact pre-repair candidate.
 
-Final branch head after documentation-only return packet:
+### Lane 02 bounded repair
 
-`ba07d3feba8269c00c2444e0c44550f09c01e461`
+Lane 02 repaired only the demonstrated failure-normalization boundary. Exact repaired test-bearing head:
 
-Directly inspected native PR merge candidate:
+`b4aeafc236d4abb426bbd0bd78ca4780675fabab`
 
-`a600e385fe5ad170df88f8ed2d35214aeebf12ce`
+Fresh-main PR merge candidate tested:
 
-GitHub Actions run/job:
+`a78ff60a4dd2721e24ab0eedd6b3f9e8f7ff896b`
 
-`34827117857` / `103921717936`
+Run/job:
 
-Observed results:
+`34832341654` / `103938318383`
 
-- Python 3.12.14 / jsonschema 4.26.0;
-- preserved ADV-054/ADV-055 oracle: **6/6 passed**;
-- complete deterministic discovery: **431/431 passed, 0 failures, 0 errors** in 481.470s;
-- all 14 new Decision 022 regressions passed within that discovery;
+Directly observed on Ubuntu 24.04.5 / Python 3.12.14 / jsonschema 4.26.0:
+
+- preserved Decision 020 ADV-054/055: **6/6 passed**;
+- unchanged ADV-057-A through F: **6/6 passed**;
+- full deterministic discovery: **437/437 passed, 0 failures, 0 errors** in 383.638s;
 - explicit enumerated `py_compile`: **passed**;
-- complete job: **success**.
+- complete native job: **success**.
 
-The bounded implementation preserves exact containing-object identity plus exact declaration-key occurrence, exact target ref/kind, and only `runtime_capability = supported | unsupported_kind`. It accepts no source store, resolver, custom schema directory, ambient observation context, or target path parameter and does not load the declared source target.
+The repair only extends the local Decision 022 bundled-capability wrapper so Unicode decode failures normalize through `SourceRuntimeCapabilityContextError`. It does not change shared schema-loader semantics or open source target I/O.
 
-This baseline remains valid evidence for that exact candidate. It is **not** sufficient for integration after the newer ADV-057-A counterexample.
+### Lane 03 independent unchanged-oracle recheck
 
-## Lane 03 PR #102 — ADV-057-A red blocker
+Lane 03 branched from the exact repaired head and preserved the ADV-057 oracle byte-for-byte (blob `d5a855e9883d1ed42df39379f3ab8b34126477be`). Exact independent test head:
 
-PR #102 (`Lane 03: adversarially verify Decision 022 capability context`) is stacked on PR #101 and changes only the adversarial test/workflow/return-packet surface for this attack.
+`9a881a433b1973a893b6d8501cd39b93c79de4b9`
 
-Exact adversarial test/workflow head:
+Exact PR merge candidate tested:
 
-`caf8f8e1b8befc5cffad25aef981d8c801a05b6d`
+`4c709c088eaa1babcbcaad17ed4daf32120f22b4`
 
-Final branch head after return packet:
+Run/job:
 
-`f3f30fcc6c9f9be37adff2212bbe39a1685aad0d`
+`34833589216` / `103942279133`
 
-Exact tested merge candidate:
+Directly observed on the same demonstrated runtime family:
 
-`5e8d7df3193113b399a3ce60d4c133459d1109e9`
+- Decision 020 ADV-054/055: **6/6 passed**;
+- unchanged ADV-057-A through F: **6/6 passed**;
+- full deterministic discovery: **437/437 passed, 0 failures, 0 errors** in 298.555s;
+- explicit enumerated `py_compile`: **passed**;
+- complete native job: **success**.
 
-GitHub Actions run/job:
+No production Python, schema, fixture, or ADV-057 oracle was changed by Lane 03 to obtain this result. Its branch-only workflow allowlist entry is not itself institutional semantics.
 
-`34828726747` / `103926751207`
+### Canonical integration
 
-Directly observed results:
+Lane 01 squash-merged PR #101 as:
 
-- preserved ADV-054/ADV-055: **6/6 passed**;
-- ADV-057-A through F: **6 ran; 5 passed; ADV-057-A errored**;
-- ADV-057-B/C/D/E/F passed;
-- full deterministic discovery: **skipped after focused failure**;
-- explicit compile: **skipped after focused failure**.
+`ae2a4171dac0c6bb56b86ac11fc4b987924b4a94`
 
-### Exact blocker
+The four-root integration disposition is therefore:
 
-ADV-057-A supplies an **existing regular bundled** `artifact.schema.json` whose bytes are invalid UTF-8. Decision 022 already requires existing unreadable/invalid bundled schema state to fail closed as a dedicated runtime capability-context failure.
+- **Truth:** preserve the exact sequence green baseline → red counterexample → bounded repair → independent unchanged-oracle green recheck. No later green run erases the red history.
+- **Agency / non-domination:** Lane 02, Lane 03, Lane 01, founder identity, CI success, branch order, and Git permission are evidence/execution facts, not constitutional authority.
+- **Continuity:** exact declaration occurrence identity, bounded failure semantics, exact heads, merge candidates, runs, and specialist handoffs are durable outside private chat.
+- **Wisdom before speed:** integrate only the no-target-I/O capability fact and keep actual source observation held until its context/re-execution meaning is grounded.
 
-The implementation instead leaks raw:
+## Decision 021 research finding after Decision 022
 
-`UnicodeDecodeError`
+Inspection of the current `FilesystemObjectStore` establishes a useful boundary:
 
-through:
+1. `load_bytes(reference)` and `load(reference)` use exact `axmref:v1` identity and, on success, verify stored raw bytes against canonical schema validation and the requested immutable reference.
+2. The filesystem **store root is mutable runtime state**. A path label does not become immutable context identity merely because exact object names beneath it are content-addressed.
+3. `ObjectNotFoundError` therefore means only that the exact object was not present in the inspected store context at that observation. It cannot truthfully mean global nonexistence.
+4. `ObjectCorruptionError` means the bytes found at that exact path failed the exact identity contract in that inspected context. It is not a trust or acceptance verdict.
+5. A successful observation can later be replayed from retained verified bytes if those bytes are made part of a future explicit observation record, but the current kernel has **no durable immutable identity for the live store context itself**.
+6. A negative live-store observation cannot be honestly claimed re-executable later against the same state unless a later contract snapshots or otherwise immutably identifies that observation context.
 
-`project_exact_source_runtime_capability(...)`
-→ `_bundled_runtime_capability(...)`
-→ `_identity.load_schema(...)`
-→ `Path.read_text(encoding="utf-8")`.
-
-This is a narrow runtime-context failure-normalization defect. It is **not** evidence that the declared source target is absent, corrupt, untrusted, irrelevant, incomplete, rejected, or non-canonical.
-
-The earlier draft adversarial idea that treated an entirely missing schema root as context failure was corrected before blocker disposition. Under Decision 022, absence of the inferred bundled schema file remains `unsupported_kind`; the demonstrated blocker concerns an **existing but unreadable** schema.
-
-## Integration disposition
-
-Do **not** merge PR #101 while ADV-057-A is unresolved.
-
-Do **not** merge PR #102's red stacked adversarial branch as canonical production history.
-
-Do **not** implement the repair in Lane 01 while Lane 02 owns the bounded production lane.
-
-Green CI, Git mergeability, lane role, founder identity, schedule order, or technical permission do not override the demonstrated counterexample. The four AXM roots remain the internal constitutional merge gate.
+This is research only. No source observer, snapshot manifest, retained-byte object, resolver, or observation-result schema is authorized by this overlay.
 
 ## Active lane boundaries
 
-### Lane 01 — sequencing / integration
+### Lane 01 — current owner
 
-Hold Decision 022. Preserve both the 431/431 baseline and ADV-057-A red evidence. Review integration only after an exact Lane 02 repaired candidate and unchanged independent Lane 03 green rerun exist. Do not open actual target observation, source resolution, integrity, trust, closure, Stage 5, epochs, or replay in parallel.
+Finish the Decision 021 research question around observation-context identity and replay/re-execution standing. The next durable research packet should compare at least:
 
-### Lane 02 — smallest repair owner
+- immutable/snapshot-like observation context;
+- retained verified bytes for positive exact observations;
+- explicit context-bound/non-reexecution standing for missing/corrupt live-store observations.
 
-Repair **only** Decision 022's existing-bundled-schema failure boundary so an existing unreadable/undecodable bundled schema fails through `SourceRuntimeCapabilityContextError` rather than leaking a lower-level decode/read exception.
+It must identify the smallest universal contract that does not make a mutable filesystem path, process identity, host, actor, recency, CI run, or Git state into source authority.
 
-Preserve all current semantics:
+### Lane 02 — held
 
-- missing inferred bundled schema file → `unsupported_kind`;
-- existing readable valid bundled schema → `supported`;
-- existing non-regular/unreadable/unparsable/invalid bundled schema → fail closed as runtime capability-context failure;
-- no target source object I/O;
-- no custom/ambient schema context;
-- no resolver, availability, integrity, trust, closure, acceptance, Stage 5, epoch, or replay semantics.
+Do not implement target availability/retrieval observation until Lane 01 opens a later numbered implementation decision. Preserve Decision 022 and its regression suite unchanged.
 
-Then run unchanged ADV-054/055, unchanged ADV-057-A through F, the full deterministic suite, and explicit compile. Leave exact heads/run evidence in a durable return packet.
+### Lane 03 — available for attack
 
-### Lane 03 — independent recheck after repair
-
-Rerun ADV-057-A through F **unchanged** against Lane 02's exact repaired head. If green, run full deterministic discovery and explicit compile. Preserve any new counterexample rather than weakening the oracle after seeing the repair.
+Preserve ADV-057 unchanged as regression evidence. Attack the next bounded observation decision only after Lane 01 opens it durably. Priority future attacks include mutable-context laundering, negative-observation globalisation, retained-byte provenance laundering, hidden locator fallback, occurrence collapse, and observation→trust/closure/acceptance authority.
 
 ## Still explicitly unresolved
 
-- immutable/snapshot-like source observation context identity or an explicit non-reexecution limitation;
+- immutable/snapshot-like source observation context identity versus an explicit non-reexecution limitation;
 - exact target availability/existence observation;
 - source loading/retrieval semantics and retained bytes;
 - digest/integrity verification and retained integrity evidence;
@@ -168,9 +157,6 @@ Rerun ADV-057-A through F **unchanged** against Lane 02's exact repaired head. I
 - stronger filesystem durability/concurrency evidence;
 - hostile same-process code isolation beyond the trusted deterministic runtime boundary.
 
-## Four-root gate
+## Stop rule for the next activation
 
-- **Truth:** the earlier 431/431 baseline remains true for its exact candidate, and the later ADV-057-A failure remains true for its exact candidate; neither erases the other.
-- **Agency / non-domination:** no actor, lane, founder, CI result, branch, schedule position, runtime host, or Git permission gains authority over the demonstrated evidence.
-- **Continuity:** exact heads, merge candidates, runs, failure semantics, lane ownership, and downstream hold are now recoverable from repository state rather than private chat.
-- **Wisdom before speed:** repair the demonstrated context-error boundary and independently recheck it before integrating Decision 022 or opening actual source observation.
+Do not open a target-observation implementation merely because Decision 022 is green and canonical. First make the observation context and re-execution claim explicit enough that a replacement occupant can distinguish recorded institutional replay from literal re-execution of a mutable live store.
