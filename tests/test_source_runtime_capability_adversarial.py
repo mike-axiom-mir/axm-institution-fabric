@@ -61,16 +61,16 @@ def project(value: dict, key: str):
 
 
 class Decision022AdversarialContinuityTests(unittest.TestCase):
-    def test_adv057_a_missing_bundled_schema_context_is_not_unsupported_kind(self):
-        """A broken bundled context must not masquerade as lack of support for a kind."""
+    def test_adv057_a_invalid_utf8_bundled_schema_is_context_failure(self):
+        """An existing undecodable bundled schema must fail through the dedicated context error."""
 
         artifact = typed_artifact({"source": exact_declaration(SUPPORTED_TARGET)})
         with tempfile.TemporaryDirectory() as tmp:
-            missing_bundled_root = Path(tmp) / "missing-bundled-schema-root"
-            self.assertFalse(missing_bundled_root.exists())
+            bundled_root = Path(tmp)
+            (bundled_root / "artifact.schema.json").write_bytes(b"\xff")
             with mock.patch(
                 "axm_institution.source_runtime_capability.BUNDLED_SCHEMA_DIR",
-                missing_bundled_root,
+                bundled_root,
             ):
                 with self.assertRaises(SourceRuntimeCapabilityContextError):
                     project(artifact, "source")
