@@ -27,6 +27,7 @@ on:
       - "lane-02/activation-38-reachable-dependency-frontier"
       - "lane-02/activation-39-source-ref-compatibility-baseline"
       - "lane-02/activation-41-typed-source-declaration-contract"
+      - "lane-02/activation-47-decision022-canonical-hold"
       - "lane-03/activation-032-modified-artifact-identity"
       - "lane-03/activation-033-modified-result-compatibility"
       - "lane-03/activation-034-mixed-packet-compatibility"
