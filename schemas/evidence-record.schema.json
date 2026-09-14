@@ -16,7 +16,7 @@
     "source_refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true, "default": []},
     "source_declarations": {
       "type": "object",
-      "propertyNames": {"pattern": "^[a-z0-9][a-z0-9._-]*$"},
+      "propertyNames": {"pattern": "^[a-z0-9][a-z0-9._-]*(?![\\s\\S])"},
       "additionalProperties": {"type": "object"}
     },
     "notes": {"type": "array", "items": {"type": "string"}, "default": []}
