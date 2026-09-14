@@ -271,6 +271,8 @@ def validate_instance(
     exact_fields = _EXACT_REFERENCE_FIELDS.get(schema_name)
     if exact_fields:
         _validate_exact_reference_fields(value, schema_name, exact_fields)
+    if schema_name in {"artifact.schema.json", "evidence-record.schema.json"}:
+        _validate_typed_source_declarations(value, schema_name, schema_dir)
     return value
 
 
@@ -386,6 +388,69 @@ def parse_immutable_ref(reference: str) -> ImmutableRef:
     if str(parsed) != reference:
         raise ImmutableReferenceError("reference is not in canonical form")
     return parsed
+
+
+def _validate_typed_source_declarations(
+    value: Mapping[str, Any],
+    schema_name: str,
+    schema_dir: Path | None = None,
+) -> None:
+    """Validate Decision 020 typed source declarations without resolving targets.
+
+    Declaration keys remain occurrence-local to the exact containing object. Sorting is
+    used only to make validation error selection deterministic; it grants no priority,
+    chronology, trust, pairing, or selection authority. Exact AXM target declarations
+    reuse the Stage 2 parser but are deliberately not exact-loaded here.
+    """
+
+    if schema_name == "artifact.schema.json":
+        provenance = value.get("provenance")
+        if not isinstance(provenance, Mapping):
+            return
+        declarations = provenance.get("source_declarations")
+        location_prefix = "$.provenance.source_declarations"
+    else:
+        declarations = value.get("source_declarations")
+        location_prefix = "$.source_declarations"
+
+    if declarations is None:
+        return
+    if not isinstance(declarations, Mapping):
+        return
+
+    declaration_schema = load_schema("source-declaration.schema.json", schema_dir)
+    validator = Draft202012Validator(
+        declaration_schema,
+        format_checker=FormatChecker(),
+    )
+
+    for declaration_id in sorted(declarations.keys(), key=_scalar_key):
+        declaration = declarations[declaration_id]
+        errors = sorted(
+            validator.iter_errors(declaration),
+            key=lambda err: list(err.absolute_path),
+        )
+        if errors:
+            err = errors[0]
+            suffix = "".join(
+                f"[{segment}]" if isinstance(segment, int) else f".{segment}"
+                for segment in err.absolute_path
+            )
+            raise ContractValidationError(
+                f"{schema_name} typed source validation failed at "
+                f"{location_prefix}.{declaration_id}{suffix}: {err.message}"
+            )
+
+        if declaration.get("source_class") != "exact_axm_object":
+            continue
+        reference = declaration.get("object_ref")
+        try:
+            parse_immutable_ref(reference)
+        except IdentityError as exc:
+            raise ContractValidationError(
+                f"{schema_name} typed source validation failed at "
+                f"{location_prefix}.{declaration_id}.object_ref: {exc}"
+            ) from exc
 
 
 def _validate_state_revision_member_refs(value: Mapping[str, Any]) -> None:
