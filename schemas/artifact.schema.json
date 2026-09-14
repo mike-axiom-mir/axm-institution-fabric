@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://axm.local/schemas/institution/artifact.schema.json",
   "title": "AXM Institution Fabric Artifact",
-  "description": "Typed continuation-relevant output with explicit version, provenance, evidence, and dependencies. Schema v0.1 preserves the historical logical provenance-base string; v0.2 adds an exact immutable state-revision work-base reference; v0.3 preserves that exact work-base contract and gives dependency_refs an exact immutable artifact-reference meaning.",
+  "description": "Typed continuation-relevant output with explicit version, provenance, evidence, and dependencies. Schema v0.1 preserves the historical logical provenance-base string; v0.2 adds an exact immutable state-revision work-base reference; v0.3 preserves that exact work-base contract and gives dependency_refs an exact immutable artifact-reference meaning; v0.4 preserves v0.3 dependency/base semantics while replacing historical opaque source_refs with Decision 020 typed source_declarations.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -20,7 +20,8 @@
       "enum": [
         "0.1",
         "0.2",
-        "0.3"
+        "0.3",
+        "0.4"
       ]
     },
     "id": {
@@ -66,6 +67,15 @@
           },
           "uniqueItems": true,
           "default": []
+        },
+        "source_declarations": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z0-9][a-z0-9._-]*$"
+          },
+          "additionalProperties": {
+            "type": "object"
+          }
         }
       }
     },
@@ -119,8 +129,9 @@
               "base_state_revision"
             ],
             "not": {
-              "required": [
-                "base_state_revision_ref"
+              "anyOf": [
+                {"required": ["base_state_revision_ref"]},
+                {"required": ["source_declarations"]}
               ]
             }
           }
@@ -145,8 +156,9 @@
               "base_state_revision_ref"
             ],
             "not": {
-              "required": [
-                "base_state_revision"
+              "anyOf": [
+                {"required": ["base_state_revision"]},
+                {"required": ["source_declarations"]}
               ]
             }
           }
@@ -171,8 +183,43 @@
               "base_state_revision_ref"
             ],
             "not": {
-              "required": [
-                "base_state_revision"
+              "anyOf": [
+                {"required": ["base_state_revision"]},
+                {"required": ["source_declarations"]}
+              ]
+            }
+          },
+          "dependency_refs": {
+            "items": {
+              "type": "string",
+              "pattern": "^axmref:v1:artifact:[^:]+:(?:-|v=[^:]+):sha256:[0-9a-f]{64}(?![\\s\\S])"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "0.4"
+          }
+        },
+        "required": [
+          "schema_version"
+        ]
+      },
+      "then": {
+        "properties": {
+          "provenance": {
+            "required": [
+              "base_state_revision_ref",
+              "source_declarations"
+            ],
+            "not": {
+              "anyOf": [
+                {"required": ["base_state_revision"]},
+                {"required": ["source_refs"]}
               ]
             }
           },
