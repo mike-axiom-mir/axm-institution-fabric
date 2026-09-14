@@ -211,6 +211,21 @@ class TypedSourceDeclarationTests(unittest.TestCase):
         artifact = typed_artifact({"missing-but-declared": declaration})
         self.assertEqual(artifact, validate_instance(artifact, "artifact.schema.json"))
 
+    def test_exact_axm_object_accepts_canonical_unregistered_kind_without_runtime_support(self):
+        declaration = {
+            "source_class": "exact_axm_object",
+            "object_ref": (
+                "axmref:v1:future-source-kind.unregistered:source.future:v=1:sha256:"
+                + "e" * 64
+            ),
+        }
+        for schema_name, candidate in (
+            ("artifact.schema.json", typed_artifact({"future-kind": copy.deepcopy(declaration)})),
+            ("evidence-record.schema.json", typed_evidence({"future-kind": copy.deepcopy(declaration)})),
+        ):
+            with self.subTest(schema=schema_name):
+                self.assertEqual(candidate, validate_instance(candidate, schema_name))
+
     def test_content_address_is_bounded_to_sha256_lowercase64_raw_bytes(self):
         good = copy.deepcopy(self.fixture["valid_declarations"]["content"])
         self.assertEqual([], list(self.declaration_validator.iter_errors(good)))
