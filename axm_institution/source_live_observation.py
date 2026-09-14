@@ -335,20 +335,20 @@ def observe_exact_source_live(
     `schema_dir` getter verifies that the instance dictionary still names the function-
     owned snapshot, so both ordinary assignment and direct `__dict__` rebinding fail
     closed when validation tries to consume the interpretation context. Its `load_bytes`
-    data descriptor also prevents a caller-owned instance shadow from becoming proof of a
-    positive observation: a shadow may run and preserve its explicit error behavior, but
-    any shadowed success is followed by the base exact-store read. Its `_verify_existing`
-    data descriptor applies the same rule one layer deeper: any caller-owned instance
-    verifier shadow may run first, but its successful return is never sufficient evidence;
-    the base exact-store verifier must independently read and reproduce the exact immutable
-    identity before `exact_observed` can be emitted. Its `_object_path` data descriptor
-    applies that same bounded rule to object location: a caller-owned exact-instance path
-    shadow may run, but neither its return value nor any store-layer error it raises can
-    establish presence or absence; the supplied store's base exact path independently
-    determines the actual availability/identity check. Unexpected non-store exceptions
-    still fail closed. The temporary copy and guards are not retained and therefore do not
-    create historical snapshot, durable store-root identity, hostile-process isolation, or
-    re-execution standing.
+    data descriptor prevents a caller-owned instance shadow from becoming proof of either
+    presence or absence: the shadow may run, but store-layer errors from it are not
+    observation evidence, and the base exact-store read still independently decides. Its
+    `_verify_existing` data descriptor applies the same rule one layer deeper: any caller-
+    owned instance verifier shadow may run first, but its successful return is never
+    sufficient evidence; the base exact-store verifier must independently read and
+    reproduce the exact immutable identity before `exact_observed` can be emitted. Its
+    `_object_path` data descriptor applies that same bounded rule to object location: a
+    caller-owned exact-instance path shadow may run, but neither its return value nor any
+    store-layer error it raises can establish presence or absence; the supplied store's
+    base exact path independently determines the actual availability/identity check.
+    Unexpected non-store exceptions still fail closed. The temporary copy and guards are
+    not retained and therefore do not create historical snapshot, durable store-root
+    identity, hostile-process isolation, or re-execution standing.
     """
 
     if type(store) is not FilesystemObjectStore:
@@ -414,7 +414,13 @@ def observe_exact_source_live(
 
                 def verified_load(reference: str, schema_name: str | None = None) -> bytes:
                     if caller_dispatch is not None:
-                        caller_dispatch(reference, schema_name)
+                        try:
+                            caller_dispatch(reference, schema_name)
+                        except ObjectStoreError:
+                            # Caller-owned load dispatch remains observable, but its
+                            # store-layer classification is not evidence about this store.
+                            # The base exact-store read below independently decides.
+                            pass
                     return FilesystemObjectStore.load_bytes(self, reference, schema_name)
 
                 return verified_load
