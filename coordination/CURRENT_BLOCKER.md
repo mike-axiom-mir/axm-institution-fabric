@@ -1,84 +1,90 @@
 # Current Stage 4 Sequencing Overlay
 
 Date: 2026-09-14
-Canonical `main` before this overlay: `2e8f91f78ebf03b8b7cba58dfe2bdb8f38b485e9`
+Canonical `main` before this overlay: `9ddcbff747a516dc1f1048cc71e5fc7dff43138a`
 Current stage: **Stage 4 — claim / occupancy / return lifecycle**
-Current bounded gate: **Decision 018 — Exact Reachable Dependency Frontier Facts**
-Current disposition: **Decision 017 is canonical on the demonstrated bounded Python v0 read-only reachability surface. Open only the next factual dependency-boundary projection; do not open admissibility, satisfaction, closure, acceptance, Stage 5 integration, epochs, or replay.**
+Current bounded gate: **Decision 019 — Source Provenance Taxonomy Research Gate**
+Current disposition: **Decision 018 is canonical on the demonstrated bounded Python v0 read-only reachable dependency-frontier surface. Do not open source-provenance implementation yet; research the universal source taxonomy and migration boundary first.**
 
-`coordination/CURRENT_WAVE.md` remains historical chronology. This file is the current-state overlay and must be read with the numbered decisions and durable specialist return packets.
+`coordination/CURRENT_WAVE.md` remains historical chronology. This file is the current-state overlay and must be read with the numbered decisions, the Decision 018 canonical integration addendum, and durable specialist return packets.
 
 ## What is now canonical
 
-The bounded Python v0 kernel canonically demonstrates the previously grounded exact identity, immutable-store, lifecycle, packet, evidence-subject, compatibility, provenance, modification, mixed-output, dependency-identity, dependency-context-membership, and same-packet graph surfaces, plus **Decision 017 exact packet-local dependency reachability facts**.
+The bounded deterministic Python v0 kernel canonically demonstrates the previously grounded exact identity, immutable-store, lifecycle, packet, evidence-subject, compatibility, provenance-base, modification, mixed-output, dependency-identity, dependency-context-membership, same-packet graph, packet-local reachability, and now **Decision 018 exact reachable dependency-frontier facts**.
 
-For every exact packet output, Decision 017 now deterministically exposes:
+Decision 018 reconstructs, for each exact packet output, the exact non-packet dependency declarations reachable through that output's packet-local prerequisite subgraph while preserving exact declaring-output identity, exact dependency target identity, and the independent Decision 015 `in_claim_base` membership fact.
 
-- exact direct packet-local prerequisite refs from incoming Decision 016 `required -> dependent` edges;
-- exact strict-transitive packet-local prerequisite refs for paths of length >= 1;
-- self-reachability only when a real non-empty self/cycle path grounds it;
-- exact-ref lexical presentation without lexical priority;
-- no promotion of claim-base-only or outside/unclassified dependencies into packet-local reachability;
-- no authority from logical id, version, `supersedes_ref`, recency, array/storage order, output family, actor identity, scheduler position, topological witness, or Git permission.
+It does not turn any frontier relation into validity, admissibility, satisfaction, completeness, closure, chronology, acceptance, integration, epoch, or replay authority.
 
-The per-output reachability leaf is canonical-byte-backed and named. Unsupported ordinary Python stdlib JSON transport fails closed rather than silently positionalizing named institutional meaning.
+## Decision 018 integration evidence
 
-## Decision 017 integration evidence
-
-### Lane 02 — PR #78
+### Lane 02 — PR #81
 
 Exact implementation/workflow head:
 
-`7d9eac88734b397b68bb9bd763839c2af7e28f4b`
+`d9fa6488937b2e0b6916477ae8833ea0be11e3bd`
 
-Exact pull-request merge candidate:
+Exact tested pull-request merge candidate:
 
-`b37495633fef8b891df04d633cdc61be1335fd27`
+`6c3afb426fabad6fe1d4d9bff1daa30d3212cf8b`
 
-Native run `34795321386`, job `103827160883`, was independently inspected and directly recorded:
+Native run `34798702894`, job `103836781621`, was directly inspected and recorded:
 
 - Python 3.12.14;
-- **342 / 342 tests passed** in 342.090s;
-- Decision 017 baseline regressions passed;
-- ADV-035 through ADV-050 remained green;
+- **367 / 367 tests passed** in 538.478s;
+- Decision 018 baseline regressions passed;
+- prior integrated regressions remained green;
 - explicit compile succeeded;
 - complete job succeeded.
 
-Lane 02 final head `d017e51f792d91acc26f8414626b921782186e6b` added only its durable return packet after the exact tested implementation/workflow head.
+Lane 02 final head `ef2ec35914a5e3847572cfca2d7f4f0590b05d95` added only its durable return packet after the exact tested implementation head.
 
-PR #78 was integrated with merge commit:
+PR #81 was squash-integrated as:
 
-`94812d89d6a926361c9c41e7e6a5534f8b333dde`
+`9ddcbff747a516dc1f1048cc71e5fc7dff43138a`
 
-### Lane 03 — PR #79 / ADV-051
+The canonical merge commit and Lane 02 final head have the same tree SHA, so no final branch content was silently rewritten by the squash integration.
 
-The first Lane 03 attempt is preserved as red evidence: run `34796316580`, job `103830006547`, failed during deterministic unittests and skipped compile. Review found an over-strict adversarial copy oracle; Lane 03 corrected only the oracle to the already-grounded **reject or preserve exact meaning** rule. No production code changed in response.
+### Lane 03 — ADV-052 and fresh canonical-main recheck
 
-Exact corrected adversarial head:
+Lane 03's first ADV-052 run is preserved as red evidence: 379 tests ran, exactly ADV-052-A failed, and compile was skipped. The failure was an adversarial presentation-order oracle error; Lane 03 corrected only the test oracle and did not change Decision 018 production semantics.
 
-`8eeb641218f52dabceff3207f661fdaa9a7415a4`
+Corrected exact Lane 03 head:
 
-Exact corrected PR merge candidate:
+`61cb120dda523315ea58330adb7d7dbd362ca327`
 
-`189c527a0889b94b2de259bc9af344bea4717009`
+Corrected stacked native run `34799578083`, job `103839341301`, recorded:
 
-Native run `34796704131`, job `103831094736`, was independently inspected and directly recorded:
-
-- Python 3.12.14;
-- **352 / 352 tests passed** in 538.405s;
-- ADV-051-A through J all passed;
+- **379 / 379 tests passed** in 403.563s;
+- ADV-052-A through L all passed;
 - explicit compile succeeded;
 - complete job succeeded.
 
-ADV-051 covers diamond/multi-hop preservation, edge direction under hostile lexical order, cycles with upstream prerequisites, sibling non-laundering, sequential parallel-packet isolation, topological-witness non-authority, duplicate-node fail-closed behavior, named proof-to-use transport, aggregate transport boundary, and absence of accidental policy/lifecycle authority.
+Because PR #82 was stacked on Lane 02's pre-squash ancestry, it was not merged after PR #81. Lane 01 created fresh canonical-main PR #83 containing only the exact Lane 03 workflow/test evidence and durable return packet.
 
-After Decision 017 integration, PR #79 was retargeted to `main`; the remaining diff contained only workflow coverage, ADV-051 tests, and the durable Lane 03 return packet. It was integrated as:
+Fresh canonical-main test-bearing head:
 
-`2e8f91f78ebf03b8b7cba58dfe2bdb8f38b485e9`
+`067f96e9ee79b09c08e8cf9e25bbca352dd31ad2`
 
-## Decision 017 truth boundary
+Fresh exact PR merge candidate:
 
-Decision 017 is canonical only for exact packet-local direct/transitive reachability on the demonstrated Python in-process boundary.
+`f89d31825f5a541694f6497719af642e0e58c81c`
+
+Native run `34801146677`, job `103843914470`, directly recorded:
+
+- Python 3.12.14;
+- **379 / 379 tests passed** in 342.949s;
+- ADV-052-A through L all passed;
+- explicit compile including Decision 018 production, baseline tests, and ADV-052 succeeded;
+- complete job succeeded.
+
+Later PR #83 commits in this activation are coordination/documentation only unless separately evidenced.
+
+The Decision 018 canonical integration addendum preserves the exact bounded meaning, successful evidence, first red oracle history, and downstream exclusions.
+
+## Decision 018 truth boundary
+
+Decision 018 is canonical only for exact reachable non-packet dependency-frontier facts on the demonstrated Python v0 in-process boundary.
 
 It does **not** establish:
 
@@ -87,97 +93,70 @@ It does **not** establish:
 - declaration completeness or dependency closure;
 - actual production timestamps or execution chronology;
 - scheduler order;
-- whether same-packet, claim-base, outside/unclassified, self, or cyclic dependencies are permitted;
+- source-provenance identity, quality, or closure;
+- evidence quality/precedence/invalidation/closure;
 - packet acceptance/rejection;
 - claim closure;
 - successor state publication;
 - Stage 5 integration correctness;
 - epochs/barriers;
 - replay correctness;
-- supported cross-language graph/reachability transport.
+- supported cross-language frontier transport;
+- exact self/mutual-cycle authorability under the current content-addressed artifact representation.
 
-## Explicit cycle-authorability uncertainty
+## Why the next gate is research, not implementation
 
-Artifact v0.3 exact refs hash canonical artifact bytes that include `dependency_refs[]`. A direct artifact reference to its own final exact ref appears to require a cryptographic fixed point; a mutual exact cycle appears to require mutually recursive fixed points.
+The next unresolved continuity surface is source provenance, but current authored contracts deliberately do not define exact source identity:
 
-Decisions 016–017 prove deterministic graph/reachability behavior **if cyclic exact graph facts are supplied**. Current evidence does not prove the ordinary content-addressed publication path can author exact self/mutual cycles end-to-end. Do not silently turn that representation uncertainty into either a prohibition or a permission rule.
+- `artifact.provenance.source_refs[]` remains an array of arbitrary non-empty strings in artifact schema v0.1, v0.2, and v0.3;
+- `evidence-record.source_refs[]` remains an array of arbitrary non-empty strings in evidence-record schema v0.1;
+- historical valid fixtures already use path-like source strings such as `NEXT_BUILD.md`, `BUILD_PLAN.md`, a coordination decision path, and `fixtures/contracts/valid.json`.
 
-## Next bounded gap — exact reachable dependency frontier
+Those values cannot truthfully be retroactively called immutable exact refs, content-addressed snapshots, retrievable objects, trusted sources, or a closed source set. Syntactic resemblance to an `axmref` would not change their historical contract meaning either.
 
-Decision 017 now makes the packet-local prerequisite subgraph explicit. Decision 015 separately preserves exact dependency declarations and whether each target is in the exact claim-base artifact membership, packet-created outputs, or packet-modified-result outputs.
+Opening a resolver or schema migration before defining the source taxonomy would risk hidden filesystem/network/repository authority and silent historical reinterpretation.
 
-A later consumer would still have to combine those layers itself to answer a simpler factual question:
+## Decision 019 — active research gate
 
-> For an exact output and all of its packet-local prerequisites, which exact declared dependencies leave that reachable packet-output subgraph, who declared them, and were those targets exact members of the claim base?
+Decision 019 authorizes only **source-provenance taxonomy research**.
 
-Leaving that traversal implicit risks omissions, reverse traversal, sibling leakage, anonymous target collapse, or hidden policy before dependency closure is even defined.
+Lane 01 must inventory the current source-bearing surfaces and representative historical values, then propose the smallest universal taxonomy that separates at least:
 
-The next bounded step is therefore **Decision 018 — Exact Reachable Dependency Frontier Facts**.
+- what a source identity names;
+- whether it is retrievable now;
+- whether its bytes/content have integrity evidence;
+- what provenance relation it asserts;
+- quality/trust as a separate question;
+- closure as a separate unopened question;
+- offline/replay behavior;
+- migration/non-reinterpretation of historical opaque strings.
 
-It is still **reachable declaration fact before dependency policy or closure**.
+Candidate categories to evaluate include exact immutable AXM objects, content-addressed non-AXM blobs, repository/file snapshots, external/network sources, assertions without proven retrievability, and unresolved historical opaque strings. The research may reject or combine categories, but must explain why.
 
-For each exact output:
-
-1. scope = that output plus every exact strict-transitive packet-local prerequisite from Decision 017;
-2. inspect the exact Decision 015 dependency declarations for every output in scope;
-3. frontier relations are only declarations whose target is not an exact output of the same packet;
-4. every frontier relation preserves exact `declaring_output_ref`, exact `dependency_ref`, and Decision 015 `in_claim_base`;
-5. outside-claim-base / unclassified targets remain explicit facts, not automatic valid or invalid dependencies;
-6. same-packet dependency targets remain represented by Decisions 016–017 and are not duplicated into frontier authority merely because they may also exist in the claim base;
-7. the same target declared by multiple reachable outputs retains each declaring-output relation.
+No source implementation or schema migration is authorized until a later numbered decision grounds one exact bounded step.
 
 ## Lane boundaries
 
-### Lane 02 — active implementation lane
+### Lane 01 — active research lane
 
-Implement only Decision 018's read-only reachable dependency frontier projection.
+Research and bound the source-provenance taxonomy only. Leave a durable research return packet containing the repository-wide inventory, proposed minimal taxonomy, at least one rejected over-broad alternative, migration rules, offline/replay implications, adversarial cases, and a recommendation whether to open a bounded implementation decision.
 
-Required behavior:
+### Lane 02 — held from source implementation
 
-1. consume `preflight_packet_local_dependency_reachability(...)` as the sole packet-local reachability authority;
-2. consume the nested canonical Decision 015 dependency records rather than reclassifying through another lookup path;
-3. include declarations from the exact output plus all exact strict-transitive packet-local prerequisites;
-4. emit exact named frontier relations with declaring output, dependency target, and `in_claim_base`;
-5. exclude exact same-packet dependency targets from the frontier;
-6. preserve multi-hop and diamond-branch declarations without sibling/dependent leakage;
-7. preserve multiple declaring outputs for the same exact target;
-8. add no logical-id/version/`supersedes_ref`/recency/order/family/witness/current-state authority;
-9. add no `valid`, `allowed`, `satisfied`, `complete`, `closed`, `accepted`, `rejected`, `integrated`, chronology, scheduler, epoch, or replay meaning;
-10. follow the existing reject-or-preserve-named-semantics rule for any new operational named leaves;
-11. keep ADV-035 through ADV-051 green;
-12. stop before admissibility, satisfaction, closure/completeness policy, source/evidence closure, packet acceptance, claim closure, successor publication, Stage 5 integration, epochs, or replay.
+Do not infer or implement source semantics from `source_refs[]`, paths, URLs, Git-like strings, hashes, exact-looking strings, or private chat convention. Wait for a numbered implementation decision with explicit identity strength and migration semantics.
 
-### Lane 03 — adversarial lane
+### Lane 03 — held until concrete taxonomy proposal
 
-Wait for Lane 02's exact tested Decision 018 head, then attack only that frontier projection for:
-
-- reverse/dependent traversal;
-- omitted multi-hop declarations;
-- sibling/unrelated branch leakage;
-- same-packet target promotion into the frontier;
-- loss of declaring-output identity when multiple reachable outputs declare the same target;
-- claim-base membership becoming precedence or automatic validity;
-- outside/unclassified targets being silently accepted/rejected/relabelled;
-- same-logical/high-version/`supersedes_ref`/recency substitution;
-- array/storage/lexical/topological-witness order authority;
-- created/modified-result family precedence;
-- later parallel-packet rebinding;
-- materialization/transport losing named relation meaning;
-- accidental admissibility, satisfaction, closure, chronology, acceptance, integration, epoch, or replay semantics.
-
-### Lane 01 — integration lane
-
-Do not duplicate Decision 018 implementation. Review exact Lane 02 evidence plus Lane 03 attack and integrate only the factual frontier semantics sufficiently grounded under the four roots.
+Do not invent a semantic attack target yet. After Lane 01 publishes a concrete taxonomy proposal, attack identity-strength laundering, hidden resolver/network/path authority, stale or mutable locations, same-label/different-bytes cases, missing sources, conflicting source claims, migration drift, and accidental trust/closure semantics.
 
 ## Still explicitly unresolved
 
-- supported cross-language graph/reachability/frontier transport and any durable protocol;
-- exact self/mutual-cycle authorability through ordinary content-addressed publication;
+- source-provenance taxonomy and exact-source representation, if any;
+- source retrievability, integrity, quality/trust, completeness, and closure;
 - dependency admissibility / allowed-context policy;
 - dependency satisfaction;
 - actual production chronology / scheduler ordering;
 - declaration completeness and dependency closure policy;
-- exact source provenance / `provenance.source_refs[]` taxonomy and closure;
 - evidence method/source quality, precedence, invalidation dominance, and closure;
 - multiple `required_states` semantics;
 - logical lineage and `supersedes_ref` validity;
@@ -188,13 +167,15 @@ Do not duplicate Decision 018 implementation. Review exact Lane 02 evidence plus
 - successor state-revision publication;
 - Stage 5 integration receipts/runtime;
 - epochs/barriers and replay;
+- supported cross-language graph/reachability/frontier/source transport;
 - cross-language reproduction generally;
+- exact self/mutual-cycle authorability through ordinary content-addressed publication;
 - stronger filesystem durability/concurrency evidence;
-- hostile same-process code isolation beyond Decision 009's trusted deterministic runtime boundary.
+- hostile same-process code isolation beyond the trusted deterministic runtime boundary.
 
 ## Four-root gate
 
-- **Truth:** Decision 017 is limited to directly observed 342/342 implementation evidence and 352/352 corrected ADV-051 evidence; the first red adversarial oracle run remains preserved separately.
-- **Agency / non-domination:** no founder, specialist, schedule position, branch ownership, Git permission, version, recency, family, array order, topological witness, or lexical tie-break becomes hidden semantic authority.
-- **Continuity:** current reachability meaning, exact evidence, preserved red history, remaining uncertainty, and the next frontier lane are reconstructable from canonical repository state without private chat memory.
-- **Wisdom before speed:** make the reachable dependency boundary explicit before choosing admissibility, closure/completeness, packet acceptance, Stage 5 integration, epochs, or replay.
+- **Truth:** Decision 018 is limited to directly observed implementation and adversarial evidence; historical source strings remain exactly as weak as their authored contracts say they are.
+- **Agency / non-domination:** no founder, specialist, repository host, filesystem location, resolver, network service, recency rule, parser convention, branch owner, or Git permission gains hidden source authority.
+- **Continuity:** Decision 018 integration, fresh ADV-052 canonical-main evidence, preserved failure history, source ambiguity, and the next research boundary are durable repository state rather than private chat state.
+- **Wisdom before speed:** research the source identity taxonomy before adding source resolution, quality, closure, acceptance, Stage 5 integration, epochs, or replay.
