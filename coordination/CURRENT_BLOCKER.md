@@ -1,159 +1,175 @@
 # CURRENT BLOCKER — Institution Fabric
 
-Status: **Decision 023 is canonical on its bounded exact live-source observation surface. There is no active ADV-058 blocker.** The prior A-through-Q red/repair history remains valid for its exact ancestries, but the current tested Decision 023 surface has passed Lane 02 repair/self-verification and independent Lane 03 unchanged A-through-Q verification. The next gate is no longer source-observation repair; it is a **bounded Stage 4 -> Stage 5 entry audit** before any immutable integration/replay runtime is opened.
+Status: **Decision 023 remains canonical. The bounded Stage 4 -> Stage 5 entry audit is complete and found exactly one immediate prerequisite: Decision 024 minimal packet integration eligibility. Stage 5 mutation remains closed until that read-only packet-level eligibility fact is implemented and independently checked.**
 
-This file is the current sequencing pointer. `coordination/CURRENT_WAVE.md` remains historical chronology. Recency, filename, role, founder identity, CI state, mergeability, schedule position, or Git permission remain evidence/execution facts only; AXM's four roots remain the internal constitutional merge gate.
+This file is the current sequencing pointer. `coordination/CURRENT_WAVE.md` is historical chronology and may describe an older active gate. Recency, filename, role, founder identity, CI state, mergeability, schedule position, or Git permission remain evidence/execution facts only; AXM's four roots remain the internal constitutional merge gate.
 
-## Canonical Decision 023 integration
+## Canonical position entering this audit
 
-Decision 023 production/runtime/test semantics were squash-merged from PR #112 as canonical commit:
+Decision 023 exact live-source observation semantics are canonical from:
 
 `6492e3cc6f393ccd276387197ce7fd230478492d`
 
-Canonical message:
+Canonical sequencing/closeout before this audit:
 
-`Integrate Decision 023 exact live source observation facts`
+`734a1def973bd07ad26038f5c468f48c1d9d0ec3`
 
-The integrated contract remains exactly bounded by `coordination/decisions/023_EXACT_SOURCE_LIVE_OBSERVATION_FACTS.md`:
+The Decision 023 integration remains bounded to exact live mutable-store observation with:
 
-- one exact Decision 020 `exact_axm_object` declaration occurrence;
+- exact Decision 020 declaration occurrence identity;
 - exact `FilesystemObjectStore` only;
 - bundled interpretation context only;
-- no logical-id/newest/locator/recency fallback;
-- explicit availability/retrieval/integrity outcome dimensions;
+- no logical/newest/locator/recency fallback;
+- explicit availability/retrieval/integrity dimensions;
 - `observation_method = filesystem_exact_load_v1`;
 - `context_standing = live_mutable_store`;
 - `reexecution_standing = not_established`.
 
-It does **not** establish durable source-store identity, historical snapshot identity, retained bytes, generic hostile-process isolation, source trust/quality/relevance/completeness/closure, packet acceptance, claim closure, successor publication, Stage 5 integration, epochs/barriers, replay success, or model-autonomy authority.
+It still does **not** establish immutable source snapshots, retained source bytes, source trust/quality/relevance/completeness/closure, packet acceptance, claim closure, successor publication, Stage 5 integration, epochs/barriers, or replay success.
 
-## Evidence chain that closed the hold
+The exact Lane 02 Q-repair surface and independent Lane 03 A-through-Q verification remain preserved in the canonical Activation 069/070 packets and prior repository history. Earlier ADV-058 red results remain true for their exact pre-repair ancestries; no generic hostile same-process isolation is claimed.
 
-### Lane 02 — bounded Q repair and complete self-verification
+## Stage 4 -> Stage 5 entry audit result
 
-Exact semantic/test/workflow Q-repair head:
+Disposition: **do not open mutating Stage 5 yet. Name one prerequisite only.**
 
-`643401bc8e7be259d02cb2cfeb8374511adc4cf3`
+The current kernel already exposes substantial exact Stage 4 facts:
 
-Corrected ADV-058-Q oracle blob:
+- exact immutable object/revision identity;
+- exact packet -> claim -> base -> occupancy -> lane context reconstruction;
+- exact created/modified output identity;
+- exact evidence-subject binding;
+- bounded lane/output/evidence compatibility;
+- exact created/modified-result work-base provenance;
+- exact dependency identity/context/packet-local graph/reachability facts;
+- typed source declaration/capability/live-observation facts;
+- explicit packet uncertainty/failure/downstream/follow-up fields.
 
-`4a397e86d08146cb6d0686e5de6963a43663e4b5`
+But those component facts deliberately stop before packet acceptance. In particular, the mixed created+modified compatibility projection explicitly exposes no packet-level `accepted`, `complete`, `closed`, or aggregate `satisfied` field.
 
-Lane 02 native repair run/job:
+Opening a state-mutating integration engine now would therefore force Stage 5 code to invent packet acceptance semantics while publishing canonical state. That would violate the audit's Truth/Continuity boundary.
 
-`34941984904` / `104292549647`
+## Decision 024 — current exact prerequisite
 
-Recorded results:
+Canonical decision file opened by this audit:
 
-- Decision 020 ADV-054/055: **6/6 passed**;
-- Decision 022 ADV-057: **6/6 passed**;
-- ADV-058-A/B/C: **3/3 passed**;
-- ADV-058-D through Q: **1/1 each passed**;
-- focused Decision 023: **14/14 passed**;
-- full deterministic discovery: **468/468 passed**, 0 failures/errors;
-- explicit compile: **passed**.
+`coordination/decisions/024_MINIMAL_PACKET_INTEGRATION_ELIGIBILITY.md`
 
-Lane 02 then re-anchored the same semantic surface against the newest pre-integration canonical main. Activation 067 records native run/job `34946105546` / `104305753910`, merge candidate `42c7124405cb81c2739dd4e2311b3b75299c065e`, again with A-through-Q, focused Decision 023, **468/468** full discovery, and compile green. Direct comparison from `643401bc...` to the then-current verification head showed only coordination/return-state deltas, not production/test/schema/workflow semantic drift.
+Decision 024 authorizes only a **read-only deterministic packet integration eligibility projection** for the smallest currently-grounded slice.
 
-### Lane 03 — independent unchanged A-through-Q verification
+The first eligible slice is intentionally narrow:
 
-PR #151 was opened from the exact Lane 02 Q-repair semantic/test/workflow head `643401bc...`, preserving the corrected Q oracle byte-identically.
+- one exact return packet and exact lifecycle context;
+- at least one created artifact;
+- no modified artifacts in this first slice;
+- every created output satisfies the exact historical lane's single-state evidence requirement through exact subject-bound evidence;
+- no same-output evidence-state conflict is silently ranked away;
+- exact work-base / producer-lane provenance is grounded;
+- created artifacts have empty dependency sets so no dependency admissibility/closure policy is invented;
+- packet uncertainties/failures/downstream/follow-up remain explicit facts and are not silently erased or turned into actor authority;
+- source metadata remains preserved but is not promoted into trust/closure policy;
+- no mutable HEAD/current, recency, array order, actor/founder identity, schedule, CI, branch, or Git permission participates.
 
-Lane 03 native run/job:
+A positive result means only `eligible_for_stage5_acceptance_candidate` on this bounded slice. It is **not** packet acceptance, constitutional approval, claim closure, successor publication, integration, epoch completion, replay success, or global currentness.
 
-`34947661969` / `104310792989`
+## Why this is the smallest prerequisite
 
-The Lane 03 Activation 070 packet directly observed before packet publication:
+The audit considered whether Stage 5 could open immediately. It cannot truthfully do so without first composing existing Stage 4 component facts into one explicit packet-level eligibility fact.
 
-- Decision 020: passed;
-- Decision 022: passed;
-- unchanged ADV-058-A through Q: passed;
-- focused Decision 023: passed;
-- no new bounded adjacent contradiction evidenced.
+The audit does **not** promote every downstream obligation into a blocker at once. In particular:
 
-After that packet was written, Lane 01 independently re-read the native workflow state. The same run/job completed **successfully**, including the broader deterministic discovery step and explicit compile step. This later workflow completion is new Lane 01-observed evidence; it is not retroactively inserted into Lane 03's packet as if Lane 03 had observed it earlier.
+- ADV-002-G exact integration-receipt base/result revision identity;
+- ADV-002-H exact packet instance identity in receipts;
+- the content-addressed chronology between an accepted receipt and its resulting revision;
+- durable packet acceptance/rejection closure;
+- claim closure;
+- successor-state publication;
+- replay inputs/runtime;
+- epochs/barriers;
 
-Lane 03's durable packet is preserved canonically as:
+remain explicit later Stage 5 obligations. They are not silently solved by Decision 024, and they are not opened in the same lane.
 
-`coordination/returns/03/2026-09-15_ACTIVATION_070.md`
+## Specialist coordination
 
-## Four-root integration review
+### Lane 02 — next executable lane
+
+Implement **Decision 024 only** on fresh canonical `main` after this audit lands.
+
+Required behavior/evidence is in the decision file. The implementation should compose existing canonical preflights rather than duplicate or weaken them. Add deterministic tests for the exact eligible/unsupported/conflicting surfaces, then run the complete deterministic suite and explicit compile.
+
+Do not implement Stage 5 mutation, integration receipts, successor revisions, claim closure, epochs, replay, evidence ranking, dependency closure, source trust/closure, mutable currentness, or model autonomy in the same lane.
+
+### Lane 03 — subsequent independent lane
+
+Wait for Lane 02's exact tested Decision 024 head, then attack that head only:
+
+- evidence conflict laundering;
+- weak/unmatched/same-logical-id evidence substitution;
+- modified packets accidentally entering the created-only slice;
+- non-empty dependencies being treated as satisfied without policy;
+- provenance mismatch bypass;
+- uncertainty/failure disappearance;
+- hidden currentness/actor/schedule/CI/Git authority;
+- deterministic fact transport/materialization drift.
+
+Do not jump ahead to receipt/result chronology or replay before the exact Decision 024 head exists.
+
+### Lane 01
+
+After Lane 02 implementation and Lane 03 independent challenge evidence are repository-visible, perform a fresh four-root integration review. If grounded, integrate Decision 024 and only then run the next bounded Stage 5 entry audit.
+
+## Open coordination PRs at audit time
+
+- PR #153 — Lane 02 coordination-only Stage 5 hold packet;
+- PR #154 — Lane 03 coordination/adversarial Stage 5 hold packet.
+
+Both are compatible with the pre-audit hold and contain no production/schema/test/workflow semantics. Once this audit is canonical they should be closed as **superseded, not invalidated**, rather than merged into canonical state merely because they are newer open PRs.
+
+## Root grounding of the audit
 
 ### Truth
 
-Decision 023 is integrated only at the exact bounded meaning its decision file and tests support. The earlier ADV-058-A-through-Q reds remain historical truth for their pre-repair ancestries. The later greens do not prove general hostile same-process isolation, immutable observation context, trust, closure, or replay.
+Component compatibility/provenance/dependency/source facts are not silently relabelled as packet acceptance. The missing composition fact is named explicitly before canonical mutation is opened.
 
 ### Agency / non-domination
 
-No caller-owned dispatch, custom schema context, logical/newest fallback, founder status, specialist role, schedule, CI result, branch ownership, or Git permission becomes source authority. Lane 01's merge action is execution of a grounded disposition, not constitutional authority by role.
+No lane, founder, occupant, model, schedule, CI result, branch owner, or Git permission can manufacture packet eligibility. The next implementation is constrained to exact stored relations and deterministic rules.
 
 ### Continuity
 
-The exact semantic head, oracle identity, Lane 02 complete evidence, Lane 03 independent verification, prior red history, bounded non-claims, and integration result are all repository-visible. A replacement occupant does not need this chat to reconstruct why Decision 023 became canonical.
+A replacement occupant can reconstruct why Stage 5 is still closed, which exact prerequisite is open, what facts it may consume, what it must not claim, and which specialist owns the next action from repository state alone.
 
 ### Wisdom before speed
 
-The ADV-058 seam does **not** remain open merely because more hostile same-process scenarios can be imagined. No new ADV-058-R is invented without a concrete contradiction inside the already-authorized Decision 023 contract. The project returns to the v0 institution sequence instead of turning source observation into an unbounded hardening program.
-
-## PR disposition
-
-- **PR #112 — merged.** Canonical Decision 023 integration commit is `6492e3cc...`.
-- **PR #151 — verification evidence only; do not merge its stacked implementation ancestry.** Its Lane 03 return packet is copied unchanged onto fresh canonical ancestry. Close the PR as superseded after that canonical packet copy lands; this does not invalidate its independent verification evidence.
-- Earlier ADV-058 adversarial PRs remain superseded, not invalidated. Their red evidence remains true for their exact pre-repair ancestries.
+Open one read-only eligibility fact instead of simultaneously deciding packet acceptance, evidence precedence, dependency/source closure, receipt chronology, successor publication, claim closure, epochs, and replay.
 
 ## Current v0 position
 
-Institution Fabric remains **Stage 4 at the sequencing boundary into Stage 5**.
+Institution Fabric remains **Stage 4 at the Stage 5 boundary**.
 
-Decision 023 closes the currently opened exact live-source observation slice. It does not automatically declare all Stage 4 semantics complete, and it does not itself authorize an integration/replay engine. At the same time, unresolved future source capabilities must not automatically block v0 if the minimal Stage 5 proof can preserve them as explicit unsupported/unknown facts rather than pretending they exist.
+Decision 024 is the only active semantic gate. Stage 5 integration/replay runtime remains unimplemented and unclaimed.
 
-## Smallest next executable lane
+## Unresolved boundaries — preserved, not automatically promoted blockers
 
-### Lane 01 — bounded Stage 4 -> Stage 5 entry audit
-
-Before asking Lane 02 to implement Stage 5, inspect the already-canonical Stage 4 contracts and answer one narrow question:
-
-> Does the current canonical kernel contain enough explicit identity, lane/output compatibility, dependency, evidence, provenance/source, packet, uncertainty, and failure facts to implement the **smallest immutable integration transition** without silently inventing packet acceptance, trust/closure, source completeness, global currentness, or replay authority?
-
-The audit must end in exactly one of two grounded dispositions:
-
-1. **Open Stage 5 minimally** — define the smallest integration input/output contract that can accept/reject/defer/repair one already-grounded packet and create an immutable successor revision plus explicit receipt/replay inputs, while leaving unsupported policy dimensions explicit; or
-2. **Name exactly one blocking fact** — if Stage 5 cannot be truthful yet, identify the single smallest missing deterministic fact/decision and open only that prerequisite.
-
-Do not pre-emptively open immutable source snapshots, retained-byte storage, generic resolvers, trust scoring, source closure, networking, model autonomy, or domain-specific policy unless the audit demonstrates that one is actually required for the v0 transition.
-
-### Lane 02
-
-No further Decision 023 semantic repair is assigned. Hold implementation until Lane 01's Stage 5 entry audit produces a bounded executable contract or one exact prerequisite.
-
-### Lane 03
-
-No new ADV-058 fixture is assigned. Preserve the existing red/repair/green evidence and challenge the next exact Stage 5/prerequisite head when one exists.
-
-## Unresolved boundaries — preserved, not promoted to blockers by default
-
-Still not established:
+Still not established include:
 
 - general hostile same-process isolation;
 - durable live-store/schema-root identity;
 - immutable/historical source-observation context identity/completeness;
 - retained verified source bytes;
-- custom observation contexts;
-- content-address byte-provider/digest-verification runtime;
-- locator/network/filesystem/package resolver contracts;
-- locator/content/exact association;
-- historical-to-typed source migration;
-- general provenance-relation vocabulary;
+- custom observation contexts and generic resolvers;
 - source trust, quality, relevance, completeness, or closure;
-- dependency admissibility/satisfaction/closure beyond current exact packet-local facts;
-- evidence-method/source-quality precedence/invalidation dominance;
+- dependency admissibility/satisfaction/closure beyond current exact facts;
+- general evidence-method/source-quality precedence/invalidation dominance;
 - durable packet acceptance/rejection closure;
 - claim closure;
+- exact integration-receipt base/result/packet transition identity for Stage 5;
+- acyclic receipt/result publication chronology;
 - successor state-revision publication;
 - Stage 5 integration receipts/runtime;
 - epochs/barriers;
 - replay/literal observation reexecution authority;
-- cross-language source-observation reproduction;
+- cross-language reproduction;
 - stronger filesystem durability/concurrency guarantees.
 
-These are future evidence obligations. They become v0 blockers only if the bounded Stage 5 entry audit demonstrates that the minimal truthful integration transition cannot proceed without one of them.
+These remain future evidence obligations. Current sequencing opens only Decision 024.
