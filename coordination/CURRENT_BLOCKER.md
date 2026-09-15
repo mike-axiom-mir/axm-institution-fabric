@@ -1,12 +1,12 @@
 # CURRENT BLOCKER — Institution Fabric
 
-Status: **Decision 025 is canonical. Decision 026 remains non-canonical and Stage 5 mutation remains closed. Lane 02 has repaired ADV-060-A and ADV-060-B on one exact tested ancestry, and Lane 03 has independently cleared unchanged A+B plus the unchanged Decision 026 baseline there. Lane 03 has now reproduced one adjacent bounded contradiction, ADV-060-C: canonical material presence of the receipt-named packet does not yet guarantee that downstream Decision 024 eligibility is recomputed from those same exact packet bytes. The sole active semantic lane is Lane 02 repairing ADV-060-C only, followed by independent Lane 03 unchanged A+B+C verification and a fresh Lane 01 four-root review.**
+Status: **Decision 025 is canonical. Decision 026 remains non-canonical and Stage 5 mutation remains closed. Lane 02 has now durably completed the bounded ADV-060-C repair handoff on one exact tested ancestry, with unchanged ADV-060-A/B/C and the protected deterministic identity surface green implementation-side. The sole active semantic gate is independent Lane 03 verification of that exact repaired ancestry. Lane 01 must not integrate Decision 026 or open Stage 5 mutation until that exact independent verification returns and a fresh four-root review is grounded.**
 
 This file is the current sequencing pointer. `coordination/CURRENT_WAVE.md` is historical chronology and may describe an older gate. Recency, filename, role, founder identity, CI state, mergeability, schedule position, branch ownership, or Git permission are evidence/execution facts only; AXM's four roots remain the internal constitutional merge gate.
 
 ## Canonical main entering this gate
 
-`0d1a81c095b14478d5fa0220b95c2e2e2b43ba68` — `Hold Decision 026 on ADV-060-B`
+`748e86e6691f2134d51d0aab238332e07db889f1` — `Hold Decision 026 on ADV-060-C`
 
 Decision file:
 
@@ -14,165 +14,119 @@ Decision file:
 
 Decision 026 remains a bounded read-only prerequisite. It does not authorize receipt publication, packet acceptance/rejection execution, successor construction/publication, claim/occupancy closure, multi-packet aggregation, epochs/barriers, replay, mutable currentness, model autonomy, or automatic constitutional approval.
 
-## Preserved ADV-060-A/B repair evidence
+## Lane 02 exact ADV-060-C repair handoff — complete implementation-side
 
-PR #168 remains Lane 02's Decision 026 implementation/repair lane.
+Active implementation PR: **#168**.
 
-Exact repaired semantic/test/workflow head after ADV-060-B repair:
+Exact bounded source-repair commit:
 
-`0e2ecd80cdf1398ff8ed69c9026b5ddfacf89f9d`
+`5da24a0672ae5707e5b3e66777697a0cada95007` — `Repair ADV-060-C exact packet proof-to-use binding`
 
-Exact tested PR merge candidate against canonical `0d1a81c...`:
+Exact repaired semantic/test/workflow head:
 
-`e72915de00915a8f452c92f9be90a30e6578b34e`
+`bfcc79ab0e70e3e37d66b0303a76864962395f8c`
+
+Exact tested PR merge candidate against canonical `748e86e...`:
+
+`d8f0c1b7e9debaba9d3e9eb127e70901a2d251bf`
 
 Exact repaired production blob:
 
-`axm_institution/integration_candidate_binding.py` -> `73c61b292e6f412f6b83f658b31cde4536f8c660`
+`axm_institution/integration_candidate_binding.py` -> `bd1752b06d22327e8faac375f2995752603cd4cd`
 
-Unchanged prior adversarial oracle blobs carried on that ancestry:
+Unchanged Lane 03 adversarial oracle blobs carried on the repaired ancestry:
 
 - ADV-060-A: `f0d812bf0a170cd2848842c36f30f70a983d02ed`
 - ADV-060-B: `537ad75ef2aea5ea3eafeb68bde1ce6d68c762a6`
+- ADV-060-C: `142bc7f9fbad0bd151c6c8b995008e059604bae9`
 
-Lane 02 native implementation-side evidence:
+Decision 026 workflow run/job:
 
-- Decision 026 run/job `34999936767` / `104485533564`: **success**;
-- unchanged Decision 026 baseline: **success**;
-- unchanged ADV-060-A: **success**;
-- unchanged ADV-060-B: **success**;
-- Decision 025 regressions: **success**;
-- Decision 024 regressions: **success**;
-- complete deterministic discovery: **success**;
+`35006377319` / `104507036164` — **success**
+
+Observed Lane 02 implementation-side results on the exact tested merge candidate:
+
+- unchanged Decision 026 baseline: **13/13 passed**;
+- unchanged ADV-060-A: **1/1 passed**;
+- unchanged ADV-060-B: **1/1 passed**;
+- unchanged ADV-060-C: **1/1 passed**;
+- Decision 025 regressions: **10/10 passed**;
+- Decision 024 regressions including ADV-059-A/B: **17/17 passed**;
+- complete deterministic discovery: **550/550 passed**;
 - explicit attacked-surface `py_compile`: **success**;
-- broad `compileall`: **success**;
-- protected identity run/job `34999936782` / `104485533658`: **success**.
+- broad `compileall`: **success**.
+
+Protected deterministic identity run/job:
+
+`35006377450` / `104507037692` — **success**
+
+Observed protected results include:
+
+- Decision 020: **6/6 passed**;
+- Decision 022: **6/6 passed**;
+- Decision 023 A/B/C and ADV-058-D through ADV-058-Q: **success**;
+- Decision 023 live observation: **14/14 passed**;
+- complete deterministic discovery: **550/550 passed**;
+- protected deterministic-kernel `py_compile`: **success**.
 
 Durable Lane 02 packet:
 
-`coordination/returns/02/2026-09-15_ACTIVATION_077.md`
+`coordination/returns/02/2026-09-15_ACTIVATION_078.md`
 
-These are implementation-side facts, not independent clearance or merge authority.
+Current packet documentation descendant:
 
-## Independent A+B clearance on exact repaired ancestry
+`75bf977a149bed76a09209f6a3a8033d1e32600a`
 
-Lane 03 Activation 079 / PR #176 re-anchored directly on exact Lane 02 repaired head `0e2ecd80...` through stable verification base `lane-03/verification-base-decision026-0e2ecd`.
+These are implementation-side facts. They are not independent Lane 03 clearance and are not constitutional merge authority.
 
-Exact Lane 03 adversarial test/workflow head:
+## What ADV-060-C repair changes — and only that
 
-`b32481b0b7a2c8a074152554717db03730ca209c`
+The demonstrated contradiction was a proof-to-use gap: canonical material presence of the receipt-named exact packet did not guarantee that downstream Decision 024 eligibility consumed those same exact bytes, because caller-owned instance `load` dispatch could substitute a different packet while retaining the receipt's requested ref.
 
-Exact tested PR merge candidate:
+The bounded repair now creates a function-owned canonical `FilesystemObjectStore` view over the same immutable root/schema context, independently exact-loads the receipt base and packet through that view, and passes that same canonical view into Decision 024 eligibility recomputation. Caller-supplied A/B load paths remain exercised, but they no longer choose the bytes used for the stronger eligibility fact.
 
-`b0bf7d50a5b51486ce9f0670d97af616a8646c71`
+This repair does **not** establish generic hostile same-process isolation, arbitrary class/filesystem/process compromise resistance, source/semantic truth beyond existing contracts, dependency closure, multi-packet integration semantics, receipt publication, successor mutation/publication, claim/occupancy closure, epoch completion, replay/currentness, cross-language reproduction, model autonomy, or root automation.
 
-Native run/job:
+## Lane 03 Activation 080 continuity audit — preserved but superseded as sequencing
 
-`35001668434` / `104491273883`
+PR **#178** / `coordination/returns/03/2026-09-15_ACTIVATION_080.md` correctly observed an incomplete handoff at its exact activation cutoff: the protected identity workflow was still in progress and Lane 02 had not yet durably pinned the final C-repair ancestry and evidence.
 
-Observed ordered results:
+That observation remains historical truth for its exact cutoff. It is now **superseded as current sequencing, not invalidated**, because Lane 02 subsequently completed the protected workflow, updated PR #168, and published the durable Activation 078 handoff above.
 
-1. exact repaired production blob and unchanged A/B oracle pins: **success**;
-2. unchanged ADV-060-A: **success**;
-3. unchanged ADV-060-B: **success**;
-4. unchanged Decision 026 baseline: **success**;
-5. ADV-060-C: **failure**;
-6. Decision 025 regression step: **skipped after red**;
-7. Decision 024 regression step: **skipped after red**;
-8. complete deterministic discovery: **skipped after red**;
-9. explicit attacked-surface compile: **skipped after red**;
-10. broad deterministic compile: **skipped after red**.
+No independent Lane 03 A+B+C verification has yet been recorded against exact repaired head `bfcc79ab...`.
 
-Therefore ADV-060-A and ADV-060-B are independently cleared on exact repaired ancestry `0e2ecd80...`. Their earlier red evidence remains true for their exact pre-repair ancestries and is not erased by later repair.
+## Active gate — independent exact repaired-head verification only
 
-## ADV-060-C — exact packet presence is not yet proof-to-use binding
+### Lane 03 — sole next executable semantic lane
 
-Active adversarial evidence: PR #176 / Lane 03 Activation 079.
+Re-anchor on exact Lane 02 semantic/test/workflow head:
 
-Durable packet:
+`bfcc79ab0e70e3e37d66b0303a76864962395f8c`
 
-`coordination/returns/03/2026-09-15_ACTIVATION_079.md`
+Independently rerun, without rewriting the oracles:
 
-New oracle:
+1. unchanged ADV-060-A;
+2. unchanged ADV-060-B;
+3. unchanged ADV-060-C;
+4. unchanged Decision 026 baseline;
+5. explicit attacked-surface compile;
+6. preferably complete deterministic discovery and broad compile if the bounded verification workflow permits it.
 
-`tests/test_integration_candidate_binding_adversarial_c.py`
+Pin the exact Lane 03 verification head, exact tested merge candidate or equivalent pinned ancestry, unchanged oracle blobs, run/job ids, and durable return packet.
 
-Exact oracle blob:
+Do **not** open ADV-060-D merely because a new suspicion exists. Open a new contradiction only if one concrete adjacent failure reproduces against exact repaired ancestry `bfcc79ab...`.
 
-`142bc7f9fbad0bd151c6c8b995008e059604bae9`
+If unchanged A+B+C and the Decision 026 baseline all clear and no concrete adjacent contradiction reproduces, return the surface to Lane 01 for fresh integration review.
 
-Workflow blob:
+### Lane 02
 
-`71b992cd991eb2b8be218240153567a94b8ac8dd`
-
-Failing test:
-
-`Decision026EligibilityRecomputationAdversarialTests.test_adv_060_c_canonical_presence_does_not_bind_caller_substituted_eligibility`
-
-### Exact bounded counterexample
-
-The fixture creates two different genuinely stored packets in the same exact base/claim/lane context:
-
-- **R** — the receipt-named exact packet, canonically stored and independently classified by Decision 024 as non-eligible;
-- **D** — a different canonically stored exact packet, independently classified by Decision 024 as eligible.
-
-The accepted v0.2 receipt names **R**. The caller-owned store instance is then arranged so that its `load(R, ...)` path returns **D**, while canonical `FilesystemObjectStore.load(store, R, ...)` still materializes **R**.
-
-The ADV-060-A/B repairs establish canonical exact material presence before the stronger materialization facts are emitted. However, Decision 026 then calls Decision 024 through the caller-supplied store, leaving a proof-to-use gap: the downstream eligibility reconstruction can consume **D**'s bytes while retaining requested packet ref **R**. A coherent candidate binding under that composition would therefore claim eligibility for the receipt-named exact packet without proving that eligibility was computed from that same packet's exact canonical bytes.
-
-Observed evidence is bounded carefully: the native workflow directly records the A pass, B pass, Decision 026 baseline pass, and C step failure. The connector-visible Actions metadata does not expose unittest stderr for C, so the detailed substitution mechanism above is repository-code/test-grounded inference, not relabelled as observed stderr.
-
-Consequential institutional fact:
-
-```text
-canonical exact packet presence
-    != proof downstream eligibility consumed those same exact packet bytes
-```
-
-This is inside Decision 026's already-open requirement that Decision 024 be recomputed from **that exact packet**. It is not evidence that the whole object store must be redesigned, that generic hostile-process isolation is required, or that Stage 5 mutation has corrupted canonical state; Stage 5 mutation is still closed.
-
-## Active gate — ADV-060-C repair only
-
-### Lane 02 — next executable semantic lane
-
-Repair ADV-060-C only on PR #168 or a directly related bounded repair ancestry.
-
-Required repair property:
-
-- preserve the independently cleared ADV-060-A and ADV-060-B properties unchanged;
-- Decision 024 eligibility used by Decision 026 must be grounded in the same exact canonical packet bytes whose receipt-named material presence was established;
-- caller-owned instance `load` dispatch must not be able to substitute different packet bytes for the Decision 024 recomputation while the resulting nested fact retains the receipt's requested packet ref;
-- an implementation may bind recomputation to a function-owned/canonical exact-store view or equivalent bounded mechanism, or fail closed before emitting a coherent candidate-binding fact;
-- preserve real absence/corruption/reference failures and exact same-logical/different-exact distinction;
-- preserve Decision 024 policy and Decision 025 receipt identity rather than duplicating or weakening them;
-- do not widen into generic hostile same-process isolation, receipt publication, successor mutation/publication, claim/occupancy closure, aggregation, epochs/barriers, replay, currentness, model autonomy, or root automation.
-
-Preserve ADV-060-A, ADV-060-B, and ADV-060-C oracles unchanged. On one exact repaired semantic/test/workflow head, rerun:
-
-1. unchanged Decision 026 baseline;
-2. unchanged ADV-060-A;
-3. unchanged ADV-060-B;
-4. unchanged ADV-060-C;
-5. Decision 025 regressions;
-6. Decision 024 regressions;
-7. complete deterministic discovery;
-8. explicit attacked-surface compile;
-9. broad deterministic compile;
-10. protected identity workflow where applicable.
-
-Pin the exact repaired semantic head, exact tested merge candidate, production/oracle blob identities, run/job ids, and durable return packet before handing back to Lane 03.
-
-### Lane 03
-
-Hold PR #176 as the active adversarial evidence lane. Do not widen into ADV-060-D unless a concrete adjacent contradiction is actually reproduced after one exact fully tested C-repair ancestry exists.
-
-After Lane 02 publishes that exact repaired ancestry, independently rerun unchanged ADV-060-A, ADV-060-B, ADV-060-C, and the unchanged Decision 026 baseline against that exact ancestry. Preserve any red result exactly; do not reinterpret another ancestry as clearance.
+Hold further Decision 026 widening. PR #168 is the active implementation/repair evidence lane and remains deliberately unmerged pending Lane 03 independent verification and Lane 01 four-root review.
 
 ### Lane 01
 
 Do not merge PR #168 yet and do not open Stage 5 mutation.
 
-After Lane 03 independently verifies the exact repaired A+B+C ancestry, perform a fresh integration review under:
+After Lane 03 returns exact independent evidence, review the proposed Decision 026 integration under:
 
 1. Truth
 2. Agency / non-domination
@@ -181,17 +135,17 @@ After Lane 03 independently verifies the exact repaired A+B+C ancestry, perform 
 
 Only then may Decision 026 be considered for canonical integration and the next bounded Stage 5 entry audit.
 
-## PR disposition / continuity notes
+## Historical evidence standing
 
-- PR #168 remains the active implementation/repair lane. Its earlier Decision 026 implementation evidence and A/B repair evidence remain valid for their exact ancestries, but the B-repaired surface is now blocked by ADV-060-C.
-- PR #176 remains the active adversarial evidence lane. It independently clears unchanged A+B on exact repaired ancestry and directly records the C test step red. Its adversarial fixture/workflow is evidence, not production integration semantics.
-- PR #174 is superseded, not invalidated. Its B-red evidence remains historical truth for the exact pre-B-repair ancestry.
-- Earlier ADV-060-A evidence likewise remains preserved for its exact pre-A-repair ancestry.
-- `CURRENT_WAVE.md` remains historical chronology. This file is the current sequencing pointer for a replacement occupant.
+- Earlier ADV-060-A red evidence remains true for its exact pre-A repair ancestry.
+- Earlier ADV-060-B red evidence remains true for its exact pre-B repair ancestry.
+- Lane 03 ADV-060-C red evidence on pre-C repaired head `0e2ecd80cdf1398ff8ed69c9026b5ddfacf89f9d` remains true and is not rewritten by the later repair.
+- Lane 02's current C-repair green evidence is true only as implementation-side evidence for exact repaired ancestry `bfcc79ab...` / tested merge candidate `d8f0c1b...`.
+- PR #178's handoff-gap observation remains true for its exact activation cutoff and is superseded only as current sequencing.
 
 ## Stage 5 boundaries still closed
 
-Decision 026 and this repair gate do not solve or authorize:
+Decision 026 and this verification gate do not solve or authorize:
 
 - automatic constitutional/root approval;
 - receipt publication;
@@ -212,24 +166,24 @@ Decision 026 and this repair gate do not solve or authorize:
 
 ### Truth
 
-Lane 02's exact B-repair evidence and Lane 03's independent A+B clearance remain true for exact ancestry `0e2ecd80...`. ADV-060-C is separately observed red at its workflow gate. Green A+B evidence cannot erase red C evidence, and red C does not retroactively invalidate the exact earlier green runs. The detailed C mechanism remains labelled as code/test-grounded inference where stderr is unavailable.
+Lane 02's C-repair evidence is exact, green, and implementation-side. Lane 03 independent verification is still missing. Do not promote one lane's green CI into independent clearance or canon, and do not erase older red evidence tied to older ancestries.
 
 ### Agency / non-domination
 
-Caller control of an object method, receipt wording, Lane 01/02/03 role identity, founder identity, CI status, branch ownership, schedule position, mergeability, or Git permission cannot become authority to substitute another packet's bytes into eligibility or force Decision 026 into canon.
+Caller dispatch, receipt wording, role identity, founder identity, CI success, branch ownership, schedule position, mergeability, or Git permission cannot force a stronger eligibility fact or canonical integration.
 
 ### Continuity
 
-The exact repaired ancestry, adversarial head, oracle blobs, tested merge candidate, run/job, observed step outcomes, inference boundary, prior evidence standing, and next repair ownership are explicit in repository state so another occupant can continue without private chat memory.
+The repaired semantic head, tested merge candidate, production/oracle blobs, both native workflow run/jobs, durable Lane 02 return packet, prior Lane 03 handoff audit, remaining evidence gap, and exact next owner are now explicit in repository state so a replacement occupant can continue without private chat memory.
 
 ### Wisdom before speed
 
-Repair only the demonstrated proof-to-use contradiction and independently retest unchanged A+B+C before integration. Do not use this red gate as a reason to open Stage 5 mutation or a general object-store hardening project.
+The demonstrated C contradiction is repaired implementation-side. Stop widening, independently retest exactly A+B+C and the baseline, and only then reconsider integration. Do not use green implementation evidence as a shortcut into Stage 5 mutation.
 
 ## Current v0 position
 
-Institution Fabric remains **Stage 4 at the Stage 5 boundary**. Decision 026 is implemented but non-canonical and currently blocked by ADV-060-C. Stage 5 mutation remains closed.
+Institution Fabric remains **Stage 4 at the Stage 5 boundary**. Decision 026 is implemented and C-repaired but remains non-canonical pending exact independent Lane 03 verification. Stage 5 mutation remains closed.
 
 ## Best next action
 
-**Lane 02 repairs ADV-060-C only against exact repaired Decision 026 ancestry, preserves unchanged ADV-060-A/B/C oracles, and returns one exact fully tested repaired ancestry to Lane 03 for independent unchanged A+B+C verification.**
+**Lane 03 independently verifies exact repaired Decision 026 head `bfcc79ab0e70e3e37d66b0303a76864962395f8c` with unchanged ADV-060-A/B/C and the unchanged baseline, preserves any concrete red result exactly, and otherwise returns the surface to Lane 01 for the fresh four-root integration review.**
