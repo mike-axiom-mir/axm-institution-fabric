@@ -8,6 +8,7 @@ on:
       - "tests/test_packet_integration_eligibility.py"
       - "tests/test_packet_integration_eligibility_v04.py"
       - "tests/test_packet_integration_eligibility_adv059.py"
+      - "tests/test_packet_integration_eligibility_adv059_materialization.py"
       - ".github/workflows/decision024-eligibility.yml"
 
 permissions:
@@ -33,3 +34,4 @@ jobs:
           tests/test_packet_integration_eligibility.py
           tests/test_packet_integration_eligibility_v04.py
           tests/test_packet_integration_eligibility_adv059.py
+          tests/test_packet_integration_eligibility_adv059_materialization.py
