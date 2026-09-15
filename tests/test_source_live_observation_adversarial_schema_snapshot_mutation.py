@@ -95,7 +95,7 @@ class SourceLiveObservationSchemaSnapshotMutationAdversarialTests(unittest.TestC
                 self.assertEqual(target_ref, reference)
                 self.assertEqual("artifact.schema.json", schema_name)
                 observer_schema_dir = source_store.schema_dir
-                self.assertIs(type(observer_schema_dir), Path)
+                self.assertIsInstance(observer_schema_dir, Path)
                 snapshot_schema = observer_schema_dir / "artifact.schema.json"
                 self.assertTrue(snapshot_schema.exists())
                 snapshot_schema.write_bytes(rejecting_schema)
