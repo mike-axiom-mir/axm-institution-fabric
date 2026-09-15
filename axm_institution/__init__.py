@@ -56,6 +56,15 @@ from .source_live_observation import (
     SourceLiveObservationError,
     observe_exact_source_live,
 )
+from .connected_monolith import (
+    EXECUTION_FABRIC_SCHEMA,
+    KNOWN_ADAPTER_STATUSES,
+    ConnectedMonolithCapabilityFact,
+    ConnectedMonolithCatalog,
+    ConnectedMonolithContractError,
+    ConnectedMonolithError,
+    ConnectedMonolithIntegrityError,
+)
 
 __all__ = [
     "STRONG_EVIDENCE_STATES",
@@ -104,4 +113,11 @@ __all__ = [
     "SourceLiveObservationContextError",
     "SourceLiveObservationError",
     "observe_exact_source_live",
+    "EXECUTION_FABRIC_SCHEMA",
+    "KNOWN_ADAPTER_STATUSES",
+    "ConnectedMonolithCapabilityFact",
+    "ConnectedMonolithCatalog",
+    "ConnectedMonolithContractError",
+    "ConnectedMonolithError",
+    "ConnectedMonolithIntegrityError",
 ]

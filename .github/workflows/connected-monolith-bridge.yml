@@ -1,0 +1,30 @@
+name: connected-monolith-bridge
+
+on:
+  pull_request:
+    paths:
+      - "axm_institution/connected_monolith.py"
+      - "axm_institution/__init__.py"
+      - "tools/query_connected_monolith_capabilities.py"
+      - "tests/test_connected_monolith.py"
+      - "fixtures/CONNECTED_MONOLITH_V0_3_2_CAPABILITY_EVIDENCE.json"
+      - "domain-packs/capability-substrates/connected-monolith/**"
+      - ".github/workflows/connected-monolith-bridge.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  bounded-capability-discovery:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install existing test dependency
+        run: python -m pip install "jsonschema>=4.0,<5"
+      - name: Run Connected Monolith adapter tests
+        run: python -m unittest discover -s tests -p "test_connected_monolith.py" -v
+      - name: Compile adapter and CLI
+        run: python -m py_compile axm_institution/connected_monolith.py tools/query_connected_monolith_capabilities.py tests/test_connected_monolith.py
