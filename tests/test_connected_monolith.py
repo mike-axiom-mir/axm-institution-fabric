@@ -65,6 +65,29 @@ def raw_fabric(endpoints):
     return json.dumps(fabric(endpoints), sort_keys=True, separators=(",", ":")).encode("utf-8")
 
 
+def workflow_registry(*capability_addresses: str):
+    return {
+        "schema": "axm.monolith.workflow-registry/v0.1",
+        "workflow_count": 1,
+        "workflows": [
+            {
+                "id": "ghost-studio.blackline-3d.v0.4",
+                "status": "callable",
+                "stages": [
+                    {"order": index + 1, "capability": address, "contract": "test"}
+                    for index, address in enumerate(capability_addresses)
+                ],
+            }
+        ],
+    }
+
+
+def raw_workflow_registry(*capability_addresses: str):
+    return json.dumps(
+        workflow_registry(*capability_addresses), sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+
+
 class ConnectedMonolithCatalogTests(unittest.TestCase):
     def test_creation_machine_named_workflow_is_discoverable_but_grants_no_action_authority(self):
         raw = raw_fabric(
@@ -146,10 +169,13 @@ class ConnectedMonolithCatalogTests(unittest.TestCase):
             path = Path(tmp) / "monolith.zip"
             with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
                 archive.writestr("snapshot/EXECUTION_FABRIC.json", raw)
+                workflow_raw = raw_workflow_registry()
+                archive.writestr("snapshot/WORKFLOW_REGISTRY.json", workflow_raw)
             expected = sha256(path.read_bytes()).hexdigest()
             catalog = ConnectedMonolithCatalog.from_zip(path, expected_zip_sha256=f"sha256:{expected}")
             self.assertEqual(catalog.package_sha256, expected)
             self.assertEqual(catalog.execution_fabric_sha256, sha256(raw).hexdigest())
+            self.assertEqual(catalog.workflow_registry_sha256, sha256(workflow_raw).hexdigest())
 
     def test_zip_hash_mismatch_is_rejected(self):
         raw = raw_fabric([endpoint("uc::inspection", "executable_inspection")])
@@ -157,8 +183,32 @@ class ConnectedMonolithCatalogTests(unittest.TestCase):
             path = Path(tmp) / "monolith.zip"
             with zipfile.ZipFile(path, "w") as archive:
                 archive.writestr("EXECUTION_FABRIC.json", raw)
+                archive.writestr("WORKFLOW_REGISTRY.json", raw_workflow_registry())
             with self.assertRaises(ConnectedMonolithIntegrityError):
                 ConnectedMonolithCatalog.from_zip(path, expected_zip_sha256="0" * 64)
+
+    def test_zip_loader_cross_checks_named_workflow_membership(self):
+        raw = raw_fabric(
+            [
+                endpoint(
+                    "axm-universal-creation::creation.universal",
+                    "callable_through_named_workflow",
+                    source_execution=True,
+                    workflow="ghost-studio.blackline-3d.v0.4",
+                    stage="brief-to-visual-recipe",
+                )
+            ]
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "monolith.zip"
+            with zipfile.ZipFile(path, "w") as archive:
+                archive.writestr("EXECUTION_FABRIC.json", raw)
+                archive.writestr(
+                    "WORKFLOW_REGISTRY.json",
+                    raw_workflow_registry("some-other-module::other.capability"),
+                )
+            with self.assertRaises(ConnectedMonolithContractError):
+                ConnectedMonolithCatalog.from_zip(path)
 
     def test_duplicate_json_members_fail_closed(self):
         raw = b'{"schema":"axm.monolith.execution-fabric/v0.1","schema":"x"}'
