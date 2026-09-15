@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import NamedTuple
 
 from .packet_artifact_provenance import preflight_exact_artifact_work_base_provenance
@@ -40,8 +41,15 @@ class PacketReportedFacts(NamedTuple):
     requested_followup: tuple[str, ...]
 
 
-class ResolvedPacketIntegrationEligibility(NamedTuple):
+@dataclass(frozen=True)
+class ResolvedPacketIntegrationEligibility:
     """Read-only Decision 024 first-slice eligibility projection.
+
+    This top-level institutional fact deliberately is not a tuple. Ordinary JSON
+    serialization therefore fails closed instead of silently converting the named fact
+    into a positional array whose meaning depends on Python field order. A future
+    transport adapter may expose an explicitly keyed representation, but this class does
+    not invent that transport contract.
 
     ``eligibility_outcome`` is not packet acceptance. A positive result means only that
     the exact packet fits Decision 024's first bounded Stage 5 acceptance-candidate
