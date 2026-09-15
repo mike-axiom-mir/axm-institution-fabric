@@ -1,170 +1,178 @@
 # CURRENT BLOCKER — Institution Fabric
 
-Status: **Decision 024 is canonical and there is no active ADV-059 blocker. The single active Stage 5 entry gate is Decision 025: exact integration-receipt input identity plus an acyclic accepted-result publication chronology. Stage 5 mutation remains closed while Lane 02 implements only that bounded contract, Lane 03 independently attacks it, and Lane 01 performs a fresh four-root review.**
+Status: **Decision 025 is canonical. The single active Stage 5 entry gate is Decision 026: exact accepted-receipt operational re-grounding before successor publication. Stage 5 mutation remains closed while Lane 02 implements only that read-only preflight, Lane 03 independently attacks it, and Lane 01 performs a fresh four-root review.**
 
 This file is the current sequencing pointer. `coordination/CURRENT_WAVE.md` is historical chronology and may describe an older active gate. Recency, filename, role, founder identity, CI state, mergeability, schedule position, or Git permission remain evidence/execution facts only; AXM's four roots remain the internal constitutional merge gate.
 
 ## Canonical main entering this gate
 
-Decision 024 integration commit:
+Decision 025 integration commit:
 
-`770600bc5fdf23762b387d8821f14a2675edbaaf` — `Integrate Decision 024 packet eligibility`
+`0577282627d2b949bb3a695dfdd3affc288adf17` — `Integrate Decision 025 exact receipt identity`
 
-Decision 024 is now canonical as a **read-only** packet-level eligibility projection for the bounded created-output/no-dependency slice. A positive result still means only `eligible_for_stage5_acceptance_candidate`; it is not packet acceptance, root approval, integration, claim closure, successor publication, epoch completion, replay success, or global currentness.
+Decision 025 is now canonical as a **versioned exact integration-receipt input identity and acyclic publication chronology contract**. Historical v0.1 remains readable but insufficient for exact Stage 5 proof. V0.2 exact-binds `base_state_revision_ref` and exact `packet_refs[]`, and intentionally carries no exact successor-state reference.
 
-No Stage 5 mutating integration runtime, successor publication runtime, claim closure, epoch/barrier, or replay runtime is canonical yet.
+No Stage 5 successor mutation/publication runtime, claim closure, epoch/barrier, or replay runtime is canonical yet.
 
-## Decision 024 evidence now integrated
+## Decision 025 evidence now integrated
 
-Lane 02 PR #156 implemented Decision 024 and repaired ADV-059-A/B on exact semantic/test/workflow head:
+Lane 02 PR #165 implemented Decision 025 on exact semantic/test/workflow head:
 
-`b108cae9604bbe2225726962a00e2afb7e367640`.
+`31c0ca484951f8a5e2d589f3788511bd1e1245cc`.
 
-Preserved oracle blobs:
-
-- ADV-059-A: `af11f560c1dde95f508d58872270778a9f91dec5`;
-- ADV-059-B: `680cfdb04c3ffb24e07a78ca7984824a673e31f3`.
+Its later head `388d6ea8f6a5ef446257b05fff3a08bccd047583` adds only the durable Lane 02 return packet; comparison against the tested semantic head shows no production/schema/test/workflow change after testing.
 
 Implementation-side native evidence:
 
-- run `34967489587`, job `104375323408`: **17/17 targeted Decision 024 tests passed**, unchanged ADV-059-A/B green, explicit changed-surface compile green;
-- run `34967489586`, job `104375323412`: protected Decision 020/022/023 gates green, **485/485 complete deterministic tests passed**, broad deterministic compile green.
+- `decision025-receipt-identity` run `34973946826`: **completed / success**;
+- `identity-stage2` run `34973946700`: **completed / success**;
+- Decision 025 targeted tests, Decision 024 continuity, complete deterministic discovery, explicit Decision 025 compile, and broad compile all succeeded on the exact tested head.
 
-Lane 03 PR #162 independently re-anchored on that exact semantic head and verified it on verification-only head:
+Lane 03 PR #166 independently anchored on that exact Lane 02 tested head and verified it on exact adversarial test/workflow head:
 
-`eae9b656aabbeeb813eb6c0a2cac7894b2f153dc`.
+`efdbb02e6ab2d7dc401963835985c909ad89d261`.
 
-Native independent run/job:
+Native independent run:
 
-- run `34968946830`;
-- job `104380162810`;
-- exact ADV-059-A/B blob pinning: **passed**;
-- unchanged ADV-059-A/B direct tests: **passed**;
-- Decision 024 targeted regressions: **passed**;
-- attacked-surface `py_compile`: **passed**;
-- complete deterministic unittest discovery: **passed**;
-- broad deterministic `compileall`: **passed**.
+- `decision025-lane03-adversarial` run `34975820287`: **completed / success**;
+- Lane 03 bounded adversarial checks: **7/7 passed**;
+- unchanged Lane 02 Decision 025 baseline: **10/10 passed**;
+- Decision 024 continuity regressions: **17/17 passed**;
+- complete deterministic discovery: **502/502 passed**;
+- explicit attacked-surface compile and broad compile passed.
 
-No concrete adjacent ADV-059-C reproduced on the opened Decision 024 transport/materialization surface. Earlier A/B red evidence remains valid for its exact pre-repair ancestries; integration does not rewrite that history.
+No concrete adjacent contradiction reproduced on the opened Decision 025 surface. No new ADV case was invented merely to keep the chain moving.
+
+## Fresh four-root review of Decision 025
+
+### Truth — grounded for the bounded contract
+
+V0.2 exact receipt inputs use the shared immutable-reference parser, reject logical/wrong-kind/non-canonical/duplicate exact refs, preserve same-logical/different-exact identity, keep v0.1 historical rather than silently upgrading it, and make no mutation/replay claim.
+
+### Agency / non-domination — grounded
+
+Founder identity, lane identity, CI, branch ownership, schedule position, or Git permission does not participate in receipt identity or supply constitutional authority. Root-assessment fields remain explicit decision facts rather than hidden actor authority.
+
+### Continuity — grounded
+
+A replacement occupant can reconstruct the exact base/packet identities named by v0.2 from repository-visible immutable facts. Accepted v0.2 avoids the reciprocal content-addressed `receipt <-> successor` cycle; the later successor may exact-reference the receipt instead.
+
+### Wisdom before speed — grounded
+
+Decision 025 stops at exact receipt identity/chronology. It does not open successor mutation, claim closure, multi-packet conflict policy, epochs, replay, currentness, or model autonomy.
+
+PR #165 was therefore squash-merged as canonical Decision 025.
 
 ## Fresh Stage 5 entry audit
 
-Decision 024 closes the immediate packet-level eligibility gap but does not make the existing integration receipt precise enough for immutable Stage 5 publication.
+Decision 025 solves exact receipt input identity, but its helper intentionally does **not** exact-load the referenced base revision or packet objects and does **not** rerun Decision 024 packet eligibility.
 
-Current canonical `schemas/integration-receipt.schema.json` v0.1 still carries:
+That leaves one smaller prerequisite before a mutating successor transition can be opened:
 
-- `base_state_revision` as a generic string;
-- `packet_ids[]` as logical ids;
-- `resulting_state_revision` as a generic string for accepted decisions.
+> A future Stage 5 operation must prove that the exact accepted receipt instance, exact base revision, and exact packet instance it is about to use are the durable objects actually present in the immutable store, and that the packet still satisfies canonical Decision 024 eligibility against the same exact base.
 
-That is weaker than Decision 002's already-canonical requirement that consequential integration/replay relationships consume exact immutable identities.
+A syntactically exact receipt reference alone is not proof that the referenced material is present, uncorrupted, or operationally compatible.
 
-Canonical `state-revision.schema.json` v0.2 already carries exact `integration_receipt_refs[]`. Naively adding an exact successor-state reference back into the accepted receipt would therefore create a reciprocal content-addressed cycle:
-
-```text
-successor S -> exact receipt R
-receipt R   -> exact successor S
-```
-
-The exact hashes cannot be constructed in that form without an ungrounded placeholder/mutation/indirection convention.
-
-## Active gate — Decision 025
+## Active gate — Decision 026
 
 Decision file:
 
-`coordination/decisions/025_EXACT_INTEGRATION_RECEIPT_CHRONOLOGY.md`
+`coordination/decisions/026_EXACT_ACCEPTED_RECEIPT_PREFLIGHT.md`
 
-The opened contract is deliberately narrow:
+The opened contract is deliberately read-only and narrow:
 
-1. version the receipt identity contract while preserving historical v0.1 readability;
-2. v0.2 binds one exact canonical `base_state_revision_ref`;
-3. v0.2 binds exact canonical `packet_refs[]`;
-4. shared immutable-reference parsing/canonical spelling rules reject logical, wrong-kind, or non-canonical consequential refs;
-5. accepted v0.2 does **not** exact-reference its not-yet-created successor revision;
-6. later publication chronology is one-way and content-addressable:
+1. accept one exact immutable `integration-receipt` ref;
+2. exact-load that receipt and require v0.2;
+3. consume `decision == accepted` only as a recorded input fact, not constitutional authority;
+4. exact-load the receipt's exact base revision;
+5. support **exactly one** packet ref in the first operational Stage 5 slice;
+6. exact-load that packet and rerun canonical Decision 024 eligibility;
+7. require `eligible_for_stage5_acceptance_candidate`;
+8. require the packet's exact Decision 024 base to equal the receipt's exact base;
+9. return only a deterministic named publication-candidate fact;
+10. perform **no mutation**.
 
-```text
-exact base B + exact packet P
-    -> exact receipt R
-    -> successor revision S
-       where S.parent_revision_ref == B
-       and S.integration_receipt_refs contains exact R
-```
-
-This opens receipt identity/chronology only. It does not yet authorize those writes.
+Multi-packet v0.2 receipts remain valid structural objects but are explicitly unsupported by this first operational preflight so the kernel does not invent packet ordering, conflict resolution, partial integration, or epoch semantics.
 
 ## Specialist coordination
 
 ### Lane 02 — next executable lane
 
-Implement **Decision 025 only**.
+Implement **Decision 026 only**.
 
 Required bounded evidence includes:
 
-- valid v0.2 exact base + exact packet refs;
-- logical/generic base rejected;
-- logical packet ids rejected;
-- wrong-kind exact refs rejected;
-- non-canonical exact spellings fail closed;
-- same-logical-id/different-exact packet identities remain distinguishable;
-- duplicate exact packet refs rejected;
-- accepted v0.2 carries no exact successor field capable of recreating the reciprocal hash cycle;
-- historical v0.1 remains readable but is not silently promoted to exact Stage 5 proof;
-- deterministic identity/canonicalization evidence;
-- Decision 024 remains green;
+- exact stored v0.2 accepted receipt + exact base + one exact Decision 024 eligible packet passes;
+- missing/corrupt exact receipt fails closed;
+- v0.1 cannot pass;
+- non-accepted receipt cannot drive successor-publication candidacy;
+- missing/corrupt exact base fails closed;
+- same-logical/different-exact base substitution fails;
+- missing/corrupt exact packet fails closed;
+- same-logical/different-exact packet substitution fails;
+- non-eligible Decision 024 packet fails;
+- receipt-base / packet-base mismatch fails;
+- multi-packet receipt is explicitly unsupported rather than partially selected;
+- no current/newest/HEAD/actor/branch/schedule/CI/Git authority enters selection;
+- repeated identical inputs produce the same named result;
+- Decision 024 and Decision 025 remain green;
 - complete deterministic suite and explicit compile green.
 
-Do not implement packet acceptance execution, successor mutation, claim closure, partial-integration runtime semantics, epochs/barriers, replay, dependency/source closure, mutable currentness, or model autonomy.
+Do not implement successor state-revision mutation/publication, claim/occupancy closure, modified-output integration, dependency-bearing output integration, multi-packet conflict semantics, partial integration, epochs/barriers, replay, mutable currentness, or model autonomy.
 
 ### Lane 03
 
-PR #162 is now **closed without merge as superseded, not invalidated** after Decision 024 became canonical. Its exact branch, return packet, oracle identities, and native run/job remain historical evidence.
+PR #166 is independent Decision 025 verification evidence for an already-integrated prerequisite. Preserve its branch, exact tested head, native run, and return packet, then close it without merge as **superseded, not invalidated** once its durable packet is copied to canonical coordination state.
 
-Wait for Lane 02's exact tested Decision 025 head, then attack only:
+Wait for Lane 02's exact tested Decision 026 head, then attack only the opened re-grounding surface:
 
-- logical/same-logical-different-exact packet substitution;
-- wrong-kind or non-canonical exact base/packet refs;
-- duplicate exact packet membership laundering;
-- hidden current/newest/HEAD or actor authority entering identity;
-- accepted v0.2 reintroducing an exact successor ref and reciprocal content-hash cycle;
-- historical v0.1 being silently treated as exact v0.2 evidence.
+- exact receipt substitution;
+- same-logical/different-exact base or packet substitution;
+- missing/corrupt exact receipt/base/packet material;
+- stale/caller-authored eligibility trying to bypass a fresh Decision 024 run;
+- receipt base vs packet base mismatch;
+- multi-packet ordering/partial-selection laundering;
+- hidden current/newest/HEAD or actor/branch/schedule/CI/Git authority;
+- v0.1 promotion;
+- named result materialization losing exact identity.
 
-Do not widen into mutation/replay unless a new repository-visible decision opens it.
+Do not widen into successor mutation/replay unless a new repository-visible decision opens it.
 
 ### Lane 01
 
 Do not open a mutating integration engine yet.
 
-After Lane 02 implements Decision 025 and Lane 03 independently checks the exact tested ancestry, perform a fresh review under:
+After Lane 02 implements Decision 026 and Lane 03 independently checks the exact tested ancestry, perform a fresh review under:
 
 1. Truth
 2. Agency / non-domination
 3. Continuity
 4. Wisdom before speed
 
-If grounded, integrate Decision 025 and perform the next narrow Stage 5 entry audit. Otherwise preserve the exact blocker/dissent.
+If grounded, integrate Decision 026 and perform the next narrow Stage 5 entry audit. Otherwise preserve the exact blocker/dissent.
 
 ## PR disposition
 
-- PR #156: merged as Decision 024 canonical implementation.
-- PR #162: **closed without merge as superseded, not invalidated** after its independent Decision 024 verification evidence was recorded canonically. The one-off verification workflow remains off `main`; its branch, return packet, run/job, and historical evidence remain available.
+- PR #165: merged as Decision 025 canonical implementation.
+- PR #166: independent Decision 025 verification evidence; close without merge as superseded, not invalidated after canonical preservation of its return packet/evidence pointers.
 
 ## Stage 5 boundaries still closed
 
-Decision 025 does not solve or authorize:
+Decision 026 does not solve or authorize:
 
-- packet acceptance/rejection execution;
 - automatic root approval;
-- successor state-revision mutation/publication runtime;
-- claim closure or occupancy closure;
-- partial-integration runtime semantics;
+- successor state-revision construction/storage/publication;
+- state-revision member-set mutation semantics;
+- claim or occupancy closure/status replacement;
+- modified-output integration;
+- dependency-bearing output integration;
+- multi-packet integration/conflict resolution;
+- partial integration runtime semantics;
+- mutable/global currentness;
 - epochs/barriers;
 - replay runtime or replay success;
-- dependency admissibility/satisfaction/closure beyond explicit facts;
-- source trust, quality, relevance, completeness, or closure;
-- immutable historical source-observation context beyond already-canonical bounded facts;
+- source/dependency closure beyond already-canonical bounded facts;
 - general hostile same-process isolation;
-- mutable/global currentness;
 - model autonomy;
 - full cross-language reproduction.
 
@@ -172,26 +180,26 @@ Decision 025 does not solve or authorize:
 
 ### Truth
 
-Decision 024's repaired surface is independently green and now canonical. The next demonstrated contract gap is not another invented ADV-059 case: it is visible directly in the current integration-receipt schema, where consequential Stage 5 inputs remain generic/logical strings and a naive exact result backlink would create a reciprocal hash cycle.
+Decision 025 proves exact receipt reference identity, not presence/correctness of the referenced durable objects at operational use. Before mutation, exact-load and freshly re-run the already-canonical eligibility proof on the exact packet.
 
 ### Agency / non-domination
 
-No founder, lane, model, CI result, schedule position, branch owner, or Git permission can turn weak receipt identity into exact institutional truth. Decision 025 changes structural identity/chronology only and does not automate root approval.
+No actor category or execution permission substitutes for exact stored relationships or root review. `accepted` is consumed as a recorded decision fact, not as automatic constitutional authority.
 
 ### Continuity
 
-A replacement occupant must eventually reconstruct one transition as `successor -> receipt -> exact base/packets` from immutable stored identities. Historical v0.1 receipts remain historical instead of being silently reinterpreted.
+A replacement occupant can reconstruct one future publication candidate from `exact receipt -> exact base + exact packet -> fresh Decision 024 eligibility` without private chat or a stale caller cache.
 
 ### Wisdom before speed
 
-Fix the smallest exact identity/publication prerequisite before writing canonical mutation. Do not solve receipt identity, packet acceptance, claim closure, successor mutation, epochs, and replay in one step.
+Compose proven exact-load and eligibility primitives before adding writes. Keep successor mutation, claim closure, epochs, and replay closed until this operational read boundary is independently green.
 
 ## Current v0 position
 
 Institution Fabric remains **Stage 4 at the Stage 5 boundary**.
 
-Decision 024 is canonical. Decision 025 is the sole active prerequisite before the next Stage 5 entry review. Stage 5 mutation/replay remains unimplemented and unclaimed.
+Decision 025 is canonical. Decision 026 is the sole active prerequisite before the next Stage 5 entry review. The first canonical mutating integration transition is still unimplemented and unclaimed.
 
 ## Best next action
 
-**Lane 02 implements Decision 025 exact receipt identity and acyclic publication chronology only, with deterministic tests and explicit compile evidence.**
+**Lane 02 implements Decision 026 exact accepted-receipt operational preflight only, with deterministic tests and explicit compile evidence.**
