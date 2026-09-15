@@ -431,8 +431,8 @@ class IntegrationCandidateBindingTests(unittest.TestCase):
             resolved.candidate_binding_outcome,
             UNSUPPORTED_MULTI_PACKET_RECEIPT_SLICE,
         )
-        self.assertFalse(resolved.base_materialized)
-        self.assertFalse(resolved.packet_materialized)
+        self.assertIsNone(resolved.base_materialized)
+        self.assertIsNone(resolved.packet_materialized)
         self.assertIsNone(resolved.packet_eligibility)
         self.assertEqual(resolved.packet_refs, (packet_ref, second_ref))
 
