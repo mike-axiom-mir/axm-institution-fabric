@@ -425,6 +425,17 @@ def observe_exact_source_live(
                             # A caller-owned not-found classification is not evidence that
                             # the supplied store lacks the object. The base read decides.
                             pass
+                    if type(self) is not _InvocationSchemaGuard:
+                        try:
+                            self.__class__ = _InvocationSchemaGuard
+                        except TypeError as exc:
+                            raise SourceLiveObservationContextError(
+                                "Decision 023 invocation guard could not be restored after caller load dispatch"
+                            ) from exc
+                    if type(self) is not _InvocationSchemaGuard:
+                        raise SourceLiveObservationContextError(
+                            "Decision 023 invocation guard changed during caller load dispatch"
+                        )
                     return FilesystemObjectStore.load_bytes(self, reference, schema_name)
 
                 return verified_load
