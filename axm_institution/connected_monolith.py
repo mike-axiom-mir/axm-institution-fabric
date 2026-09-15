@@ -128,10 +128,66 @@ class ConnectedMonolithCapabilityFact:
         }
 
 
+def _validate_workflow_registry(
+    raw: bytes,
+    endpoints: tuple[ConnectedMonolithCapabilityFact, ...],
+) -> None:
+    data = _parse_json_strict(raw)
+    if not isinstance(data, dict):
+        raise ConnectedMonolithContractError("workflow registry root must be an object")
+    if data.get("schema") != "axm.monolith.workflow-registry/v0.1":
+        raise ConnectedMonolithContractError(
+            f"unsupported workflow registry schema: {data.get('schema')!r}"
+        )
+    workflows = data.get("workflows")
+    if not isinstance(workflows, list):
+        raise ConnectedMonolithContractError("workflow registry workflows must be an array")
+    if data.get("workflow_count") != len(workflows):
+        raise ConnectedMonolithContractError("workflow_count does not match workflows array length")
+
+    by_id: dict[str, dict[str, Any]] = {}
+    for index, workflow in enumerate(workflows):
+        if not isinstance(workflow, dict):
+            raise ConnectedMonolithContractError(f"workflows[{index}] must be an object")
+        workflow_id = _require_string(workflow.get("id"), f"workflows[{index}].id")
+        if workflow_id in by_id:
+            raise ConnectedMonolithContractError(f"duplicate workflow id: {workflow_id}")
+        by_id[workflow_id] = workflow
+
+    for fact in endpoints:
+        if not fact.source_callable:
+            continue
+        assert fact.named_workflow is not None
+        workflow = by_id.get(fact.named_workflow)
+        if workflow is None:
+            raise ConnectedMonolithContractError(
+                f"{fact.address}: named workflow {fact.named_workflow!r} is absent from WORKFLOW_REGISTRY.json"
+            )
+        if workflow.get("status") != "callable":
+            raise ConnectedMonolithContractError(
+                f"{fact.address}: named workflow {fact.named_workflow!r} is not marked callable"
+            )
+        stages = workflow.get("stages")
+        if not isinstance(stages, list):
+            raise ConnectedMonolithContractError(
+                f"{fact.address}: workflow {fact.named_workflow!r} stages must be an array"
+            )
+        stage_capabilities = {
+            stage.get("capability")
+            for stage in stages
+            if isinstance(stage, dict) and isinstance(stage.get("capability"), str)
+        }
+        if fact.address not in stage_capabilities:
+            raise ConnectedMonolithContractError(
+                f"{fact.address}: named workflow {fact.named_workflow!r} does not contain this capability address"
+            )
+
+
 @dataclass(frozen=True, slots=True)
 class ConnectedMonolithCatalog:
     execution_fabric_schema: str
     execution_fabric_sha256: str
+    workflow_registry_sha256: str | None
     package_sha256: str | None
     endpoint_count: int
     adapter_status_counts: tuple[tuple[str, int], ...]
@@ -261,6 +317,7 @@ class ConnectedMonolithCatalog:
         return cls(
             execution_fabric_schema=EXECUTION_FABRIC_SCHEMA,
             execution_fabric_sha256=sha256(raw).hexdigest(),
+            workflow_registry_sha256=None,
             package_sha256=package_digest,
             endpoint_count=len(facts),
             adapter_status_counts=tuple(sorted(computed_status_counts.items())),
@@ -291,20 +348,42 @@ class ConnectedMonolithCatalog:
 
         try:
             with zipfile.ZipFile(path) as archive:
-                members = [
+                execution_members = [
                     name
                     for name in archive.namelist()
                     if name == "EXECUTION_FABRIC.json" or name.endswith("/EXECUTION_FABRIC.json")
                 ]
-                if len(members) != 1:
+                workflow_members = [
+                    name
+                    for name in archive.namelist()
+                    if name == "WORKFLOW_REGISTRY.json" or name.endswith("/WORKFLOW_REGISTRY.json")
+                ]
+                if len(execution_members) != 1:
                     raise ConnectedMonolithContractError(
-                        f"expected exactly one EXECUTION_FABRIC.json in ZIP, found {len(members)}"
+                        f"expected exactly one EXECUTION_FABRIC.json in ZIP, found {len(execution_members)}"
                     )
-                raw = archive.read(members[0])
+                if len(workflow_members) != 1:
+                    raise ConnectedMonolithContractError(
+                        f"expected exactly one WORKFLOW_REGISTRY.json in ZIP, found {len(workflow_members)}"
+                    )
+                raw = archive.read(execution_members[0])
+                workflow_raw = archive.read(workflow_members[0])
         except zipfile.BadZipFile as exc:
             raise ConnectedMonolithContractError("connected monolith input is not a valid ZIP") from exc
 
-        return cls.from_execution_fabric_bytes(raw, package_sha256=actual_package_sha)
+        catalog = cls.from_execution_fabric_bytes(raw, package_sha256=actual_package_sha)
+        _validate_workflow_registry(workflow_raw, catalog.endpoints)
+        return cls(
+            execution_fabric_schema=catalog.execution_fabric_schema,
+            execution_fabric_sha256=catalog.execution_fabric_sha256,
+            workflow_registry_sha256=sha256(workflow_raw).hexdigest(),
+            package_sha256=catalog.package_sha256,
+            endpoint_count=catalog.endpoint_count,
+            adapter_status_counts=catalog.adapter_status_counts,
+            source_authority_flags=catalog.source_authority_flags,
+            truth_boundary=catalog.truth_boundary,
+            endpoints=catalog.endpoints,
+        )
 
     def query(
         self,
@@ -346,6 +425,7 @@ class ConnectedMonolithCatalog:
         return {
             "execution_fabric_schema": self.execution_fabric_schema,
             "execution_fabric_sha256": self.execution_fabric_sha256,
+            "workflow_registry_sha256": self.workflow_registry_sha256,
             "package_sha256": self.package_sha256,
             "endpoint_count": self.endpoint_count,
             "adapter_status_counts": dict(self.adapter_status_counts),
