@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import NamedTuple
 
 from .packet_artifact_provenance import preflight_exact_artifact_work_base_provenance
 from .packet_mixed_compatibility import (
@@ -22,8 +21,15 @@ class PacketIntegrationEligibilityError(Exception):
     """Internal consistency failure while composing Decision 024 facts."""
 
 
-class PacketIntegrationEligibilityReason(NamedTuple):
-    """Deterministic reason fact for one Decision 024 eligibility disposition."""
+@dataclass(frozen=True)
+class PacketIntegrationEligibilityReason:
+    """Deterministic named reason fact for one Decision 024 eligibility disposition.
+
+    This nested institutional fact is deliberately a frozen dataclass rather than a
+    tuple. Standard ``dataclasses.asdict`` materialization therefore preserves its field
+    names instead of leaving a tuple shape that ordinary JSON transport can silently
+    degrade into a positional array.
+    """
 
     code: str
     artifact_ref: str | None
@@ -32,8 +38,14 @@ class PacketIntegrationEligibilityReason(NamedTuple):
     related_refs: tuple[str, ...]
 
 
-class PacketReportedFacts(NamedTuple):
-    """Packet-authored text preserved as exact historical facts, without authority."""
+@dataclass(frozen=True)
+class PacketReportedFacts:
+    """Packet-authored text preserved as exact historical facts, without authority.
+
+    The field-bearing dataclass shape keeps these nested facts self-describing through
+    standard dataclass materialization. It does not create a broader transport contract
+    or give packet-authored text disposition authority.
+    """
 
     uncertainties: tuple[str, ...]
     failures_or_blockers: tuple[str, ...]
@@ -47,9 +59,11 @@ class ResolvedPacketIntegrationEligibility:
 
     This top-level institutional fact deliberately is not a tuple. Ordinary JSON
     serialization therefore fails closed instead of silently converting the named fact
-    into a positional array whose meaning depends on Python field order. A future
-    transport adapter may expose an explicitly keyed representation, but this class does
-    not invent that transport contract.
+    into a positional array whose meaning depends on Python field order. Its nested
+    reason and packet-reported facts are frozen dataclasses as well, so standard
+    ``dataclasses.asdict`` materialization preserves their explicit field identities.
+    A future transport adapter may expose an explicitly keyed representation, but this
+    class does not invent that transport contract.
 
     ``eligibility_outcome`` is not packet acceptance. A positive result means only that
     the exact packet fits Decision 024's first bounded Stage 5 acceptance-candidate
