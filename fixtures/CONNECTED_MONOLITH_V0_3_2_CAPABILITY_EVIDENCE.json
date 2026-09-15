@@ -148,6 +148,7 @@
     "endpoint_count": 23472,
     "execution_fabric_schema": "axm.monolith.execution-fabric/v0.1",
     "execution_fabric_sha256": "da1e384fc7107bfb70103d0c39e45e8fbe1b4eb3ecc19a77840bfd2c41ef05c4",
+    "workflow_registry_sha256": "6659baf4a075c018858863db21cdc028586f62463db27a536bf49b1bb1ef5121",
     "source_authority_flags": {
       "automatic_canon": false,
       "automatic_install": false,
