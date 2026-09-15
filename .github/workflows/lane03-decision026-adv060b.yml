@@ -1,0 +1,43 @@
+name: Lane 03 Decision 026 ADV-060-B
+
+on:
+  pull_request:
+    branches:
+      - lane-03/verification-base-decision026-be251c
+    paths:
+      - "axm_institution/integration_candidate_binding.py"
+      - "tests/test_integration_candidate_binding.py"
+      - "tests/test_integration_candidate_binding_adversarial.py"
+      - "tests/test_integration_candidate_binding_adversarial_b.py"
+      - ".github/workflows/lane03-decision026-adv060b.yml"
+
+jobs:
+  adversarial-continuity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install deterministic test dependency
+        run: python -m pip install "jsonschema>=4.0,<5"
+      - name: Pin exact repaired Decision 026 surface and unchanged ADV-060-A oracle
+        run: |
+          test "$(git hash-object axm_institution/integration_candidate_binding.py)" = "34cac51f8778a4365aa519d873dff879425eae4d"
+          test "$(git hash-object tests/test_integration_candidate_binding_adversarial.py)" = "f0d812bf0a170cd2848842c36f30f70a983d02ed"
+      - name: Independently rerun unchanged ADV-060-A
+        run: PYTHONPATH=.:tests python -m unittest test_integration_candidate_binding_adversarial.Decision026AdversarialContinuityTests.test_adv_060_a_caller_load_success_cannot_forge_absent_base_materialization -v
+      - name: Independently rerun unchanged Decision 026 baseline
+        run: python -m unittest discover -s tests -p "test_integration_candidate_binding.py" -v
+      - name: Run ADV-060-B packet materialization counterexample
+        run: PYTHONPATH=.:tests python -m unittest test_integration_candidate_binding_adversarial_b.Decision026PacketMaterializationAdversarialTests.test_adv_060_b_caller_load_success_cannot_forge_absent_packet_materialization -v
+      - name: Keep Decision 025 receipt identity green
+        run: python -m unittest discover -s tests -p "test_integration_receipt_identity.py" -v
+      - name: Keep Decision 024 packet eligibility green
+        run: python -m unittest discover -s tests -p "test_packet_integration_eligibility*.py" -v
+      - name: Run complete deterministic suite
+        run: python -m unittest discover -s tests -v
+      - name: Explicitly compile Decision 026 adversarial surface
+        run: python -m py_compile axm_institution/integration_candidate_binding.py tests/test_integration_candidate_binding.py tests/test_integration_candidate_binding_adversarial.py tests/test_integration_candidate_binding_adversarial_b.py
+      - name: Compile deterministic kernel sources and tests
+        run: python -m compileall -q axm_institution tests
