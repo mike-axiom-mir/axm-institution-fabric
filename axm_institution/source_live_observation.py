@@ -346,10 +346,11 @@ def observe_exact_source_live(
     positive or negative context-local truth is emitted. Its `_object_path` data
     descriptor applies that same bounded rule to object location: a caller-owned exact-
     instance path shadow may run, but neither its return value nor any store-layer error it
-    raises can establish presence or absence; the supplied store's base exact path
-    independently determines the actual availability/identity check. Unexpected non-store
-    exceptions still fail closed. The temporary copy and guards are not retained and
-    therefore do not create historical snapshot, durable store-root identity,
+    raises can establish presence or absence. The invocation-entry `objects_dir` value is
+    also preserved as the only location state the subsequent base path may consume; any
+    caller-side drift is failed closed and restored before returning control. Unexpected
+    non-store exceptions still fail closed. The temporary copy and guards are not retained
+    and therefore do not create historical snapshot, durable store-root identity,
     hostile-process isolation, or re-execution standing.
     """
 
@@ -392,6 +393,8 @@ def observe_exact_source_live(
                 retrieval="not_attempted",
                 integrity="not_evaluated",
             )
+
+        invocation_objects_dir = store.objects_dir
 
         class _InvocationSchemaGuard(FilesystemObjectStore):
             @property
@@ -453,15 +456,20 @@ def observe_exact_source_live(
                             caller_dispatch(reference)
                         except ObjectStoreError:
                             # Caller-owned path dispatch is exercised for continuity with
-                            # ADV-058-G, but its store-layer classification is not evidence
-                            # about the supplied store. The base path/read below decides.
+                            # ADV-058-G/H, but its return/error classification is not
+                            # evidence about the supplied store. The base path decides.
                             pass
+                    if self.objects_dir != invocation_objects_dir:
+                        raise SourceLiveObservationContextError(
+                            "Decision 023 store location context changed during exact target load"
+                        )
                     return FilesystemObjectStore._object_path(self, reference)
 
                 return verified_object_path
 
         load_error: ObjectStoreError | None = None
         original_schema_dir = store.schema_dir
+        original_objects_dir = store.objects_dir
         original_store_class = store.__class__
         schema_override_drifted = False
         try:
@@ -476,6 +484,7 @@ def observe_exact_source_live(
         finally:
             store.__class__ = original_store_class
             store.schema_dir = original_schema_dir
+            store.objects_dir = original_objects_dir
 
         _assert_bundled_schema_context_unchanged(bundled_token)
         if schema_override_drifted:
