@@ -1,0 +1,49 @@
+name: Lane 03 Decision 026 ADV-060-C
+
+on:
+  pull_request:
+    branches:
+      - lane-03/verification-base-decision026-0e2ecd
+    paths:
+      - "axm_institution/integration_candidate_binding.py"
+      - "axm_institution/packet_integration_eligibility.py"
+      - "tests/test_integration_candidate_binding.py"
+      - "tests/test_integration_candidate_binding_adversarial.py"
+      - "tests/test_integration_candidate_binding_adversarial_b.py"
+      - "tests/test_integration_candidate_binding_adversarial_c.py"
+      - ".github/workflows/lane03-decision026-adv060c.yml"
+
+jobs:
+  adversarial-continuity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install deterministic test dependency
+        run: python -m pip install "jsonschema>=4.0,<5"
+      - name: Pin exact repaired Decision 026 surface and unchanged A/B oracles
+        run: |
+          test "$(git hash-object axm_institution/integration_candidate_binding.py)" = "73c61b292e6f412f6b83f658b31cde4536f8c660"
+          test "$(git hash-object tests/test_integration_candidate_binding_adversarial.py)" = "f0d812bf0a170cd2848842c36f30f70a983d02ed"
+          test "$(git hash-object tests/test_integration_candidate_binding_adversarial_b.py)" = "537ad75ef2aea5ea3eafeb68bde1ce6d68c762a6"
+          test "$(git hash-object tests/test_integration_candidate_binding_adversarial_c.py)" = "142bc7f9fbad0bd151c6c8b995008e059604bae9"
+      - name: Independently rerun unchanged ADV-060-A
+        run: PYTHONPATH=.:tests python -m unittest test_integration_candidate_binding_adversarial.Decision026AdversarialContinuityTests.test_adv_060_a_caller_load_success_cannot_forge_absent_base_materialization -v
+      - name: Independently rerun unchanged ADV-060-B
+        run: PYTHONPATH=.:tests python -m unittest test_integration_candidate_binding_adversarial_b.Decision026PacketMaterializationAdversarialTests.test_adv_060_b_caller_load_success_cannot_forge_absent_packet_materialization -v
+      - name: Independently rerun unchanged Decision 026 baseline
+        run: python -m unittest discover -s tests -p "test_integration_candidate_binding.py" -v
+      - name: Run ADV-060-C eligibility recomputation substitution counterexample
+        run: PYTHONPATH=.:tests python -m unittest test_integration_candidate_binding_adversarial_c.Decision026EligibilityRecomputationAdversarialTests.test_adv_060_c_canonical_presence_does_not_bind_caller_substituted_eligibility -v
+      - name: Keep Decision 025 receipt identity green
+        run: python -m unittest discover -s tests -p "test_integration_receipt_identity.py" -v
+      - name: Keep Decision 024 packet eligibility green
+        run: python -m unittest discover -s tests -p "test_packet_integration_eligibility*.py" -v
+      - name: Run complete deterministic suite
+        run: python -m unittest discover -s tests -v
+      - name: Explicitly compile Decision 026 adversarial surface
+        run: python -m py_compile axm_institution/integration_candidate_binding.py axm_institution/packet_integration_eligibility.py tests/test_integration_candidate_binding.py tests/test_integration_candidate_binding_adversarial.py tests/test_integration_candidate_binding_adversarial_b.py tests/test_integration_candidate_binding_adversarial_c.py
+      - name: Compile deterministic kernel sources and tests
+        run: python -m compileall -q axm_institution tests
