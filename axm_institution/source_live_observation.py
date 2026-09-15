@@ -346,12 +346,14 @@ def observe_exact_source_live(
     positive or negative context-local truth is emitted. Its `_object_path` data
     descriptor applies that same bounded rule to object location: a caller-owned exact-
     instance path shadow may run, but neither its return value nor any store-layer error it
-    raises can establish presence or absence. The invocation-entry `objects_dir` value is
-    also preserved as the only location state the subsequent base path may consume; any
-    caller-side drift is failed closed and restored before returning control. Unexpected
-    non-store exceptions still fail closed. The temporary copy and guards are not retained
-    and therefore do not create historical snapshot, durable store-root identity,
-    hostile-process isolation, or re-execution standing.
+    raises can establish presence or absence. The invocation-entry `objects_dir` is copied
+    to a function-owned built-in `Path` and forced back into the verification-critical
+    base path calculation after caller dispatch, so caller replacement/equality/path-
+    composition semantics cannot redirect that read. Original caller-visible location
+    state is restored before returning control. Unexpected non-store exceptions still fail
+    closed. The temporary copy and guards are not retained and therefore do not create
+    historical snapshot, durable store-root identity, hostile-process isolation, or
+    re-execution standing.
     """
 
     if type(store) is not FilesystemObjectStore:
@@ -394,7 +396,7 @@ def observe_exact_source_live(
                 integrity="not_evaluated",
             )
 
-        invocation_objects_dir = store.objects_dir
+        invocation_objects_dir = Path(store.objects_dir)
 
         class _InvocationSchemaGuard(FilesystemObjectStore):
             @property
@@ -481,10 +483,11 @@ def observe_exact_source_live(
                             # ADV-058-G/H, but its return/error classification is not
                             # evidence about the supplied store. The base path decides.
                             pass
-                    if self.objects_dir != invocation_objects_dir:
-                        raise SourceLiveObservationContextError(
-                            "Decision 023 store location context changed during exact target load"
-                        )
+                    # ADV-058-N: do not ask caller-replaceable location state whether it
+                    # is "equal" to the invocation location and then re-consume that same
+                    # state. Force the verification-critical base path to use the
+                    # function-owned built-in Path captured at invocation entry.
+                    self.__dict__["objects_dir"] = invocation_objects_dir
                     return FilesystemObjectStore._object_path(self, reference)
 
                 return verified_object_path
