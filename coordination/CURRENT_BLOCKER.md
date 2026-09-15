@@ -118,7 +118,7 @@ Do not implement packet acceptance execution, successor mutation, claim closure,
 
 ### Lane 03
 
-PR #162 preserves the independent Decision 024 clearance and is superseded by canonical integration, not invalidated.
+PR #162 is now **closed without merge as superseded, not invalidated** after Decision 024 became canonical. Its exact branch, return packet, oracle identities, and native run/job remain historical evidence.
 
 Wait for Lane 02's exact tested Decision 025 head, then attack only:
 
@@ -144,10 +144,10 @@ After Lane 02 implements Decision 025 and Lane 03 independently checks the exact
 
 If grounded, integrate Decision 025 and perform the next narrow Stage 5 entry audit. Otherwise preserve the exact blocker/dissent.
 
-## Open-PR disposition
+## PR disposition
 
 - PR #156: merged as Decision 024 canonical implementation.
-- PR #162: independent Decision 024 verification evidence; safe to close without merge as **superseded, not invalidated** once this sequencing update is canonical. Its verification-only workflow is not needed on `main` because the exact evidence remains in the PR/branch/return packet and Decision 024 implementation/tests are already canonical.
+- PR #162: **closed without merge as superseded, not invalidated** after its independent Decision 024 verification evidence was recorded canonically. The one-off verification workflow remains off `main`; its branch, return packet, run/job, and historical evidence remain available.
 
 ## Stage 5 boundaries still closed
 
