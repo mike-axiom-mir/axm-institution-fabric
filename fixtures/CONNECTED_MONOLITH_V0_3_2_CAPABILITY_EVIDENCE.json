@@ -1,0 +1,161 @@
+{
+  "query_evidence": {
+    "creation_machine_query": {
+      "module": "axm-universal-creation",
+      "provides_all": [
+        "capability.generated"
+      ]
+    },
+    "creation_machine_result_count": 1,
+    "selected_universal_creation_status_examples": [
+      {
+        "accepts": [
+          "capability.request",
+          "objective",
+          "specification"
+        ],
+        "adapter_status": "callable_through_named_workflow",
+        "address": "axm-universal-creation::creation.universal",
+        "capability": "creation.universal",
+        "commit": "78b16c01b543733688d7d036552b63679c87c10b",
+        "evidence_status": "inferred_not_verified",
+        "institution_action_authority": "discovery_only_no_action_authority",
+        "institution_standing": "source_callable_named_workflow",
+        "module": "axm-universal-creation",
+        "named_workflow": "ghost-studio.blackline-3d.v0.4",
+        "provides": [
+          "artifact",
+          "artifact.software",
+          "capability.generated"
+        ],
+        "repository": "mike-axiom-mir/axm-universal-creation",
+        "source_capability_execution": true,
+        "workflow_stage": "brief-to-visual-recipe"
+      },
+      {
+        "accepts": [
+          "asset.request"
+        ],
+        "adapter_status": "executable_inspection",
+        "address": "axm-universal-creation::asset.static",
+        "capability": "asset.static",
+        "commit": "78b16c01b543733688d7d036552b63679c87c10b",
+        "evidence_status": "detected_not_executed",
+        "institution_action_authority": "discovery_only_no_action_authority",
+        "institution_standing": "inspectable_not_source_execution",
+        "module": "axm-universal-creation",
+        "named_workflow": null,
+        "provides": [
+          "asset"
+        ],
+        "repository": "mike-axiom-mir/axm-universal-creation",
+        "source_capability_execution": false,
+        "workflow_stage": null
+      },
+      {
+        "accepts": [
+          "direction",
+          "objective"
+        ],
+        "adapter_status": "blocked_missing_native_contract",
+        "address": "axm-universal-creation::creation.grammar",
+        "capability": "creation.grammar",
+        "commit": "78b16c01b543733688d7d036552b63679c87c10b",
+        "evidence_status": "inferred_not_verified",
+        "institution_action_authority": "discovery_only_no_action_authority",
+        "institution_standing": "blocked_missing_native_contract",
+        "module": "axm-universal-creation",
+        "named_workflow": null,
+        "provides": [
+          "creation.grammar",
+          "specification"
+        ],
+        "repository": "mike-axiom-mir/axm-universal-creation",
+        "source_capability_execution": false,
+        "workflow_stage": null
+      },
+      {
+        "accepts": [
+          "source.module"
+        ],
+        "adapter_status": "executable_test_evidence",
+        "address": "axm-universal-creation::evidence.test-suite",
+        "capability": "evidence.test-suite",
+        "commit": "78b16c01b543733688d7d036552b63679c87c10b",
+        "evidence_status": "detected_not_executed",
+        "institution_action_authority": "discovery_only_no_action_authority",
+        "institution_standing": "test_entrypoint_evidence_not_tests_passed",
+        "module": "axm-universal-creation",
+        "named_workflow": null,
+        "provides": [
+          "evidence.test-suite"
+        ],
+        "repository": "mike-axiom-mir/axm-universal-creation",
+        "source_capability_execution": false,
+        "workflow_stage": null
+      },
+      {
+        "accepts": [
+          "input",
+          "objective"
+        ],
+        "adapter_status": "launchable_local_surface",
+        "address": "axm-universal-creation::interface.entrypoint",
+        "capability": "interface.entrypoint",
+        "commit": "78b16c01b543733688d7d036552b63679c87c10b",
+        "evidence_status": "detected_not_executed",
+        "institution_action_authority": "discovery_only_no_action_authority",
+        "institution_standing": "launchable_not_runtime_verified",
+        "module": "axm-universal-creation",
+        "named_workflow": null,
+        "provides": [
+          "interface.entrypoint"
+        ],
+        "repository": "mike-axiom-mir/axm-universal-creation",
+        "source_capability_execution": false,
+        "workflow_stage": null
+      },
+      {
+        "accepts": [],
+        "adapter_status": "blocked_missing_callable_binding",
+        "address": "axm-universal-creation::leaf::AXM-00-FOUNDATION-A-001-identifier",
+        "capability": "AXM-00-FOUNDATION-A-001-identifier",
+        "commit": "78b16c01b543733688d7d036552b63679c87c10b",
+        "evidence_status": "declared_not_executed",
+        "institution_action_authority": "discovery_only_no_action_authority",
+        "institution_standing": "blocked_missing_callable_binding",
+        "module": "axm-universal-creation",
+        "named_workflow": null,
+        "provides": [],
+        "repository": "mike-axiom-mir/axm-universal-creation",
+        "source_capability_execution": false,
+        "workflow_stage": null
+      }
+    ]
+  },
+  "schema": "axm.institution.connected-monolith-capability-evidence/v0.1",
+  "source": {
+    "adapter_status_counts": {
+      "blocked_missing_callable_binding": 23248,
+      "blocked_missing_native_contract": 68,
+      "callable_through_named_workflow": 3,
+      "executable_inspection": 87,
+      "executable_test_evidence": 37,
+      "launchable_local_surface": 29
+    },
+    "archive_name": "AXM_Connected_Monolith_v0.3.2.zip",
+    "archive_sha256": "f0a0d1d30007d71bb4ded6a9cc03259e5a12ceb7967cd532b12d366ae0cdf55e",
+    "endpoint_count": 23472,
+    "execution_fabric_schema": "axm.monolith.execution-fabric/v0.1",
+    "execution_fabric_sha256": "da1e384fc7107bfb70103d0c39e45e8fbe1b4eb3ecc19a77840bfd2c41ef05c4",
+    "source_authority_flags": {
+      "automatic_canon": false,
+      "automatic_install": false,
+      "automatic_merge": false,
+      "automatic_network": false,
+      "automatic_source_mutation": false
+    },
+    "source_truth_boundary": "aggregate labels and exact declared leaf IDs are counted separately; addressable is not callable. Only grounded adapters or named workflows invoke source behavior, and every unbound declaration remains blocked."
+  },
+  "truth_boundary": "Direct local read of the exact user-supplied ZIP. This evidence proves package/fabric identity and discovery semantics only; it does not execute any source capability or grant Institution Fabric action authority."
+}
