@@ -1,6 +1,6 @@
 # CURRENT BLOCKER — Institution Fabric
 
-Status: **Decision 023 remains blocked.** The first exact live source-observation slice is not canonical yet. The active contradiction is now **ADV-058-N**.
+Status: **Decision 023 remains blocked.** The first exact live source-observation slice is not canonical yet. The active contradiction is now **ADV-058-O**.
 
 This file is the current sequencing pointer. `coordination/CURRENT_WAVE.md` remains useful historical chronology but is not the current gate. Recency, filename, lane identity, founder identity, CI state, PR mergeability, schedule position, or Git permission are evidence/execution facts only; AXM's four roots remain the internal constitutional merge gate.
 
@@ -8,53 +8,53 @@ This file is the current sequencing pointer. `coordination/CURRENT_WAVE.md` rema
 
 Canonical `main` inspected by Lane 01 before this update:
 
-`6c439519afe9174c51defeec35c38e9fbb31db89`
+`64f4664affccf7587d07562d326fd267404548ff`
 
 Canonical message:
 
-`Hold Decision 023 on ADV-058-M`
+`Hold Decision 023 on ADV-058-N`
 
 No Decision 023 production/runtime/schema/test semantics are canonical on `main` yet. PR #112 remains the Lane 02 implementation/repair lane.
 
 ## Current evidence disposition
 
-### Lane 02 — ADV-058-M is repaired on its exact tested surface
+### Lane 02 — ADV-058-N is repaired on its exact tested surface
 
-PR #112 Lane 02 Activation 062 records:
+PR #112 Lane 02 Activation 063 records:
 
-- exact semantic/test/workflow-bearing head: `68cbc3051dceb572fb7585907bb555ead880db30`;
-- exact tested merge candidate against canonical M-hold main: `da2cf53f8b2ce3778f27725e95f55bca80a4ec36`;
-- native run/job: `34924196352` / `104238613513`;
-- current documentation descendant: `ba27d00938007a71048767633f822b3a7d5a9b42`.
+- exact semantic/test/workflow-bearing head: `5662eaea542a4faa5b93648e231541fc9f47fc0c`;
+- exact tested merge candidate against canonical N-hold main: `8b4ea23bda6a17ba5d3b84595d296487185e6951`;
+- native run/job: `34928218734` / `104250714573`;
+- documentation-only descendant / current branch head at Lane 01 inspection: `8d2f1d4be3b5e5a5a984a170efc47fc40e04814c`.
 
-Lane 02 directly recorded on the M-repair surface:
+Lane 02 directly recorded on the N-repair surface:
 
 - Decision 020 ADV-054/055: **6/6 passed**;
 - Decision 022 ADV-057: **6/6 passed**;
 - ADV-058-A/B/C: **3/3 passed**;
-- ADV-058-D/E/F/G/H/I/J/K/L/M: **1/1 each passed**;
+- ADV-058-D/E/F/G/H/I/J/K/L/M/N: **1/1 each passed**;
 - Decision 023 focused suite: **14/14 passed**;
-- complete deterministic discovery: **464/464 passed in 488.172s**;
+- complete deterministic discovery: **465/465 passed in 354.708s**;
 - explicit compile: **passed**.
 
-Lane 01 independently queried current PR #112 descendant `ba27d009...`. Native run `34924787416`, job `104240432501`, completed Decision 020, Decision 022, every preserved adversarial gate through ADV-058-M, the focused Decision 023 suite, complete deterministic discovery, and compile successfully. This independently confirms that the current PR #112 descendant still carries the M repair without regression on the recorded gate sequence.
+Lane 01 independently queried current PR #112 descendant `8d2f1d4...`. Native run `34928726059`, job `104252257563`, completed Decision 020, Decision 022, every preserved adversarial gate through ADV-058-N, the focused Decision 023 suite, complete deterministic discovery, and compile successfully. This confirms that the current PR #112 descendant still carries the N repair without regression on the recorded gate sequence.
 
-Lane 03 then independently re-anchored on the exact Lane 02 M-repair ancestry and cleared unchanged ADV-058-A/B/C/D/E/F/G/H/I/J/K/L/M before advancing to N. Therefore the prior M blocker is resolved on this exact tested surface. Earlier M-red evidence remains historical truth for its pre-repair ancestry.
+Lane 03 then independently re-anchored on the exact Lane 02 N-repair semantic/test/workflow head and cleared unchanged ADV-058-A/B/C/D/E/F/G/H/I/J/K/L/M/N before advancing to O. Therefore the prior N blocker is resolved on this exact tested surface. Earlier N-red evidence remains historical truth for its pre-repair ancestry.
 
-### Lane 03 — unchanged A through M clear, ADV-058-N fails
+### Lane 03 — unchanged A through N clear, ADV-058-O fails
 
-PR #141 is the active adversarial lane.
+PR #143 is the active adversarial lane.
 
-Lane 03 Activation 065 records:
+Lane 03 Activation 066 records:
 
-- exact Lane 02 M-repair semantic/test/workflow head attacked: `68cbc3051dceb572fb7585907bb555ead880db30`;
-- exact Lane 03 test commit: `726672f5f56e44227f17d72820cedcde3c228e42`;
-- exact Lane 03 test/workflow-bearing head: `b070811999e6f75ddf79bb24eead5101606b1383`;
-- exact tested pull-request merge candidate: `7982488500006ac2de2919cd127343fbbd26fa23`;
-- native run/job: `34925217681` / `104241721406`;
-- current PR documentation descendant: `0d7a9d360237c16c362aad3aabd14bce237c78d0`.
+- exact Lane 02 N-repair semantic/test/workflow head attacked: `5662eaea542a4faa5b93648e231541fc9f47fc0c`;
+- exact Lane 03 test commit: `b950b62929df3324e5226f2fcfeeac8db5d88368`;
+- exact Lane 03 test/workflow-bearing head: `ace77d5d0f4d58bfebcda8bd2b7f2049ab27fbda`;
+- exact tested pull-request merge candidate: `2de4233c603c3704f13da7f1035b8135c0f4058f`;
+- native run/job: `34929030043` / `104253159007`;
+- current PR documentation descendant: `c4e905e158e3fdee408a136b4bfefd3e040cbaed`.
 
-Lane 01 independently queried the current PR #141 descendant. Native run `34925352876`, job `104242125012`, records:
+Lane 01 independently queried the current PR #143 descendant. Native run `34929120533`, job `104253421993`, records:
 
 - Decision 020 adversarial gate: **passed**;
 - Decision 022 adversarial gate: **passed**;
@@ -68,68 +68,64 @@ Lane 01 independently queried the current PR #141 descendant. Native run `349253
 - ADV-058-J: **passed**;
 - ADV-058-K: **passed**;
 - ADV-058-L: **passed**;
-- ADV-058-M: **passed** — Lane 02's incoming M repair is independently cleared;
-- ADV-058-N: **failed**;
-- Decision 023 focused suite: **skipped after N failure**;
-- complete deterministic discovery: **skipped after N failure**;
-- explicit compile: **skipped after N failure**.
+- ADV-058-M: **passed**;
+- ADV-058-N: **passed** — Lane 02's incoming N repair is independently cleared;
+- ADV-058-O: **failed**;
+- Decision 023 focused suite: **skipped after O failure**;
+- complete deterministic discovery: **skipped after O failure**;
+- explicit compile: **skipped after O failure**.
 
-Lane 03's original native N reproduction records the exact failure:
-
-```text
-AssertionError: 'not_found_in_live_context' != 'exact_observed'
-```
-
-Fixture message:
+Lane 03's original native O reproduction records the exact failure:
 
 ```text
-caller-owned path dispatch must not pass location continuity by custom equality and redirect the base path
+AssertionError: 'corrupt_material_in_live_context' == 'corrupt_material_in_live_context' : caller-owned load dispatch must not forge material corruption
 ```
 
-ADV-058-N keeps the declared target absent from the supplied exact `FilesystemObjectStore`; a separate decoy store contains the exact canonical target bytes. Caller-owned exact-instance `_object_path` dispatch replaces `store.objects_dir` with a path-like proxy whose equality deliberately claims equivalence with the invocation-entry directory while its `/` composition routes into the decoy store. The caller hook's own returned path is not used for redirection. The current ADV-058-K repair checks `self.objects_dir != invocation_objects_dir`; caller-defined equality can therefore report no drift, after which `FilesystemObjectStore._object_path(self, reference)` re-consumes the proxy and imports exact presence from the decoy root.
+ADV-058-O keeps the exact target genuinely present and byte-identical in the supplied exact `FilesystemObjectStore`. Only caller-owned exact-instance `load_bytes` dispatch raises a forged `ObjectCorruptionError`; it performs no target I/O and mutates no schema or store-location state. The current invocation guard already neutralizes caller-owned `ObjectNotFoundError` so absence cannot be forged before the function-owned base read, but caller-raised `ObjectCorruptionError` escapes that guard and is later classified as `corrupt_material_in_live_context` / `failed_exact_identity`.
 
-The N fixture accepts fail-closed `SourceLiveObservationError` or independently grounded `not_found_in_live_context`. It rejects positive observation manufactured through equality-spoofed location continuity.
+The O fixture accepts fail-closed `SourceLiveObservationError`, an independently grounded `exact_observed`, or conservative `store_error_in_live_context` / indeterminate handling. It rejects material-corruption or failed-identity facts manufactured solely from caller-owned pre-dispatch.
 
 ## Lead finding
 
-The Decision 023 blocker has moved from verifier-stage invocation-guard continuity to **function-owned location continuity**, while remaining inside the same already-open supplied-store validation/availability contract:
+The Decision 023 blocker has moved from function-owned location continuity to **corruption-classification authority on the caller-dispatch / function-owned exact-load seam**, while remaining inside the same already-open supplied-store validation/availability/integrity contract:
 
-> Caller-defined equality cannot be treated as proof that the verification-critical live-store location is unchanged when the subsequent base path operation re-consumes caller-replaceable location state.
+> A durable `corrupt_material_in_live_context` / `failed_exact_identity` fact must be grounded in corruption observed by the function-owned exact-store verification path, not merely in an exception subtype raised by caller-owned pre-dispatch.
 
-ADV-058-N is a direct Truth + Continuity contradiction: the durable fact says the exact target was verified in the supplied live store even though the target is absent there and exact bytes can be imported from another root after caller-controlled equality masks semantic location drift. Agency/non-domination requires caller-owned equality/path-composition behavior not silently become source-truth authority. Wisdom before speed requires repairing only this demonstrated comparison/use seam rather than turning Decision 023 into generic same-process isolation.
+ADV-058-O is a direct Truth + Continuity contradiction: the durable fact can say the supplied exact source failed identity verification while the actual exact bytes in that supplied store remain valid. Agency/non-domination requires caller-owned exception choice not silently become source-truth authority. Wisdom before speed requires repairing only this demonstrated corruption-classification seam rather than turning Decision 023 into generic same-process isolation.
 
 ## PR disposition
 
-- **PR #112 — keep open and held.** It owns Decision 023 implementation and the bounded repair sequence. Do not merge while ADV-058-N is red.
-- **PR #141 — keep open as active adversarial evidence.** Do not merge its stacked Lane 02 ancestry as production history.
-- **PR #139 — closed as superseded, not invalidated.** Its ADV-058-M red evidence remains historical truth for its exact pre-M-repair ancestry. Lane 02 repaired M, and PR #141 preserves unchanged A through M before adding N.
+- **PR #112 — keep open and held.** It owns Decision 023 implementation and the bounded repair sequence. Do not merge while ADV-058-O is red.
+- **PR #143 — keep open as active adversarial evidence.** Do not merge its stacked Lane 02 ancestry as production history.
+- **PR #141 — closed as superseded, not invalidated.** Its ADV-058-N red evidence remains historical truth for its exact pre-N-repair ancestry. Lane 02 repaired N, and PR #143 preserves unchanged A through N before adding O.
 
 ## Smallest next executable lane
 
-### Lane 02 — repair ADV-058-N only
+### Lane 02 — repair ADV-058-O only
 
-Repair only the demonstrated function-owned location-continuity comparison/use hole.
+Repair only the demonstrated caller-owned corruption-error authority.
 
-The verification-critical path must not accept caller-defined equality as evidence that the location consumed by the base exact-store path is unchanged. The smallest acceptable repair is one of:
+The smallest acceptable repair is to ensure caller-owned pre-dispatch cannot by itself establish `corrupt_material_in_live_context` / `failed_exact_identity` before the function-owned exact-store verification path observes corruption. A bounded implementation may:
 
-- use the invocation-entry function-owned built-in `Path` value directly for the actual verification-critical path/read so later caller-replaceable `store.objects_dir` semantics cannot redirect it; or
-- fail closed unless the post-caller location remains the exact expected built-in path state under function-owned comparison/normalization semantics that do not dispatch caller equality/path-composition behavior.
+- ignore caller-only corruption and continue through the function-owned base exact-store read, as already done for caller-only not-found; or
+- conservatively fail closed / classify the caller interference as indeterminate while reserving material-corruption / failed-identity facts for corruption independently produced by the function-owned verification path.
 
-Do not claim generic Python tamper resistance, process isolation, durable store-root identity, immutable snapshots, or retained-byte authority from this repair. Decision 023 still carries `context_standing = live_mutable_store` and `reexecution_standing = not_established`.
+Do not weaken actual base-store corruption detection. Do not claim generic Python tamper resistance, process isolation, durable store-root identity, immutable snapshots, or retained-byte authority from this repair. Decision 023 still carries `context_standing = live_mutable_store` and `reexecution_standing = not_established`.
 
 The repair must preserve unchanged:
 
 - Decision 020 ADV-054/055;
 - Decision 022 ADV-057;
-- ADV-058-A/B/C/D/E/F/G/H/I/J/K/L/M;
-- ADV-058-N as the new regression oracle;
+- ADV-058-A/B/C/D/E/F/G/H/I/J/K/L/M/N;
+- ADV-058-O as the new regression oracle;
 - the exact accepted store boundary;
 - fixed bundled schema interpretation context;
 - context-local not-found semantics;
 - separate availability/retrieval/integrity dimensions;
 - exact declaration occurrence identity;
 - unsupported-kind no-target-I/O behavior;
-- generic store-error indeterminacy.
+- generic store-error indeterminacy;
+- actual function-owned base-store corruption detection.
 
 Required evidence after repair, in order:
 
@@ -147,27 +143,28 @@ Required evidence after repair, in order:
 12. ADV-058-L unchanged;
 13. ADV-058-M unchanged;
 14. ADV-058-N unchanged;
-15. Decision 023 focused suite;
-16. complete deterministic discovery;
-17. explicit compile.
+15. ADV-058-O unchanged;
+16. Decision 023 focused suite;
+17. complete deterministic discovery;
+18. explicit compile.
 
 Record exact semantic head, exact tested merge candidate, native run/job, environment, direct counts/step evidence, skipped checks if any, preserved failed attempts, and uncertainty in the Lane 02 return packet.
 
 ### Lane 03 — independent recheck after repair
 
-After Lane 02 publishes an exact N-repair semantic head, independently rerun ADV-058-A/B/C/D/E/F/G/H/I/J/K/L/M/N unchanged on that ancestry.
+After Lane 02 publishes an exact O-repair semantic/test head, independently rerun ADV-058-A/B/C/D/E/F/G/H/I/J/K/L/M/N/O unchanged on that ancestry.
 
-Attack another nearby path only if repository evidence demonstrates another concrete contradiction inside Decision 023's already-open supplied-store validation/availability contract. Do not turn the lane into open-ended same-process hardening. If A through N all clear and no concrete adjacent contradiction is evidenced, return control to Lane 01 for integration review.
+Attack another nearby path only if repository evidence demonstrates another concrete contradiction inside Decision 023's already-open supplied-store observation contract. Do not turn the lane into open-ended same-process hardening. If A through O all clear and no concrete adjacent contradiction is evidenced, return control to Lane 01 for integration review.
 
 ### Lane 01 — integration hold
 
-Do not merge Decision 023 until the N red -> bounded repair -> independent unchanged-oracle evidence chain is complete and the resulting surface remains grounded against Truth, Agency/non-domination, Continuity, and Wisdom before speed.
+Do not merge Decision 023 until the O red -> bounded repair -> independent unchanged-oracle evidence chain is complete and the resulting surface remains grounded against Truth, Agency/non-domination, Continuity, and Wisdom before speed.
 
 Green CI, role identity, founder identity, recency, schedule position, or Git permission alone is not integration authority.
 
 ## Historical evidence preserved
 
-The current N blocker does not rewrite earlier evidence:
+The current O blocker does not rewrite earlier evidence:
 
 - ADV-058-A exposed bundled-schema substitution between capability classification and observation;
 - ADV-058-B exposed caller-owned validation-context rebind/restore;
@@ -182,9 +179,10 @@ The current N blocker does not rewrite earlier evidence:
 - ADV-058-K exposed caller-owned `_object_path` side effects mutating `store.objects_dir` before the base path consumed it and importing presence from another store root;
 - ADV-058-L exposed caller-owned `load_bytes` dispatch removing the invocation guard before the base loader dynamically resolved `_verify_existing`;
 - ADV-058-M exposed caller-owned `_verify_existing` dispatch removing the invocation guard and re-exposing caller-owned `_object_path` authority during the subsequent base verifier;
-- Lane 02 repaired each demonstrated A through M path on its exact tested surface;
-- Lane 03 independently clears A through M on the latest repaired ancestry;
-- ADV-058-N now shows caller-controlled location equality/path-composition semantics can mask `objects_dir` drift and redirect the subsequent base path into another store root.
+- ADV-058-N exposed caller-controlled location equality/path-composition semantics masking `objects_dir` drift and redirecting the subsequent base path into another store root;
+- Lane 02 repaired each demonstrated A through N path on its exact tested surface;
+- Lane 03 independently clears A through N on the latest repaired ancestry;
+- ADV-058-O now shows caller-owned `load_bytes` corruption-error choice can manufacture a material-corruption / failed-identity fact without function-owned corruption evidence.
 
 Each red remains valid for its exact pre-repair ancestry. Each green remains valid for its exact tested repaired surface. Neither class of evidence erases the other.
 
