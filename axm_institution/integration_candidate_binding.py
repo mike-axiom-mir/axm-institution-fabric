@@ -38,6 +38,11 @@ class ResolvedIntegrationCandidateBinding:
     base revision, one exact stored packet, and the canonical Decision 024 eligibility
     fact are mutually coherent for the first bounded acceptance-candidate slice.
 
+    ``base_materialized`` and ``packet_materialized`` are tri-state facts: ``True``
+    means the exact load completed; ``None`` means Decision 026 deliberately did not
+    attempt materialization because the receipt was already outside the one-packet
+    first slice. Typed load failures propagate instead of being rewritten as ``False``.
+
     This result does not publish the receipt, accept the packet, construct or publish a
     successor revision, close a claim/occupancy, complete an epoch, establish replay,
     approve root reasoning, or grant authority from actor identity, schedule, CI,
@@ -48,8 +53,8 @@ class ResolvedIntegrationCandidateBinding:
     receipt_decision: str
     base_state_revision_ref: str
     packet_refs: tuple[str, ...]
-    base_materialized: bool
-    packet_materialized: bool
+    base_materialized: bool | None
+    packet_materialized: bool | None
     packet_eligibility: ResolvedPacketIntegrationEligibility | None
     candidate_binding_outcome: str
     reasons: tuple[IntegrationCandidateBindingReason, ...]
@@ -61,8 +66,8 @@ def _result(
     receipt_decision: str,
     base_ref: str,
     packet_refs: tuple[str, ...],
-    base_materialized: bool,
-    packet_materialized: bool,
+    base_materialized: bool | None,
+    packet_materialized: bool | None,
     eligibility: ResolvedPacketIntegrationEligibility | None,
     outcome: str,
     reasons: tuple[IntegrationCandidateBindingReason, ...],
@@ -110,8 +115,8 @@ def preflight_exact_stored_integration_candidate_binding(
             receipt_decision=receipt_decision,
             base_ref=base_ref,
             packet_refs=packet_refs,
-            base_materialized=False,
-            packet_materialized=False,
+            base_materialized=None,
+            packet_materialized=None,
             eligibility=None,
             outcome=UNSUPPORTED_MULTI_PACKET_RECEIPT_SLICE,
             reasons=(
