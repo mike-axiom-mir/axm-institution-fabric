@@ -129,10 +129,12 @@ def preflight_exact_stored_integration_candidate_binding(
 
     packet_ref = packet_refs[0]
 
-    # Material presence is established only through the canonical exact-load path.
-    # Existing ObjectNotFound/ObjectCorruption/reference failures remain the stronger
-    # facts and propagate rather than being collapsed into a local boolean result.
+    # Preserve the supplied-store exact-load path, but do not let caller-owned
+    # instance dispatch alone establish the stronger base_materialized=True fact.
+    # Independently reproduce the receipt base through the canonical base-class load;
+    # typed absence/corruption/reference failures remain stronger facts and propagate.
     store.load(base_ref, "state-revision.schema.json")
+    FilesystemObjectStore.load(store, base_ref, "state-revision.schema.json")
     store.load(packet_ref, "return-packet.schema.json")
 
     eligibility = preflight_packet_integration_eligibility(store, packet_ref)
