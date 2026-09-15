@@ -313,6 +313,65 @@ def _write_schema_snapshot(snapshot: Mapping[str, bytes], target_dir: Path) -> N
         ) from exc
 
 
+def _assert_schema_snapshot_unchanged(
+    snapshot: Mapping[str, bytes], target_dir: Path
+) -> None:
+    """Fail closed if the invocation-local interpretation copy changed in place."""
+
+    expected_names = tuple(sorted(snapshot))
+    try:
+        observed_paths = sorted(target_dir.iterdir(), key=lambda path: path.name)
+    except OSError as exc:
+        raise SourceLiveObservationContextError(
+            f"cannot inspect function-owned bundled schema snapshot: {exc}"
+        ) from exc
+
+    observed_names = tuple(path.name for path in observed_paths)
+    if observed_names != expected_names:
+        raise SourceLiveObservationContextError(
+            "function-owned bundled schema snapshot membership changed during Decision 023 observation"
+        )
+
+    for path in observed_paths:
+        try:
+            before = path.stat()
+            if not stat.S_ISREG(before.st_mode):
+                raise SourceLiveObservationContextError(
+                    f"function-owned bundled schema snapshot path is not a regular file: {path.name!r}"
+                )
+            raw = path.read_bytes()
+            after = path.stat()
+        except SourceLiveObservationContextError:
+            raise
+        except OSError as exc:
+            raise SourceLiveObservationContextError(
+                f"cannot inspect function-owned bundled schema snapshot {path.name!r}: {exc}"
+            ) from exc
+
+        before_signature = (
+            before.st_dev,
+            before.st_ino,
+            before.st_size,
+            before.st_mtime_ns,
+            before.st_ctime_ns,
+        )
+        after_signature = (
+            after.st_dev,
+            after.st_ino,
+            after.st_size,
+            after.st_mtime_ns,
+            after.st_ctime_ns,
+        )
+        if before_signature != after_signature or len(raw) != after.st_size:
+            raise SourceLiveObservationContextError(
+                f"function-owned bundled schema snapshot changed while being checked: {path.name!r}"
+            )
+        if raw != snapshot[path.name]:
+            raise SourceLiveObservationContextError(
+                f"function-owned bundled schema snapshot contents changed during Decision 023 observation: {path.name!r}"
+            )
+
+
 def observe_exact_source_live(
     *,
     containing_object_ref: str,
@@ -334,27 +393,30 @@ def observe_exact_source_live(
     store instance is temporarily given an invocation-local data-descriptor guard. Its
     `schema_dir` getter verifies that the instance dictionary still names the function-
     owned snapshot, so both ordinary assignment and direct `__dict__` rebinding fail
-    closed when validation tries to consume the interpretation context. Its `load_bytes`
-    data descriptor prevents a caller-owned instance shadow from becoming proof of either
-    presence, absence, or material corruption: caller-raised `ObjectNotFoundError` and
-    `ObjectCorruptionError` are not source-truth evidence, so the base exact-store read
-    still independently decides. Other caller-raised store-layer failures retain the
-    existing indeterminate store-error classification. Its `_verify_existing` data
-    descriptor applies the same rule one layer deeper: any caller-owned instance verifier
-    shadow may run first, but neither a successful return nor a caller-raised
-    `ObjectNotFoundError` or `ObjectCorruptionError` is sufficient evidence; the base
-    exact-store verifier must independently read and reproduce the exact immutable identity
-    before positive or negative context-local truth is emitted. Its `_object_path` data
-    descriptor applies that same bounded rule to object location: a caller-owned exact-
-    instance path shadow may run, but neither its return value nor any store-layer error it
-    raises can establish presence or absence. The invocation-entry `objects_dir` is copied
-    to a function-owned built-in `Path` and forced back into the verification-critical base
-    path calculation after caller dispatch, so caller replacement/equality/path-composition
-    semantics cannot redirect that read. Original caller-visible location state is restored
-    before returning control. Unexpected non-store exceptions still fail closed. The
-    temporary copy and guards are not retained and therefore do not create historical
-    snapshot, durable store-root identity, hostile-process isolation, or re-execution
-    standing.
+    closed when validation tries to consume the interpretation context. The exact snapshot
+    bytes are also rechecked after caller-owned store dispatch and before each subsequent
+    function-owned base-store consumer, so caller mutation of that temporary copy cannot
+    silently manufacture a stronger identity/corruption fact under different schema bytes.
+    Its `load_bytes` data descriptor prevents a caller-owned instance shadow from becoming
+    proof of either presence, absence, or material corruption: caller-raised
+    `ObjectNotFoundError` and `ObjectCorruptionError` are not source-truth evidence, so the
+    base exact-store read still independently decides. Other caller-raised store-layer
+    failures retain the existing indeterminate store-error classification. Its
+    `_verify_existing` data descriptor applies the same rule one layer deeper: any
+    caller-owned instance verifier shadow may run first, but neither a successful return
+    nor a caller-raised `ObjectNotFoundError` or `ObjectCorruptionError` is sufficient
+    evidence; the base exact-store verifier must independently read and reproduce the exact
+    immutable identity before positive or negative context-local truth is emitted. Its
+    `_object_path` data descriptor applies that same bounded rule to object location: a
+    caller-owned exact-instance path shadow may run, but neither its return value nor any
+    store-layer error it raises can establish presence or absence. The invocation-entry
+    `objects_dir` is copied to a function-owned built-in `Path` and forced back into the
+    verification-critical base path calculation after caller dispatch, so caller
+    replacement/equality/path-composition semantics cannot redirect that read. Original
+    caller-visible location state is restored before returning control. Unexpected
+    non-store exceptions still fail closed. The temporary copy and guards are not retained
+    and therefore do not create historical snapshot, durable store-root identity,
+    hostile-process isolation, or re-execution standing.
     """
 
     if type(store) is not FilesystemObjectStore:
@@ -387,6 +449,7 @@ def observe_exact_source_live(
             ) from exc
 
         _assert_bundled_schema_context_unchanged(bundled_token)
+        _assert_schema_snapshot_unchanged(bundled_snapshot, snapshot_dir)
 
         if capability.runtime_capability == "unsupported_kind":
             return _fact(
@@ -440,6 +503,7 @@ def observe_exact_source_live(
                         raise SourceLiveObservationContextError(
                             "Decision 023 invocation guard changed during caller load dispatch"
                         )
+                    _assert_schema_snapshot_unchanged(bundled_snapshot, snapshot_dir)
                     return FilesystemObjectStore.load_bytes(self, reference, schema_name)
 
                 return verified_load
@@ -468,6 +532,7 @@ def observe_exact_source_live(
                         raise SourceLiveObservationContextError(
                             "Decision 023 invocation guard changed during caller verifier dispatch"
                         )
+                    _assert_schema_snapshot_unchanged(bundled_snapshot, snapshot_dir)
                     return FilesystemObjectStore._verify_existing(self, reference, schema_name)
 
                 return verified_existing
@@ -485,6 +550,7 @@ def observe_exact_source_live(
                             # ADV-058-G/H, but its return/error classification is not
                             # evidence about the supplied store. The base path decides.
                             pass
+                    _assert_schema_snapshot_unchanged(bundled_snapshot, snapshot_dir)
                     # ADV-058-N: do not ask caller-replaceable location state whether it
                     # is "equal" to the invocation location and then re-consume that same
                     # state. Force the verification-critical base path to use the
@@ -514,6 +580,7 @@ def observe_exact_source_live(
             store.objects_dir = original_objects_dir
 
         _assert_bundled_schema_context_unchanged(bundled_token)
+        _assert_schema_snapshot_unchanged(bundled_snapshot, snapshot_dir)
         if schema_override_drifted:
             raise SourceLiveObservationContextError(
                 "Decision 023 store interpretation context changed during exact target load"
