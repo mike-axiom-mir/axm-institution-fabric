@@ -453,6 +453,17 @@ def observe_exact_source_live(
                             # object is absent from this supplied store. The base verifier
                             # independently grounds presence/absence/identity below.
                             pass
+                    if type(self) is not _InvocationSchemaGuard:
+                        try:
+                            self.__class__ = _InvocationSchemaGuard
+                        except TypeError as exc:
+                            raise SourceLiveObservationContextError(
+                                "Decision 023 invocation guard could not be restored after caller verifier dispatch"
+                            ) from exc
+                    if type(self) is not _InvocationSchemaGuard:
+                        raise SourceLiveObservationContextError(
+                            "Decision 023 invocation guard changed during caller verifier dispatch"
+                        )
                     return FilesystemObjectStore._verify_existing(self, reference, schema_name)
 
                 return verified_existing
