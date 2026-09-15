@@ -2,15 +2,16 @@
 
 Status: **bounded discovery adapter / no execution authority**
 
-This bridge lets Institution Fabric inspect a Connected Monolith `EXECUTION_FABRIC.json` as an external capability substrate without extracting or executing the monolith.
+This bridge lets Institution Fabric inspect a Connected Monolith `EXECUTION_FABRIC.json` as an external capability substrate without extracting or executing the monolith. When the input is a ZIP, callable named-workflow routes are also cross-checked against that same package's `WORKFLOW_REGISTRY.json`.
 
 It exists so a lane can answer questions such as:
 
 - which exact capability addresses are present;
 - what each endpoint accepts and provides;
 - whether the source snapshot marks the endpoint blocked, inspectable, test-entrypoint-evidenced, launchable, or callable through a named workflow;
+- whether a claimed callable endpoint actually appears in the package's callable named workflow;
 - which repository commit the source endpoint came from;
-- which exact monolith ZIP and execution-fabric bytes were inspected.
+- which exact monolith ZIP, execution-fabric bytes, and workflow-registry bytes were inspected.
 
 It does **not** let discovery become authority.
 
@@ -22,6 +23,7 @@ Observed exact package facts:
 
 - ZIP SHA-256: `f0a0d1d30007d71bb4ded6a9cc03259e5a12ceb7967cd532b12d366ae0cdf55e`
 - `EXECUTION_FABRIC.json` SHA-256: `da1e384fc7107bfb70103d0c39e45e8fbe1b4eb3ecc19a77840bfd2c41ef05c4`
+- `WORKFLOW_REGISTRY.json` SHA-256: `6659baf4a075c018858863db21cdc028586f62463db27a536bf49b1bb1ef5121`
 - execution-fabric schema: `axm.monolith.execution-fabric/v0.1`
 - endpoints: `23,472`
 - statuses:
@@ -36,7 +38,7 @@ A query for module `axm-universal-creation` providing `capability.generated` ret
 
 `axm-universal-creation::creation.universal`
 
-The source snapshot marks that endpoint `callable_through_named_workflow` only through workflow `ghost-studio.blackline-3d.v0.4`, stage `brief-to-visual-recipe`.
+The execution fabric marks that endpoint `callable_through_named_workflow` through workflow `ghost-studio.blackline-3d.v0.4`, stage `brief-to-visual-recipe`. The ZIP loader additionally verifies that `WORKFLOW_REGISTRY.json` marks that workflow callable and contains the exact endpoint address among its stages.
 
 That means the Building can now **discover the Creation Machine route truthfully**. It does not mean arbitrary Universal Creation calls are authorized, that unrelated monolith compositions are executable, or that the institution may automatically invoke the route.
 
