@@ -336,24 +336,24 @@ def observe_exact_source_live(
     owned snapshot, so both ordinary assignment and direct `__dict__` rebinding fail
     closed when validation tries to consume the interpretation context. Its `load_bytes`
     data descriptor prevents a caller-owned instance shadow from becoming proof of either
-    presence or absence: a caller-raised `ObjectNotFoundError` is not absence evidence, so
-    the base exact-store read still independently decides. Other caller-raised store-layer
-    failures retain the existing indeterminate store-error classification. Its
-    `_verify_existing` data descriptor applies the same rule one layer deeper: any caller-
-    owned instance verifier shadow may run first, but neither a successful return nor a
-    caller-raised `ObjectNotFoundError` is sufficient evidence; the base exact-store
-    verifier must independently read and reproduce the exact immutable identity before
-    positive or negative context-local truth is emitted. Its `_object_path` data
-    descriptor applies that same bounded rule to object location: a caller-owned exact-
-    instance path shadow may run, but neither its return value nor any store-layer error it
-    raises can establish presence or absence. The invocation-entry `objects_dir` is copied
-    to a function-owned built-in `Path` and forced back into the verification-critical
-    base path calculation after caller dispatch, so caller replacement/equality/path-
-    composition semantics cannot redirect that read. Original caller-visible location
-    state is restored before returning control. Unexpected non-store exceptions still fail
-    closed. The temporary copy and guards are not retained and therefore do not create
-    historical snapshot, durable store-root identity, hostile-process isolation, or
-    re-execution standing.
+    presence, absence, or material corruption: caller-raised `ObjectNotFoundError` and
+    `ObjectCorruptionError` are not source-truth evidence, so the base exact-store read
+    still independently decides. Other caller-raised store-layer failures retain the
+    existing indeterminate store-error classification. Its `_verify_existing` data
+    descriptor applies the same rule one layer deeper: any caller-owned instance verifier
+    shadow may run first, but neither a successful return nor a caller-raised
+    `ObjectNotFoundError` is sufficient evidence; the base exact-store verifier must
+    independently read and reproduce the exact immutable identity before positive or
+    negative context-local truth is emitted. Its `_object_path` data descriptor applies
+    that same bounded rule to object location: a caller-owned exact-instance path shadow
+    may run, but neither its return value nor any store-layer error it raises can establish
+    presence or absence. The invocation-entry `objects_dir` is copied to a function-owned
+    built-in `Path` and forced back into the verification-critical base path calculation
+    after caller dispatch, so caller replacement/equality/path-composition semantics
+    cannot redirect that read. Original caller-visible location state is restored before
+    returning control. Unexpected non-store exceptions still fail closed. The temporary
+    copy and guards are not retained and therefore do not create historical snapshot,
+    durable store-root identity, hostile-process isolation, or re-execution standing.
     """
 
     if type(store) is not FilesystemObjectStore:
@@ -423,9 +423,10 @@ def observe_exact_source_live(
                     if caller_dispatch is not None:
                         try:
                             caller_dispatch(reference, schema_name)
-                        except ObjectNotFoundError:
-                            # A caller-owned not-found classification is not evidence that
-                            # the supplied store lacks the object. The base read decides.
+                        except (ObjectNotFoundError, ObjectCorruptionError):
+                            # Caller-owned absence/corruption classifications are not
+                            # evidence about the supplied store. The function-owned base
+                            # exact-store read independently decides presence and integrity.
                             pass
                     if type(self) is not _InvocationSchemaGuard:
                         try:
