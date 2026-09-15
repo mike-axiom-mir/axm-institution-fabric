@@ -1,190 +1,159 @@
 # CURRENT BLOCKER — Institution Fabric
 
-Status: **Decision 023 remains held, but ADV-058-Q is no longer an unresolved Lane 02 implementation failure on its exact tested surface.** Lane 02 has published a bounded Q repair with a complete green native run. The current gate is now **independent Lane 03 unchanged A-through-Q verification of that repaired ancestry, followed by a fresh Lane 01 four-root integration review**.
+Status: **Decision 023 is canonical on its bounded exact live-source observation surface. There is no active ADV-058 blocker.** The prior A-through-Q red/repair history remains valid for its exact ancestries, but the current tested Decision 023 surface has passed Lane 02 repair/self-verification and independent Lane 03 unchanged A-through-Q verification. The next gate is no longer source-observation repair; it is a **bounded Stage 4 -> Stage 5 entry audit** before any immutable integration/replay runtime is opened.
 
-This file is the current sequencing pointer. `coordination/CURRENT_WAVE.md` remains useful historical chronology but is not the current gate. Recency, filename, lane identity, founder identity, CI state, PR mergeability, schedule position, or Git permission are evidence/execution facts only; AXM's four roots remain the internal constitutional merge gate.
+This file is the current sequencing pointer. `coordination/CURRENT_WAVE.md` remains historical chronology. Recency, filename, role, founder identity, CI state, mergeability, schedule position, or Git permission remain evidence/execution facts only; AXM's four roots remain the internal constitutional merge gate.
 
-## Canonical base for this sequencing state
+## Canonical Decision 023 integration
 
-Canonical `main` inspected by Lane 01 before this update:
+Decision 023 production/runtime/test semantics were squash-merged from PR #112 as canonical commit:
 
-`31752fdba9bbe040f7346dc5146052b712edf760`
+`6492e3cc6f393ccd276387197ce7fd230478492d`
 
 Canonical message:
 
-`Hold Decision 023 on ADV-058-Q`
+`Integrate Decision 023 exact live source observation facts`
 
-No Decision 023 production/runtime/schema/test semantics are canonical on `main` yet. PR #112 remains the Lane 02 implementation/repair lane. PR #147 remains the Lane 03 adversarial evidence lane.
+The integrated contract remains exactly bounded by `coordination/decisions/023_EXACT_SOURCE_LIVE_OBSERVATION_FACTS.md`:
 
-## New evidence since canonical Q hold
+- one exact Decision 020 `exact_axm_object` declaration occurrence;
+- exact `FilesystemObjectStore` only;
+- bundled interpretation context only;
+- no logical-id/newest/locator/recency fallback;
+- explicit availability/retrieval/integrity outcome dimensions;
+- `observation_method = filesystem_exact_load_v1`;
+- `context_standing = live_mutable_store`;
+- `reexecution_standing = not_established`.
 
-### Lane 02 — ADV-058-Q repaired on its exact tested surface
+It does **not** establish durable source-store identity, historical snapshot identity, retained bytes, generic hostile-process isolation, source trust/quality/relevance/completeness/closure, packet acceptance, claim closure, successor publication, Stage 5 integration, epochs/barriers, replay success, or model-autonomy authority.
 
-PR #112 Lane 02 Activation 066 records:
+## Evidence chain that closed the hold
 
-- canonical base inspected: `31752fdba9bbe040f7346dc5146052b712edf760`;
-- exact semantic/test/workflow repair head: `643401bc8e7be259d02cb2cfeb8374511adc4cf3`;
-- exact tested merge candidate: `e2f4b4685d9c18fd70cf68d7493f923f68027acd`;
-- native run/job: `34941984904` / `104292549647`;
-- workflow: `identity-stage2`;
-- environment: Ubuntu 24.04.5 LTS, CPython 3.12.14, jsonschema 4.26.0;
-- documentation-only descendant / current PR #112 head at Lane 01 inspection: `ab38bd2509c71a2ebac79c3f880c4d960057f269`;
-- durable packet: `coordination/returns/02/2026-09-15_ACTIVATION_066.md`.
+### Lane 02 — bounded Q repair and complete self-verification
 
-Lane 02 directly records on the Q-repair merge candidate:
+Exact semantic/test/workflow Q-repair head:
+
+`643401bc8e7be259d02cb2cfeb8374511adc4cf3`
+
+Corrected ADV-058-Q oracle blob:
+
+`4a397e86d08146cb6d0686e5de6963a43663e4b5`
+
+Lane 02 native repair run/job:
+
+`34941984904` / `104292549647`
+
+Recorded results:
 
 - Decision 020 ADV-054/055: **6/6 passed**;
 - Decision 022 ADV-057: **6/6 passed**;
 - ADV-058-A/B/C: **3/3 passed**;
-- ADV-058-D/E/F/G/H/I/J/K/L/M/N/O/P/Q: **1/1 each passed**;
-- Decision 023 focused suite: **14/14 passed**;
-- complete deterministic discovery: **468/468 passed**, 0 failures/errors, in **471.592s**;
-- explicit compile: **passed**;
-- workflow/job conclusion: **success**;
-- no required Lane 02 gate skipped.
+- ADV-058-D through Q: **1/1 each passed**;
+- focused Decision 023: **14/14 passed**;
+- full deterministic discovery: **468/468 passed**, 0 failures/errors;
+- explicit compile: **passed**.
 
-GitHub's native workflow record independently identifies `643401bc8e7be259d02cb2cfeb8374511adc4cf3` as the run head and conclusion `success` for run `34941984904`.
+Lane 02 then re-anchored the same semantic surface against the newest pre-integration canonical main. Activation 067 records native run/job `34946105546` / `104305753910`, merge candidate `42c7124405cb81c2739dd4e2311b3b75299c065e`, again with A-through-Q, focused Decision 023, **468/468** full discovery, and compile green. Direct comparison from `643401bc...` to the then-current verification head showed only coordination/return-state deltas, not production/test/schema/workflow semantic drift.
 
-The bounded Q repair keeps the invocation-local function-owned schema snapshot but now checks exact membership/content continuity after caller-visible exact-store dispatch and before each subsequent function-owned base-store consumer. Snapshot drift fails closed instead of being allowed to manufacture `corrupt_material_in_live_context` / `failed_exact_identity`. Genuine base-store corruption under an unchanged snapshot remains classified as corruption.
+### Lane 03 — independent unchanged A-through-Q verification
 
-This repair does **not** establish durable snapshot/root identity, retained bytes, generic hostile same-process isolation, source trust/closure, packet acceptance, claim closure, Stage 5 integration, epochs/barriers, replay, or model-autonomy semantics. `context_standing = live_mutable_store` and `reexecution_standing = not_established` remain unchanged.
+PR #151 was opened from the exact Lane 02 Q-repair semantic/test/workflow head `643401bc...`, preserving the corrected Q oracle byte-identically.
 
-### Lane 03 — latest packet is continuity evidence, not Q-repair verification
+Lane 03 native run/job:
 
-PR #147 Lane 03 Activation 069 is newer than the prior canonical Q hold but **must not be misread as independent Q-repair clearance**.
+`34947661969` / `104310792989`
 
-That activation inspected repository state before Lane 02's Q repair was published. It recorded:
+The Lane 03 Activation 070 packet directly observed before packet publication:
 
-- canonical main `31752fd...` with Q held;
-- then-current PR #112 head `14610250...`, still only carrying the prior P repair;
-- no published Q-repair semantic/test head at that inspection point;
-- no new adversarial fixture;
-- no A-through-Q run on repaired ancestry;
-- a successful cold replacement-occupant reconstruction of the current sequencing state from repository artifacts alone.
+- Decision 020: passed;
+- Decision 022: passed;
+- unchanged ADV-058-A through Q: passed;
+- focused Decision 023: passed;
+- no new bounded adjacent contradiction evidenced.
 
-Its durable packet is `coordination/returns/03/2026-09-15_ACTIVATION_069.md` on branch head `884cd3c3d0f8cb8ddce3a59a032e70b3dfc3ad49`.
+After that packet was written, Lane 01 independently re-read the native workflow state. The same run/job completed **successfully**, including the broader deterministic discovery step and explicit compile step. This later workflow completion is new Lane 01-observed evidence; it is not retroactively inserted into Lane 03's packet as if Lane 03 had observed it earlier.
 
-Therefore Lane 03 Activation 069 is useful Continuity evidence for repository-state reconstruction, but its Decision 023 semantic evidence state remains `not_tested` for the Q-repaired ancestry. It neither clears nor contradicts Lane 02 Activation 066.
+Lane 03's durable packet is preserved canonically as:
 
-## Lead finding
+`coordination/returns/03/2026-09-15_ACTIVATION_070.md`
 
-The active gate has changed from **repair ADV-058-Q** to **independently verify the exact Q-repaired ancestry**.
+## Four-root integration review
 
-The current evidence chain is:
+### Truth
 
-```text
-Lane 03 corrected Q red
-    -> exact pre-repair contradiction preserved
-Lane 02 bounded Q repair
-    -> unchanged A-through-Q green
-    -> focused Decision 023 green
-    -> full 468/468 green
-    -> compile green
-Lane 03 independent A-through-Q on repaired ancestry
-    -> still pending / not tested
-Lane 01 four-root integration review
-    -> cannot run to a canonical merge decision yet
-```
+Decision 023 is integrated only at the exact bounded meaning its decision file and tests support. The earlier ADV-058-A-through-Q reds remain historical truth for their pre-repair ancestries. The later greens do not prove general hostile same-process isolation, immutable observation context, trust, closure, or replay.
 
-Truth requires not relabelling Lane 02's successful self-test as independent adversarial clearance. Agency/non-domination requires Lane 01 not seize Lane 03's explicitly assigned independent verification merely because this lane has write access. Continuity requires the repaired head, tested candidate, native run, and pending independent obligation to be explicit in repository state. Wisdom before speed requires stopping here rather than merging Decision 023 before the independent chain closes.
+### Agency / non-domination
+
+No caller-owned dispatch, custom schema context, logical/newest fallback, founder status, specialist role, schedule, CI result, branch ownership, or Git permission becomes source authority. Lane 01's merge action is execution of a grounded disposition, not constitutional authority by role.
+
+### Continuity
+
+The exact semantic head, oracle identity, Lane 02 complete evidence, Lane 03 independent verification, prior red history, bounded non-claims, and integration result are all repository-visible. A replacement occupant does not need this chat to reconstruct why Decision 023 became canonical.
+
+### Wisdom before speed
+
+The ADV-058 seam does **not** remain open merely because more hostile same-process scenarios can be imagined. No new ADV-058-R is invented without a concrete contradiction inside the already-authorized Decision 023 contract. The project returns to the v0 institution sequence instead of turning source observation into an unbounded hardening program.
 
 ## PR disposition
 
-- **PR #112 — keep open and held.** Q is repaired on its exact tested surface, but Decision 023 integration remains pending independent adversarial clearance and a fresh root review.
-- **PR #147 — keep open as the adversarial lane.** Its existing Q-red evidence remains historical truth; its next technical action is to re-anchor on Lane 02 repair head `643401bc...` and rerun unchanged A-through-Q.
-- Earlier ADV-058 adversarial PRs remain superseded, not invalidated. Their red evidence remains valid for their exact pre-repair ancestries.
+- **PR #112 — merged.** Canonical Decision 023 integration commit is `6492e3cc...`.
+- **PR #151 — verification evidence only; do not merge its stacked implementation ancestry.** Its Lane 03 return packet is copied unchanged onto fresh canonical ancestry. Close the PR as superseded after that canonical packet copy lands; this does not invalidate its independent verification evidence.
+- Earlier ADV-058 adversarial PRs remain superseded, not invalidated. Their red evidence remains true for their exact pre-repair ancestries.
+
+## Current v0 position
+
+Institution Fabric remains **Stage 4 at the sequencing boundary into Stage 5**.
+
+Decision 023 closes the currently opened exact live-source observation slice. It does not automatically declare all Stage 4 semantics complete, and it does not itself authorize an integration/replay engine. At the same time, unresolved future source capabilities must not automatically block v0 if the minimal Stage 5 proof can preserve them as explicit unsupported/unknown facts rather than pretending they exist.
 
 ## Smallest next executable lane
 
-### Lane 03 — independently recheck Lane 02 Q repair
+### Lane 01 — bounded Stage 4 -> Stage 5 entry audit
 
-Re-anchor on exact Lane 02 semantic/test/workflow head:
+Before asking Lane 02 to implement Stage 5, inspect the already-canonical Stage 4 contracts and answer one narrow question:
 
-`643401bc8e7be259d02cb2cfeb8374511adc4cf3`
+> Does the current canonical kernel contain enough explicit identity, lane/output compatibility, dependency, evidence, provenance/source, packet, uncertainty, and failure facts to implement the **smallest immutable integration transition** without silently inventing packet acceptance, trust/closure, source completeness, global currentness, or replay authority?
 
-Preserve the corrected ADV-058-Q oracle byte-identically:
+The audit must end in exactly one of two grounded dispositions:
 
-`4a397e86d08146cb6d0686e5de6963a43663e4b5`
+1. **Open Stage 5 minimally** — define the smallest integration input/output contract that can accept/reject/defer/repair one already-grounded packet and create an immutable successor revision plus explicit receipt/replay inputs, while leaving unsupported policy dimensions explicit; or
+2. **Name exactly one blocking fact** — if Stage 5 cannot be truthful yet, identify the single smallest missing deterministic fact/decision and open only that prerequisite.
 
-Then run, unchanged and in the established adversarial-first order:
+Do not pre-emptively open immutable source snapshots, retained-byte storage, generic resolvers, trust scoring, source closure, networking, model autonomy, or domain-specific policy unless the audit demonstrates that one is actually required for the v0 transition.
 
-1. Decision 020 ADV-054/055;
-2. Decision 022 ADV-057;
-3. ADV-058-A/B/C;
-4. ADV-058-D;
-5. ADV-058-E;
-6. ADV-058-F;
-7. ADV-058-G;
-8. ADV-058-H;
-9. ADV-058-I;
-10. ADV-058-J;
-11. ADV-058-K;
-12. ADV-058-L;
-13. ADV-058-M;
-14. ADV-058-N;
-15. ADV-058-O;
-16. ADV-058-P;
-17. ADV-058-Q.
+### Lane 02
 
-If A-through-Q clear, inspect one adjacent path only if repository evidence demonstrates a concrete contradiction inside Decision 023's already-open supplied-store observation / same-invocation interpretation-coherence contract. Do not turn this into open-ended same-process hardening.
+No further Decision 023 semantic repair is assigned. Hold implementation until Lane 01's Stage 5 entry audit produces a bounded executable contract or one exact prerequisite.
 
-If no new contradiction is evidenced, return control to Lane 01 with exact head, merge candidate, native run/job, environment, per-gate result, skipped checks if any, and uncertainty. Lane 03 does not need to rerun broader focused/full/compile gates unless its own workflow contract requires them; Lane 02 already supplied those on the exact repair candidate. Any new red must remain explicit and hold integration.
+### Lane 03
 
-### Lane 01 — integration hold
+No new ADV-058 fixture is assigned. Preserve the existing red/repair/green evidence and challenge the next exact Stage 5/prerequisite head when one exists.
 
-Do not merge Decision 023 yet.
+## Unresolved boundaries — preserved, not promoted to blockers by default
 
-After independent Lane 03 A-through-Q clearance exists, perform a fresh review of:
+Still not established:
 
-- exact implementation/test ancestry;
-- unchanged adversarial oracle identity;
-- native evidence and skipped checks;
-- contradictions/dissent;
-- contract minimality;
-- Truth;
-- Agency / non-domination;
-- Continuity;
-- Wisdom before speed.
-
-Only then decide whether PR #112 is sufficiently grounded for canonical integration.
-
-## Historical ADV-058 evidence remains preserved
-
-A through P each exposed a concrete caller-visible authority or continuity seam on its exact pre-repair ancestry; Lane 02 repaired each bounded path and Lane 03 independently cleared them on later repaired ancestries. ADV-058-Q then exposed caller mutation of the observer-owned invocation schema snapshot content after capability classification and before function-owned verification consumption. Lane 02 Activation 066 now repairs Q on its exact tested surface. The prior Q red remains valid historical evidence; the Q green does not erase it.
-
-The sequence still demonstrates the intended evidence rule:
-
-> each red is true for its exact pre-repair ancestry; each green is true for its exact tested repaired surface; neither is permission to silently generalize beyond that surface.
-
-## Unresolved boundary — still explicitly unopened
-
-Decision 023 does not establish:
-
-- general hostile same-process code isolation;
-- durable identity for the live store root;
-- durable identity for the bundled/schema interpretation root;
-- immutable/historical source-observation context identity or completeness;
+- general hostile same-process isolation;
+- durable live-store/schema-root identity;
+- immutable/historical source-observation context identity/completeness;
 - retained verified source bytes;
-- custom/non-bundled observation-context identity/configuration;
-- content-address byte-provider/digest-verification semantics;
-- locator/network/filesystem/package resolver contracts and resolver identity;
+- custom observation contexts;
+- content-address byte-provider/digest-verification runtime;
+- locator/network/filesystem/package resolver contracts;
 - locator/content/exact association;
-- historical-to-typed migration objects;
-- provenance-relation vocabulary;
+- historical-to-typed source migration;
+- general provenance-relation vocabulary;
 - source trust, quality, relevance, completeness, or closure;
-- dependency admissibility/satisfaction/closure;
-- evidence-method/source-quality precedence or invalidation dominance;
-- packet acceptance/rejection and durable closure;
+- dependency admissibility/satisfaction/closure beyond current exact packet-local facts;
+- evidence-method/source-quality precedence/invalidation dominance;
+- durable packet acceptance/rejection closure;
 - claim closure;
 - successor state-revision publication;
 - Stage 5 integration receipts/runtime;
 - epochs/barriers;
-- replay or literal reexecution authority;
+- replay/literal observation reexecution authority;
 - cross-language source-observation reproduction;
 - stronger filesystem durability/concurrency guarantees.
 
-These remain future decisions/evidence obligations, not implied semantics.
-
-## Current v0 position
-
-Institution Fabric remains in bounded Stage 4 source-fact work needed before later integration/replay claims can be truthful. The deterministic-kernel direction is unchanged: explicit typed facts first, then immutable integration/replay only after their input meaning is grounded. Model-heavy autonomy remains out of scope.
+These are future evidence obligations. They become v0 blockers only if the bounded Stage 5 entry audit demonstrates that the minimal truthful integration transition cannot proceed without one of them.
