@@ -50,6 +50,12 @@ from .source_runtime_capability import (
     SourceRuntimeCapabilityInputError,
     project_exact_source_runtime_capability,
 )
+from .source_live_observation import (
+    ExactSourceLiveObservationFact,
+    SourceLiveObservationContextError,
+    SourceLiveObservationError,
+    observe_exact_source_live,
+)
 
 __all__ = [
     "STRONG_EVIDENCE_STATES",
@@ -94,4 +100,8 @@ __all__ = [
     "SourceRuntimeCapabilityError",
     "SourceRuntimeCapabilityInputError",
     "project_exact_source_runtime_capability",
+    "ExactSourceLiveObservationFact",
+    "SourceLiveObservationContextError",
+    "SourceLiveObservationError",
+    "observe_exact_source_live",
 ]
