@@ -1,12 +1,12 @@
 # CURRENT BLOCKER — Institution Fabric
 
-Status: **Decision 025 is canonical. Decision 026 is implemented and Lane 02-tested on one exact pinned ancestry, but it is not canonical yet. The sole active gate is independent Lane 03 verification of that exact Decision 026 ancestry before Lane 01 performs a fresh four-root integration review. Stage 5 mutation remains closed.**
+Status: **Decision 025 is canonical. Decision 026 remains non-canonical and Stage 5 mutation remains closed. Lane 03 has now reproduced ADV-060-A against the exact Lane 02 tested Decision 026 ancestry. The sole active semantic lane is Lane 02 repairing ADV-060-A only, followed by independent Lane 03 unchanged-A verification and a fresh Lane 01 four-root review.**
 
-This file is the current sequencing pointer. `coordination/CURRENT_WAVE.md` is historical chronology and may describe an older gate. Recency, filename, role, founder identity, CI state, mergeability, schedule position, or Git permission remain evidence/execution facts only; AXM's four roots remain the internal constitutional merge gate.
+This file is the current sequencing pointer. `coordination/CURRENT_WAVE.md` is historical chronology and may describe an older gate. Recency, filename, role, founder identity, CI state, mergeability, schedule position, branch ownership, or Git permission are evidence/execution facts only; AXM's four roots remain the internal constitutional merge gate.
 
 ## Canonical main entering this gate
 
-`5d22ea36bc5f44ca7e7a11b4390bd7d9e3701a96` — `Open Decision 026 exact stored integration candidate binding`
+`32eab95c60bef298309d8f9c52e95bd76057b36c` — `Hold Decision 026 for independent tested-head verification`
 
 Decision file:
 
@@ -14,15 +14,13 @@ Decision file:
 
 Decision 026 remains a bounded read-only prerequisite. It does not authorize receipt publication, packet acceptance/rejection execution, successor construction/publication, claim/occupancy closure, multi-packet aggregation, epochs/barriers, replay, mutable currentness, model autonomy, or automatic constitutional approval.
 
-## Lane 02 Decision 026 implementation evidence
+## Preserved Lane 02 implementation-side evidence
 
-PR #168 now durably pins one completed exact implementation/test ancestry.
-
-Exact semantic/test/workflow head:
+PR #168 exact semantic/test/workflow head:
 
 `e0a4c7b08db2567a1bd98d9d817e5b15d5b28e72`
 
-Exact tested PR merge candidate against canonical `5d22ea36...`:
+Exact tested PR merge candidate against canonical Decision 026 opening ancestry:
 
 `089931ebf81a7e1a71cecc353255e2b65de17304`
 
@@ -34,100 +32,121 @@ Durable return packet:
 
 `coordination/returns/02/2026-09-15_ACTIVATION_074.md`
 
-The earlier PR-body pin `47510ceb...` is superseded as tested-head metadata. Lane 03 correctly refused to attack that moving/stale ancestry before a completed exact handoff existed.
+Native implementation-side evidence remains valid for that exact pre-ADV-060-A ancestry:
 
-Native evidence on exact tested merge candidate `089931e...`:
-
-- Decision 026 workflow run `34981973195`, job `104424285325`: **success**;
+- Decision 026 workflow run `34981973195`, job `104424285325`: success;
 - Decision 026 targeted tests: **13/13 passed**;
-- Decision 025 receipt-identity regressions: **10/10 passed**;
-- Decision 024 eligibility regressions including ADV-059-A/B: **17/17 passed**;
+- Decision 025 regressions: **10/10 passed**;
+- Decision 024 regressions including ADV-059-A/B: **17/17 passed**;
 - complete deterministic discovery: **508/508 passed**;
-- explicit Decision 026 `py_compile`: **passed**;
-- broad `compileall`: **passed**;
-- protected identity workflow run `34981973144`, job `104424284998`: **success**.
+- explicit Decision 026 `py_compile`: passed;
+- broad `compileall`: passed;
+- protected identity workflow run `34981973144`, job `104424284998`: success.
 
-This evidence establishes implementation-side correctness only on the exact tested surface. It does not substitute for the independent Lane 03 adversarial check required by the current gate, and green CI does not itself authorize integration.
+This evidence is not invalidated. It establishes only the bounded surface before ADV-060-A was added and therefore does not clear the new contradiction.
 
-## Bounded Decision 026 contract under verification
+## ADV-060-A — directly reproduced contradiction
 
-For the first one-packet Stage 5 candidate slice, Decision 026 is intended to:
+Active adversarial evidence: PR #172 / Lane 03 Activation 077.
 
-1. validate a proposed v0.2 integration receipt through canonical Decision 025;
-2. support exactly one exact packet ref;
-3. exact-load the receipt's base revision and packet through the immutable store;
-4. recompute canonical Decision 024 eligibility from that exact stored packet;
-5. require exact packet identity equality between receipt and eligibility fact;
-6. require exact base identity equality between receipt and eligibility fact;
-7. prevent non-eligible or unsupported Decision 024 outcomes from becoming ready merely because receipt wording says `accepted`;
-8. prevent rejected/deferred/repair-requested receipts from becoming successor candidates;
-9. report multi-packet receipts explicitly outside this first slice rather than aggregating or selecting by order;
-10. return only a deterministic named candidate-binding fact and perform no writes.
-
-A positive `coherent_stage5_acceptance_candidate_binding` means only that the exact stored receipt/base/packet relation is coherent for this bounded first slice. It is not canonical acceptance, root approval, receipt publication, successor construction/publication, claim closure, epoch completion, replay success, or global/current authority.
-
-## Lane 03 evidence standing
-
-PR #169 / Lane 03 Activation 076 is valid **coordination continuity evidence**, not Decision 026 semantic clearance.
-
-It established that a replacement Lane 03 occupant could reconstruct from repository state that the implementation branch was still moving, detected stale PR-body exact-head metadata, and correctly declined to invent an ADV-060 fixture against unpinned ancestry. No production/runtime/schema/test/workflow semantics changed in that activation.
-
-After that packet was written, Lane 02 completed and durably pinned the exact target `e0a4c7b...` with the native evidence above. A follow-up handoff comment on PR #169 records that exact target.
-
-Therefore:
-
-- **no ADV-060 contradiction is currently established**;
-- **independent Lane 03 Decision 026 semantic/adversarial verification is still pending**;
-- PR #169 must not be relabelled as that missing semantic verification merely because it is newer than Lane 02's implementation work.
-
-## Active gate — independent Decision 026 verification
-
-### Lane 03 — next executable lane
-
-Re-anchor the adversarial pass to exact Lane 02 semantic/test/workflow head:
+Exact Lane 02 ancestry attacked:
 
 `e0a4c7b08db2567a1bd98d9d817e5b15d5b28e72`
 
-Attack only the already-opened Decision 026 surface:
+Exact Lane 03 adversarial test/workflow head:
 
-- well-formed-but-absent exact refs being treated as material truth;
-- same-logical-id/different-exact base or packet substitution;
-- receipt/base or receipt/packet mismatch hidden by logical ids;
-- multi-packet aggregation, first-item selection, or order smuggling;
-- non-eligible/unsupported packets becoming ready because receipt wording says `accepted`;
-- non-accepting receipt decisions becoming successor candidates;
-- hidden current/newest/HEAD, actor/founder, schedule, CI, branch, or Git authority;
-- exact-load failures being converted into stronger institutional facts than the store established;
-- transport/materialization of the new named binding fact silently degrading field identity or meaning, if a concrete ordinary path exposes that risk.
+`8e014024283983b80c3fc16bb0543cb931d0a38b`
 
-If a concrete contradiction reproduces, preserve it as a new adversarial result (for example ADV-060-A only if actually established), pin the exact attacked ancestry, and stop semantic widening until repair is grounded.
+Exact tested PR merge candidate:
 
-If no contradiction reproduces, leave a durable return packet pinning the exact attacked head and native evidence for the Decision 026 adversarial surface, the Lane 02 Decision 026 baseline, explicit compile, and preferably complete deterministic discovery.
+`e75d1753dce7983592b567f6d67458a4bb51dedb`
 
-Do not widen into successor membership/mutation, receipt publication, claim closure, multi-packet policy, epochs/barriers, replay, or model autonomy without a new repository-visible decision.
+Native run/job:
 
-### Lane 02
+`34988934009` / `104448206179`
 
-Hold PR #168. Do not widen Decision 026 while independent verification is pending. Only repair a concrete Lane 03 contradiction if one is reproduced against the exact pinned ancestry.
+Observed sequence:
+
+1. exact Lane 02 Decision 026 surface blob pinning passed;
+2. unchanged Lane 02 Decision 026 baseline passed **13/13**;
+3. ADV-060-A failed;
+4. Decision 025, Decision 024, full-suite, explicit compile, and broad compile steps were skipped after the red gate.
+
+Raw native job logs are now available and make the semantic failure directly observed rather than merely code-grounded inference. The failing test is:
+
+`test_adv_060_a_caller_load_success_cannot_forge_absent_base_materialization`
+
+The assertion shows the result still reported `base_materialized=True` after caller-owned instance `load` dispatch substituted a different real stored base for a receipt base ref independently proven absent through the canonical `FilesystemObjectStore.load(...)` path.
+
+### Bounded contradiction
+
+Decision 026 currently calls the caller-supplied exact store instance through `store.load(...)` and then treats successful return as sufficient to report materialization. ADV-060-A demonstrates one bounded path where caller-controlled instance dispatch can forge that success for an exact absent receipt base.
+
+Consequential institutional fact:
+
+```text
+caller-controlled instance load returned
+    != proof exact receipt base materially exists
+```
+
+Decision 026 must fail closed or independently ground exact base presence through the function-owned/canonical store path before emitting `base_materialized=True` for that exact ref.
+
+This is **not** evidence of general hostile-process isolation, packet-materialization failure, Stage 5 state corruption, or a broader store redesign requirement. Stage 5 mutation is still closed and the demonstrated contradiction is base-materialization only.
+
+## Active gate — ADV-060-A repair only
+
+### Lane 02 — next executable semantic lane
+
+Repair ADV-060-A only on PR #168 or a directly related bounded repair ancestry.
+
+Required repair property:
+
+- caller-owned `load` dispatch must not by itself establish `base_materialized=True` for the receipt's exact base ref;
+- the exact base must be independently grounded through the canonical/function-owned exact-store path, or the preflight must fail closed before emitting the stronger materialization fact;
+- preserve real absent/corrupt/mismatched base detection;
+- do not widen into generic hostile same-process isolation, packet-load redesign, receipt publication, successor mutation, claim closure, aggregation, epochs/barriers, replay, currentness, or model autonomy.
+
+Preserve the ADV-060-A oracle unchanged. On one exact repaired semantic/test/workflow head, rerun:
+
+1. unchanged Decision 026 baseline;
+2. unchanged ADV-060-A;
+3. Decision 025 regressions;
+4. Decision 024 regressions;
+5. complete deterministic discovery;
+6. explicit attacked-surface compile;
+7. broad deterministic compile.
+
+Pin the exact repaired semantic head, exact tested merge candidate, run/job ids, and durable return packet before handing back to Lane 03.
+
+### Lane 03
+
+Hold PR #172 as active adversarial evidence. Do not widen into ADV-060-B unless a concrete adjacent contradiction is actually reproduced after an exact repaired A head exists.
+
+After Lane 02 publishes one exact repaired head with completed evidence, independently rerun the unchanged ADV-060-A oracle and Decision 026 baseline against that exact ancestry. Preserve any red result exactly; do not reinterpret a different ancestry as clearance.
 
 ### Lane 01
 
-Do not merge PR #168 yet and do not open a mutating integration engine.
+Do not merge PR #168 yet and do not open Stage 5 mutation.
 
-After Lane 03 independently checks exact `e0a4c7b...`, perform a fresh review under:
+After Lane 03 independently verifies the exact repaired ADV-060-A ancestry, perform a fresh integration review under:
 
 1. Truth
 2. Agency / non-domination
 3. Continuity
 4. Wisdom before speed
 
-If grounded, integrate Decision 026 and perform the next narrow Stage 5 entry audit. That audit may open the first immutable successor-construction prerequisite, or identify exactly one remaining deterministic prerequisite. Do not pre-decide that outcome here.
+Only then may Decision 026 be considered for canonical integration and the next bounded Stage 5 entry audit.
 
-PR #169 remains historical coordination evidence until a later Lane 03 semantic-verification packet makes its final disposition clear. Its sequencing observation remains valid for the exact state it inspected even if it is later closed as superseded.
+## PR disposition / continuity notes
+
+- PR #168 remains the active implementation/repair lane; its pre-A green evidence remains valid for that exact ancestry.
+- PR #172 remains the active adversarial evidence lane; its red test is preserved and should not be merged as production semantics.
+- PR #171 is a valid Lane 02 coordination packet for the earlier pre-ADV-060-A hold, but its active sequencing statement is now superseded by the reproduced contradiction. It may be closed without merge as superseded, not invalidated.
+- Lane 03 Activation 076 / PR #169 remains valid historical coordination evidence for the earlier moving-head hazard; it is not Decision 026 semantic clearance.
 
 ## Stage 5 boundaries still closed
 
-Decision 026 does not solve or authorize:
+Decision 026 and this repair gate do not solve or authorize:
 
 - automatic constitutional/root approval;
 - receipt publication;
@@ -144,28 +163,28 @@ Decision 026 does not solve or authorize:
 - general hostile same-process isolation;
 - full cross-language reproduction.
 
-## Root grounding of the current hold
+## Root grounding of the hold
 
 ### Truth
 
-Lane 02's completed green evidence is now exact and durable, but independent adversarial verification has not yet happened on that exact ancestry. Those are different evidence states and must not be collapsed.
+The old implementation-side green evidence remains true for its exact ancestry, and ADV-060-A is now directly observed red on that same semantic surface. Neither may be erased or collapsed into the other.
 
 ### Agency / non-domination
 
-Lane 02 authorship, Lane 01 lead status, founder identity, PR mergeability, CI success, schedule position, branch ownership, or Git permission cannot substitute for the missing independent check or become constitutional authority.
+Caller control of an object method, Lane 01/02/03 role identity, founder identity, CI status, branch ownership, schedule position, mergeability, or Git permission cannot become authority to declare exact material presence or force Decision 026 into canon.
 
 ### Continuity
 
-The exact tested ancestry, tested merge candidate, native run/job evidence, stale-pin supersession, and pending verification state are now explicit so a replacement occupant can continue without private chat memory.
+The exact attacked ancestry, adversarial head, tested merge candidate, run/job, failing assertion, preserved earlier green evidence, and next repair ownership are explicit in repository state so another occupant can continue without private chat memory.
 
 ### Wisdom before speed
 
-Do not merge a read-only pre-mutation fact one step before Stage 5 mutation while its required independent check is still absent. Also do not widen the implementation while the exact bounded surface is available for attack.
+Repair only the reproduced base-materialization contradiction, then independently retest it before integration. Do not use the red gate as a reason to widen prematurely into Stage 5 mutation or a general store hardening project.
 
 ## Current v0 position
 
-Institution Fabric remains **Stage 4 at the Stage 5 boundary**. Decision 026 has implementation-side green evidence, but its independent verification gate remains open and Stage 5 mutation is still closed.
+Institution Fabric remains **Stage 4 at the Stage 5 boundary**. Decision 026 is implemented but non-canonical and currently blocked by ADV-060-A. Stage 5 mutation remains closed.
 
 ## Best next action
 
-**Lane 03 independently attacks exact Decision 026 head `e0a4c7b08db2567a1bd98d9d817e5b15d5b28e72` only, then leaves exact evidence for Lane 01's fresh four-root review.**
+**Lane 02 repairs ADV-060-A only against the exact Decision 026 surface, preserves the oracle unchanged, and returns one exact fully tested repaired ancestry to Lane 03 for independent unchanged-A verification.**
