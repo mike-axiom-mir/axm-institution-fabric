@@ -1,0 +1,54 @@
+name: lane03-adv058o
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  adversarial-decision023:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test dependency
+        run: python -m pip install "jsonschema>=4.0,<5"
+      - name: Run Decision 020 adversarial gate
+        run: python -m unittest discover -s tests -p "test_typed_source_declarations_adversarial.py" -v
+      - name: Run Decision 022 adversarial gate
+        run: python -m unittest discover -s tests -p "test_source_runtime_capability_adversarial.py" -v
+      - name: Run ADV-058-A/B/C
+        run: python -m unittest discover -s tests -p "test_source_live_observation_adversarial.py" -v
+      - name: Run ADV-058-D
+        run: python -m unittest discover -s tests -p "test_source_live_observation_adversarial_dict_bypass.py" -v
+      - name: Run ADV-058-E
+        run: python -m unittest discover -s tests -p "test_source_live_observation_adversarial_dispatch_bypass.py" -v
+      - name: Run ADV-058-F
+        run: python -m unittest discover -s tests -p "test_source_live_observation_adversarial_verify_bypass.py" -v
+      - name: Run ADV-058-G
+        run: python -m unittest discover -s tests -p "test_source_live_observation_adversarial_path_dispatch.py" -v
+      - name: Run ADV-058-H
+        run: python -m unittest discover -s tests -p "test_source_live_observation_adversarial_path_error.py" -v
+      - name: Run ADV-058-I
+        run: python -m unittest discover -s tests -p "test_source_live_observation_adversarial_load_error.py" -v
+      - name: Run ADV-058-J
+        run: python -m unittest discover -s tests -p "test_source_live_observation_adversarial_verify_error.py" -v
+      - name: Run ADV-058-K
+        run: python -m unittest discover -s tests -p "test_source_live_observation_adversarial_path_state_mutation.py" -v
+      - name: Run ADV-058-L
+        run: python -m unittest discover -s tests -p "test_source_live_observation_adversarial_guard_class_drift.py" -v
+      - name: Run ADV-058-M
+        run: python -m unittest discover -s tests -p "test_source_live_observation_adversarial_verifier_guard_drift.py" -v
+      - name: Run ADV-058-N
+        run: python -m unittest discover -s tests -p "test_source_live_observation_adversarial_path_location_equality.py" -v
+      - name: Run ADV-058-O
+        run: python -m unittest discover -s tests -p "test_source_live_observation_adversarial_corruption_error.py" -v
+      - name: Run focused Decision 023 after adversarial gate
+        run: python -m unittest discover -s tests -p "test_source_live_observation.py" -v
+      - name: Run complete deterministic discovery after adversarial gate
+        run: python -m unittest discover -s tests -v
+      - name: Compile Decision 023 adversarial surface
+        run: python -m py_compile axm_institution/source_live_observation.py tests/test_source_live_observation_adversarial.py tests/test_source_live_observation_adversarial_dict_bypass.py tests/test_source_live_observation_adversarial_dispatch_bypass.py tests/test_source_live_observation_adversarial_verify_bypass.py tests/test_source_live_observation_adversarial_path_dispatch.py tests/test_source_live_observation_adversarial_path_error.py tests/test_source_live_observation_adversarial_load_error.py tests/test_source_live_observation_adversarial_verify_error.py tests/test_source_live_observation_adversarial_path_state_mutation.py tests/test_source_live_observation_adversarial_guard_class_drift.py tests/test_source_live_observation_adversarial_verifier_guard_drift.py tests/test_source_live_observation_adversarial_path_location_equality.py tests/test_source_live_observation_adversarial_corruption_error.py
