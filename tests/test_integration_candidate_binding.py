@@ -21,6 +21,7 @@ from axm_institution.integration_candidate_binding import (
 from axm_institution.lifecycle import admit_occupancy, open_work_claim, submit_return_packet
 from axm_institution.packet_integration_eligibility import (
     ELIGIBLE_FOR_STAGE5_ACCEPTANCE_CANDIDATE,
+    UNSUPPORTED_DEPENDENCY_POLICY,
     preflight_packet_integration_eligibility,
 )
 from axm_institution.store import (
@@ -67,12 +68,12 @@ class IntegrationCandidateBindingTests(unittest.TestCase):
         artifact.pop("supersedes_ref", None)
         return artifact
 
-    def _output_artifact(self, *, base_ref: str):
+    def _output_artifact(self, *, base_ref: str, dependency_refs=()):
         artifact = self._fixture("artifact.schema.json")
-        artifact["schema_version"] = "0.2"
+        artifact["schema_version"] = "0.2" if not dependency_refs else "0.3"
         artifact["id"] = "artifact.decision026.created"
         artifact["type"] = "kernel_contracts"
-        artifact["version"] = "0.2"
+        artifact["version"] = artifact["schema_version"]
         artifact["content_ref"] = "artifact://decision026/created"
         artifact["provenance"] = {
             "producer_lane_id": "lane-02",
@@ -80,7 +81,7 @@ class IntegrationCandidateBindingTests(unittest.TestCase):
             "source_refs": ["source://decision026/preserved"],
         }
         artifact["evidence_refs"] = []
-        artifact["dependency_refs"] = []
+        artifact["dependency_refs"] = list(dependency_refs)
         artifact.pop("supersedes_ref", None)
         return artifact
 
@@ -280,6 +281,24 @@ class IntegrationCandidateBindingTests(unittest.TestCase):
         with self.assertRaises(ObjectCorruptionError):
             preflight_exact_stored_integration_candidate_binding(self.store, receipt)
 
+    def test_reproduced_identity_mismatch_in_stored_packet_fails_closed(self):
+        context, packet_ref = self._eligible_context_and_packet()
+        alternate_packet = copy.deepcopy(self.store.load(packet_ref))
+        alternate_packet["uncertainties"] = [
+            "Same logical packet id, different exact stored bytes for Decision 026."
+        ]
+        alternate_ref = self.store.store(
+            alternate_packet, "return-packet.schema.json"
+        ).reference
+        self.assertNotEqual(alternate_ref, packet_ref)
+
+        target = self.store._object_path(packet_ref)
+        target.write_bytes(self.store._object_path(alternate_ref).read_bytes())
+        receipt = self._receipt(base_ref=context["base_ref"], packet_refs=[packet_ref])
+
+        with self.assertRaises(ObjectCorruptionError):
+            preflight_exact_stored_integration_candidate_binding(self.store, receipt)
+
     def test_same_logical_different_exact_packet_fact_cannot_bind(self):
         context, packet_ref = self._eligible_context_and_packet()
         real_eligibility = preflight_packet_integration_eligibility(self.store, packet_ref)
@@ -338,6 +357,34 @@ class IntegrationCandidateBindingTests(unittest.TestCase):
         self.assertNotEqual(
             resolved.packet_eligibility.eligibility_outcome,
             ELIGIBLE_FOR_STAGE5_ACCEPTANCE_CANDIDATE,
+        )
+
+    def test_accepted_receipt_cannot_launder_unsupported_packet(self):
+        context = self._ground_context()
+        dependent_ref = self.store.store(
+            self._output_artifact(
+                base_ref=context["base_ref"],
+                dependency_refs=[context["prior_ref"]],
+            ),
+            "artifact.schema.json",
+        ).reference
+        dependent_context = dict(context)
+        dependent_context["created_ref"] = dependent_ref
+        packet_ref = self._submit_packet(
+            dependent_context,
+            with_evidence=True,
+            packet_id="packet.decision026.unsupported-dependency",
+        )
+        receipt = self._receipt(base_ref=context["base_ref"], packet_refs=[packet_ref])
+
+        resolved = preflight_exact_stored_integration_candidate_binding(
+            self.store, receipt
+        )
+
+        self.assertEqual(resolved.candidate_binding_outcome, RECEIPT_PACKET_NOT_ELIGIBLE)
+        self.assertEqual(
+            resolved.packet_eligibility.eligibility_outcome,
+            UNSUPPORTED_DEPENDENCY_POLICY,
         )
 
     def test_nonaccepting_receipt_decisions_never_become_successor_candidates(self):
