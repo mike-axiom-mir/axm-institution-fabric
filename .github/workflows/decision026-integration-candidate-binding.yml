@@ -9,6 +9,7 @@ on:
       - "axm_institution/store.py"
       - "tests/test_integration_candidate_binding.py"
       - "tests/test_integration_candidate_binding_adversarial.py"
+      - "tests/test_integration_candidate_binding_adversarial_b.py"
       - "tests/test_integration_receipt_identity.py"
       - "tests/test_packet_integration_eligibility.py"
       - ".github/workflows/decision026-integration-candidate-binding.yml"
@@ -26,10 +27,14 @@ jobs:
           python-version: "3.12"
       - name: Install test dependency
         run: python -m pip install "jsonschema>=4.0,<5"
+      - name: Pin unchanged Lane 03 ADV-060-B oracle
+        run: test "$(git hash-object tests/test_integration_candidate_binding_adversarial_b.py)" = "537ad75ef2aea5ea3eafeb68bde1ce6d68c762a6"
       - name: Run Decision 026 exact stored binding tests
         run: python -m unittest discover -s tests -p "test_integration_candidate_binding.py" -v
       - name: Run unchanged Lane 03 ADV-060-A oracle
-        run: python -m unittest discover -s tests -p "test_integration_candidate_binding_adversarial.py" -v
+        run: PYTHONPATH=.:tests python -m unittest test_integration_candidate_binding_adversarial.Decision026AdversarialContinuityTests.test_adv_060_a_caller_load_success_cannot_forge_absent_base_materialization -v
+      - name: Run unchanged Lane 03 ADV-060-B oracle
+        run: PYTHONPATH=.:tests python -m unittest test_integration_candidate_binding_adversarial_b.Decision026PacketMaterializationAdversarialTests.test_adv_060_b_caller_load_success_cannot_forge_absent_packet_materialization -v
       - name: Keep Decision 025 receipt identity green
         run: python -m unittest discover -s tests -p "test_integration_receipt_identity.py" -v
       - name: Keep Decision 024 packet eligibility green
@@ -37,6 +42,6 @@ jobs:
       - name: Run complete deterministic suite
         run: python -m unittest discover -s tests -v
       - name: Explicitly compile Decision 026 surface
-        run: python -m py_compile axm_institution/integration_candidate_binding.py tests/test_integration_candidate_binding.py tests/test_integration_candidate_binding_adversarial.py
+        run: python -m py_compile axm_institution/integration_candidate_binding.py tests/test_integration_candidate_binding.py tests/test_integration_candidate_binding_adversarial.py tests/test_integration_candidate_binding_adversarial_b.py
       - name: Compile deterministic kernel sources and tests
         run: python -m compileall -q axm_institution tests
