@@ -340,16 +340,17 @@ def observe_exact_source_live(
     the base exact-store read still independently decides. Other caller-raised store-layer
     failures retain the existing indeterminate store-error classification. Its
     `_verify_existing` data descriptor applies the same rule one layer deeper: any caller-
-    owned instance verifier shadow may run first, but its successful return is never
-    sufficient evidence; the base exact-store verifier must independently read and
-    reproduce the exact immutable identity before `exact_observed` can be emitted. Its
-    `_object_path` data descriptor applies that same bounded rule to object location: a
-    caller-owned exact-instance path shadow may run, but neither its return value nor any
-    store-layer error it raises can establish presence or absence; the supplied store's
-    base exact path independently determines the actual availability/identity check.
-    Unexpected non-store exceptions still fail closed. The temporary copy and guards are
-    not retained and therefore do not create historical snapshot, durable store-root
-    identity, hostile-process isolation, or re-execution standing.
+    owned instance verifier shadow may run first, but neither a successful return nor a
+    caller-raised `ObjectNotFoundError` is sufficient evidence; the base exact-store
+    verifier must independently read and reproduce the exact immutable identity before
+    positive or negative context-local truth is emitted. Its `_object_path` data
+    descriptor applies that same bounded rule to object location: a caller-owned exact-
+    instance path shadow may run, but neither its return value nor any store-layer error it
+    raises can establish presence or absence; the supplied store's base exact path
+    independently determines the actual availability/identity check. Unexpected non-store
+    exceptions still fail closed. The temporary copy and guards are not retained and
+    therefore do not create historical snapshot, durable store-root identity,
+    hostile-process isolation, or re-execution standing.
     """
 
     if type(store) is not FilesystemObjectStore:
@@ -431,7 +432,13 @@ def observe_exact_source_live(
 
                 def verified_existing(reference: str, schema_name: str):
                     if caller_dispatch is not None:
-                        caller_dispatch(reference, schema_name)
+                        try:
+                            caller_dispatch(reference, schema_name)
+                        except ObjectNotFoundError:
+                            # Caller-owned verifier absence is not evidence that the exact
+                            # object is absent from this supplied store. The base verifier
+                            # independently grounds presence/absence/identity below.
+                            pass
                     return FilesystemObjectStore._verify_existing(self, reference, schema_name)
 
                 return verified_existing
