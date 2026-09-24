@@ -1,0 +1,53 @@
+name: decision026-integration-candidate-binding
+
+on:
+  pull_request:
+    paths:
+      - "axm_institution/integration_candidate_binding.py"
+      - "axm_institution/integration_receipt_identity.py"
+      - "axm_institution/packet_integration_eligibility.py"
+      - "axm_institution/store.py"
+      - "tests/test_integration_candidate_binding.py"
+      - "tests/test_integration_candidate_binding_adversarial.py"
+      - "tests/test_integration_candidate_binding_adversarial_b.py"
+      - "tests/test_integration_candidate_binding_adversarial_c.py"
+      - "tests/test_integration_receipt_identity.py"
+      - "tests/test_packet_integration_eligibility.py"
+      - ".github/workflows/decision026-integration-candidate-binding.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  decision026-integration-candidate-binding:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test dependency
+        run: python -m pip install "jsonschema>=4.0,<5"
+      - name: Pin unchanged Lane 03 ADV-060-A/B/C oracles
+        run: |
+          test "$(git hash-object tests/test_integration_candidate_binding_adversarial.py)" = "f0d812bf0a170cd2848842c36f30f70a983d02ed"
+          test "$(git hash-object tests/test_integration_candidate_binding_adversarial_b.py)" = "537ad75ef2aea5ea3eafeb68bde1ce6d68c762a6"
+          test "$(git hash-object tests/test_integration_candidate_binding_adversarial_c.py)" = "142bc7f9fbad0bd151c6c8b995008e059604bae9"
+      - name: Run Decision 026 exact stored binding tests
+        run: python -m unittest discover -s tests -p "test_integration_candidate_binding.py" -v
+      - name: Run unchanged Lane 03 ADV-060-A oracle
+        run: PYTHONPATH=.:tests python -m unittest test_integration_candidate_binding_adversarial.Decision026AdversarialContinuityTests.test_adv_060_a_caller_load_success_cannot_forge_absent_base_materialization -v
+      - name: Run unchanged Lane 03 ADV-060-B oracle
+        run: PYTHONPATH=.:tests python -m unittest test_integration_candidate_binding_adversarial_b.Decision026PacketMaterializationAdversarialTests.test_adv_060_b_caller_load_success_cannot_forge_absent_packet_materialization -v
+      - name: Run unchanged Lane 03 ADV-060-C oracle
+        run: PYTHONPATH=.:tests python -m unittest test_integration_candidate_binding_adversarial_c.Decision026EligibilityRecomputationAdversarialTests.test_adv_060_c_canonical_presence_does_not_bind_caller_substituted_eligibility -v
+      - name: Keep Decision 025 receipt identity green
+        run: python -m unittest discover -s tests -p "test_integration_receipt_identity.py" -v
+      - name: Keep Decision 024 packet eligibility green
+        run: python -m unittest discover -s tests -p "test_packet_integration_eligibility*.py" -v
+      - name: Run complete deterministic suite
+        run: python -m unittest discover -s tests -v
+      - name: Explicitly compile Decision 026 surface
+        run: python -m py_compile axm_institution/integration_candidate_binding.py tests/test_integration_candidate_binding.py tests/test_integration_candidate_binding_adversarial.py tests/test_integration_candidate_binding_adversarial_b.py tests/test_integration_candidate_binding_adversarial_c.py
+      - name: Compile deterministic kernel sources and tests
+        run: python -m compileall -q axm_institution tests
